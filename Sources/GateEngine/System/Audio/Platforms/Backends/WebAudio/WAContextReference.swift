@@ -9,7 +9,6 @@ import JavaScriptKit
 import DOM
 import WebAudio
 
-@MainActor
 internal class WAContextReference: AudioContextBackend {
     let ctx: WebAudio.AudioContext
 

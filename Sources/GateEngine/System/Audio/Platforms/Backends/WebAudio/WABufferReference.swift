@@ -7,22 +7,23 @@
 #if HTML5
 import WebAudio
 
-@MainActor
 internal final class WABufferReference: AudioBufferBackend {
     unowned let audioBuffer: AudioBuffer
-    var buffer: WebAudio.AudioBuffer! = nil
+    nonisolated(unsafe) var buffer: WebAudio.AudioBuffer! = nil
 
-    nonisolated var duration: Double {
-        return MainActor.assumeIsolated { buffer.duration }
+    @inlinable
+    var duration: Double {
+        return buffer.duration
     }
 
-    required nonisolated init(path: String, context: AudioContext, audioBuffer: AudioBuffer) {
+    required init(path: String, context: AudioContext, audioBuffer: AudioBuffer) {
         self.audioBuffer = audioBuffer
         Task { @MainActor in
             await self.loadAudio(path: path, context: context)
         }
     }
 
+    @MainActor
     private func loadAudio(path: String, context: AudioContext) async {
         let platform: WASIPlatform = Game.shared.platform
         let ctx = (context.reference as! WAContextReference).ctx

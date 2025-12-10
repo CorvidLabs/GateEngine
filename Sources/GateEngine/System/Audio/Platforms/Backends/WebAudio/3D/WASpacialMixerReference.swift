@@ -9,7 +9,6 @@ import DOM
 import JavaScriptKit
 import WebAudio
 
-@MainActor
 internal class WASpacialMixerReference: SpacialAudioMixerReference {
     unowned let contextReference: WAContextReference
     let mixerNode: PannerNode
