@@ -17,11 +17,7 @@ public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol, @u
     public static let synchronousFileSystem: SynchronousLinuxFileSystem = SynchronousLinuxFileSystem()
     #endif
     #endif
-    let staticResourceLocations: [URL]
-
-    init(delegate: any GameDelegate) {
-        self.staticResourceLocations = Self.getStaticSearchPaths(delegate: delegate)
-    }
+    let staticResourceLocations: [URL] = LinuxPlatform.getStaticSearchPaths()
 
     public var supportsMultipleWindows: Bool {
         return true

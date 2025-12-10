@@ -22,11 +22,7 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol, @u
     #endif
     #endif
     
-    let staticResourceLocations: [URL]
-
-    init(delegate: any GameDelegate) {
-        self.staticResourceLocations = Self.getStaticSearchPaths(delegate: delegate)
-    }
+    let staticResourceLocations: [URL] = Win32Platform.getStaticSearchPaths()
 
     public var supportsMultipleWindows: Bool {
         return true
