@@ -15,15 +15,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Install SwiftWasm
+    - name: Install SwiftWasm Toolchain
       run: |
-        brew install swiftwasm/tap/swift-wasm
-
-    - name: Swift Version
-      run: swift --version
+        # Download SwiftWasm 6.0 toolchain
+        curl -L -o swiftwasm.pkg https://github.com/aspect-build/aspect-swiftwasm-releases/releases/download/6.0.1-aspect.1/swift-wasm-6.0.1-aspect.1-macos_arm64.pkg
+        sudo installer -pkg swiftwasm.pkg -target /
+        export PATH="/Library/Developer/Toolchains/swift-wasm-6.0.1-aspect.1.xctoolchain/usr/bin:$PATH"
+        swift --version
 
     - name: Build for WASI
-      run: swift build --triple wasm32-unknown-wasi
+      run: |
+        export PATH="/Library/Developer/Toolchains/swift-wasm-6.0.1-aspect.1.xctoolchain/usr/bin:$PATH"
+        swift build --triple wasm32-unknown-wasi
     
 #    - name: Archive
 #      uses: actions/upload-artifact@v3
