@@ -281,13 +281,16 @@ private func gamepadWasAdded(
         return
     }
 
-    Task { @MainActor in
+    // IOKit callbacks run on the main run loop, so we can assume MainActor isolation
+    // Use nonisolated(unsafe) to allow capturing the C type in the closure
+    nonisolated(unsafe) let unsafeDevice = device
+    MainActor.assumeIsolated {
         if let interpreter = Game.shared.hid.gamePads.interpreters.first(where: {
             $0 is IOKitGamePadInterpreter
         }) as? IOKitGamePadInterpreter {
             let controller = GamePad(
                 interpreter: interpreter,
-                identifier: HIDController(guid: guid, device: device)
+                identifier: HIDController(guid: guid, device: unsafeDevice)
             )
             interpreter.hid.gamePads.addNewlyConnectedGamePad(controller)
         }
@@ -301,8 +304,9 @@ private func gamepadWasRemoved(
     device: IOHIDDevice
 ) {
     let id = ObjectIdentifier(device)
-    Task { @MainActor in
-        let interpreter = Game.unsafeShared.hid.gamePads.interpreters.filter({ $0 is IOKitGamePadInterpreter }).first!
+    // IOKit callbacks run on the main run loop, so we can assume MainActor isolation
+    MainActor.assumeIsolated {
+        let interpreter = Game.shared.hid.gamePads.interpreters.filter({ $0 is IOKitGamePadInterpreter }).first!
             as! IOKitGamePadInterpreter
         if let controller = interpreter.hid.gamePads.all.first(where: {
             if let device = ($0.identifier as? HIDController)?.device {

@@ -114,7 +114,7 @@ public enum ResourceState: Equatable {
     case failed(error: GateEngineError)
 }
 
-public class OldResource: Equatable, Hashable, Identifiable {
+public class OldResource: Equatable, Hashable, Identifiable, @unchecked Sendable {
     /** The current state of the resource.
     It is a programming error to use a resource or access it's properties while it's state is anything other then `ready`.
     */

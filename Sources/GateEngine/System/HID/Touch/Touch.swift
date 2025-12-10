@@ -55,15 +55,15 @@ import GameMath
     }
 }
 
-extension Touch: Equatable {
+nonisolated extension Touch: Equatable {
     @inlinable
-    public nonisolated static func == (lhs: Touch, rhs: Touch) -> Bool {
+    public static func == (lhs: Touch, rhs: Touch) -> Bool {
         return lhs.id == rhs.id
     }
 }
-extension Touch: Hashable {
+nonisolated extension Touch: Hashable {
     @inlinable
-    public nonisolated func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 }

@@ -6,6 +6,7 @@
  */
 #if !DISABLE_GRAVITY_TESTS
 
+@MainActor
 final class Unittest02SemanticStep1Tests: GravityXCTestCase {
     func testClass1Redeclared() async {
         await runGravity(at: "unittest/02-semantic_step1/class1_redeclared.gravity")

@@ -454,7 +454,7 @@ let package = Package(
         
         return targets
     }(),
-    swiftLanguageModes: [.v5],
+    swiftLanguageModes: [.v6],
     cLanguageStandard: .gnu11,
     cxxLanguageStandard: .gnucxx14
 )

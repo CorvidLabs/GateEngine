@@ -6,6 +6,7 @@
  */
 #if !DISABLE_GRAVITY_TESTS
 
+@MainActor
 final class Unittest03SemanticStep2Tests: GravityXCTestCase {
     func testClass1AccessSpecifier() async {
         await runGravity(at: "unittest/03-semantic_step2/class1_access_specifier.gravity")

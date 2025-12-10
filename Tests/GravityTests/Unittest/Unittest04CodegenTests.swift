@@ -6,6 +6,7 @@
  */
 #if !DISABLE_GRAVITY_TESTS
 
+@MainActor
 final class Unittest04CodegenTests: GravityXCTestCase {
     func testAssignment1() async {
         await runGravity(at: "unittest/04-codegen/assignment1.gravity")

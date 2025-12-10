@@ -42,7 +42,7 @@ extension Sound: Hashable {
     }
 }
 
-public class ActiveSound {
+public class ActiveSound: @unchecked Sendable {
     private var playingWasSet: Bool = false
     weak var playing: AudioSystem.PlayingSound? = nil {
         didSet {
@@ -94,6 +94,7 @@ public class ActiveSound {
 }
 
 extension Sound {
+    @MainActor
     @discardableResult
     public static func play(
         _ sound: Sound,
@@ -103,18 +104,17 @@ extension Sound {
         config: ((_ activeSound: ActiveSound) -> Void)? = nil
     ) -> ActiveSound {
         let active = ActiveSound()
-        Task { @MainActor in
-            #if os(Windows) 
-                return
-            #endif
-            Game.unsafeShared.system(ofType: AudioSystem.self).queueSound(
-                sound,
-                as: kind,
-                entity: entity,
-                volume: volume,
-                handle: active
-            )
-        }
+        #if os(Windows)
+            config?(active)
+            return active
+        #endif
+        Game.shared.system(ofType: AudioSystem.self).queueSound(
+            sound,
+            as: kind,
+            entity: entity,
+            volume: volume,
+            handle: active
+        )
         config?(active)
         return active
     }

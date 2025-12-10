@@ -118,6 +118,7 @@ public struct AppKitPlatform: PlatformProtocol, InternalPlatformProtocol {
 }
 
 extension AppKitPlatform {
+    @MainActor
     public func font(named name: String) -> Font {
         var fonts: [URL] = []
         do {

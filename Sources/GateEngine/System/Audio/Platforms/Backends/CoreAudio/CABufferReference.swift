@@ -25,7 +25,7 @@ extension AudioBuffer.Format {
     }
 }
 
-internal final class CABufferReference: AudioBufferBackend {
+internal final class CABufferReference: AudioBufferBackend, @unchecked Sendable {
     unowned let audioBuffer: AudioBuffer
     var pcmBuffer: AVAudioPCMBuffer! = nil
     var format: AVAudioFormat! = nil
@@ -36,7 +36,7 @@ internal final class CABufferReference: AudioBufferBackend {
 
     required init(path: String, context: AudioContext, audioBuffer: AudioBuffer) {
         self.audioBuffer = audioBuffer
-        Task.detached {
+        Task { @Sendable in
             do {
                 guard let located = await Platform.current.locateResource(from: path) else {
                     throw GateEngineError.failedToLocate(resource: path, nil)
