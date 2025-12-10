@@ -23,8 +23,15 @@ jobs:
       run: |
         swift sdk install https://github.com/finagolfin/swift-android-sdk/releases/download/6.2/swift-6.2-RELEASE-android-24-0.1.artifactbundle.tar.gz --checksum c26ebfd4e32c0ca1beabcc45729b62042da57ee76d7d043f63f2235da90dc491
 
+    - name: List SDKs
+      run: swift sdk list
+
     - name: Swift Version
       run: swift --version
 
     - name: Build using Swift
+      # ANDROID_NDK_ROOT must be unset for the SDK to function properly
+      # (GitHub Actions runners have this set by default)
+      env:
+        ANDROID_NDK_ROOT: ""
       run: swift build --swift-sdk aarch64-unknown-linux-android24
