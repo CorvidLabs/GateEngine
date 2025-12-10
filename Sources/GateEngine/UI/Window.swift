@@ -37,7 +37,7 @@ public struct WindowOptions: OptionSet, Sendable {
     public static let `default`: WindowOptions = []
 }
 
-public final class Window: View, @MainActor RenderTargetProtocol, @MainActor _RenderTargetProtocol {
+@MainActor public final class Window: View, @MainActor RenderTargetProtocol, @MainActor _RenderTargetProtocol {
     public var lastDrawnFrame: UInt = .max
     public let identifier: String
     public let style: WindowStyle
