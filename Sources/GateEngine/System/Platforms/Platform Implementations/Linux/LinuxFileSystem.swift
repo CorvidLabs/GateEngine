@@ -20,11 +20,11 @@ public struct LinuxFileSystem: AsynchronousFileSystem {
             case .currentUser:
                 return URL(fileURLWithPath: homeDir)
                     .appendingPathComponent(".config")
-                    .appendingPathComponent("." + Game.unsafeShared.identifier)
+                    .appendingPathComponent("." + Game.unsafeShared.info.identifier)
                     .path
             case .shared:
                 return URL(fileURLWithPath: "/var/lib")
-                    .appendingPathComponent(Game.unsafeShared.identifier)
+                    .appendingPathComponent(Game.unsafeShared.info.identifier)
                     .path
             }
         case .cache:
@@ -32,16 +32,16 @@ public struct LinuxFileSystem: AsynchronousFileSystem {
             case .currentUser:
                 return URL(fileURLWithPath: homeDir)
                     .appendingPathComponent(".cache")
-                    .appendingPathComponent(Game.unsafeShared.identifier)
+                    .appendingPathComponent(Game.unsafeShared.info.identifier)
                     .path
             case .shared:
                 return URL(fileURLWithPath: "/var/cache")
-                    .appendingPathComponent(Game.unsafeShared.identifier)
+                    .appendingPathComponent(Game.unsafeShared.info.identifier)
                     .path
             }
         case .temporary:
             return URL(fileURLWithPath: "/tmp")
-                .appendingPathComponent(Game.unsafeShared.identifier)
+                .appendingPathComponent(Game.unsafeShared.info.identifier)
                 .path
         }
     }

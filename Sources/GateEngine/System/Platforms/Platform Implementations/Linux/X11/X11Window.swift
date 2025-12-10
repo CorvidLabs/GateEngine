@@ -609,8 +609,8 @@ final class X11Window: WindowBacking {
 }
 
 extension X11Window {
-    static let xDisplay: OpaquePointer = XOpenDisplay(nil)!
-    static let xScreen: Int32 = XDefaultScreen(xDisplay)
+    nonisolated(unsafe) static let xDisplay: OpaquePointer = XOpenDisplay(nil)!
+    nonisolated(unsafe) static let xScreen: Int32 = XDefaultScreen(xDisplay)
     static let visualInfo: XVisualInfo = {
         var att: [Int32] = [
             GLX_RGBA, 1,
