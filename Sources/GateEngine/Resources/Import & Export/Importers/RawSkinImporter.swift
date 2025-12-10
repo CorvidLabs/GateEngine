@@ -16,6 +16,7 @@ public final class RawSkinImporter: SkinImporter, GateEngineNativeResourceImport
     var data: Data! = nil
     public required init() {}
 
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         do {
             self.data = try Platform.current.synchronousLoadResource(from: path)
@@ -23,6 +24,7 @@ public final class RawSkinImporter: SkinImporter, GateEngineNativeResourceImport
             throw GateEngineError(error)
         }
     }
+    #endif
     public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         do {
             self.data = try await Platform.current.loadResource(from: path)

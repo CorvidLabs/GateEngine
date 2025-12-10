@@ -71,7 +71,7 @@ final class WASIWindow: WindowBacking {
 
         let _canvas = document.createElement(localName: "canvas")
         _canvas.id = "mainCanvas"
-        canvas = HTMLCanvasElement(from: _canvas)!
+        canvas = HTMLCanvasElement(unsafelyWrapping: _canvas.jsObject)
         _ = document.body!.appendChild(node: canvas)
     }
 

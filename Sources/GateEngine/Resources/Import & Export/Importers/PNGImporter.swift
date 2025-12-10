@@ -16,9 +16,11 @@ public final class PNGImporter: TextureImporter {
         return false
     }
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         self.data = try Platform.current.synchronousLoadResource(from: path)
     }
+    #endif
     public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         self.data = try await Platform.current.loadResource(from: path)
     }

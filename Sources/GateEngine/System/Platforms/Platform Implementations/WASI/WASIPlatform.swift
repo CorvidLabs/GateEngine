@@ -84,7 +84,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return nil
     }
 
-    public func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
+    func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 if let object = try await fetch(resolvedPath).object {

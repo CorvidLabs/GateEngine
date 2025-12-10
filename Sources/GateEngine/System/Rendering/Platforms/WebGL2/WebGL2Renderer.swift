@@ -561,7 +561,7 @@ extension WebGL2Renderer {
     }
     static let context: WebGL2RenderingContext = {
         let element = globalThis.document.getElementById(elementId: "mainCanvas")!
-        let canvas = HTMLCanvasElement(from: element)!
+        let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
         let options = [
             "powerPreference": "high-performance",
             "preserveDrawingBuffer": true,

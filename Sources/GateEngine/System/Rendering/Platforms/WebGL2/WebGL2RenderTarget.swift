@@ -24,7 +24,7 @@ final class WebGL2RenderTarget: RenderTargetBackend {
     func reshape() {
         if isWindow {
             let element = globalThis.document.getElementById(elementId: "mainCanvas")!
-            let canvas = HTMLCanvasElement(from: element)!
+            let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
             canvas.width = UInt32(self.size.width)
             canvas.height = UInt32(self.size.height)
         } else {
@@ -83,7 +83,7 @@ final class WebGL2RenderTarget: RenderTargetBackend {
 
         if isWindow {
             let element = globalThis.document.getElementById(elementId: "mainCanvas")!
-            let canvas = HTMLCanvasElement(from: element)!
+            let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
             self.framebuffer = nil
             self.colorTexture = nil
             self.depthTexture = nil
