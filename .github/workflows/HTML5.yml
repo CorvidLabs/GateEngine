@@ -18,11 +18,11 @@ jobs:
     - name: Install Swift
       uses: swift-actions/setup-swift@v2
       with:
-        swift-version: "6.0.3"
+        swift-version: "6.1"
 
     - name: Install SwiftWasm SDK
       run: |
-        swift sdk install https://github.com/aspect-build/aspect-swiftwasm-releases/releases/download/6.0.2/swift-wasm-6.0.2-macos_arm64-wasm32-unknown-wasi.artifactbundle.zip
+        swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.1-RELEASE/swift-wasm-6.1-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 7550b4c77a55f4b637c376f5d192f297fe185607003a6212ad608276928db992
 
     - name: Swift Version
       run: swift --version
