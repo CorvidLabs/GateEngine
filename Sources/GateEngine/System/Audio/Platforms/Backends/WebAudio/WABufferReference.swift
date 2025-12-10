@@ -18,11 +18,11 @@ internal class WABufferReference: AudioBufferBackend {
 
     required init(path: String, context: AudioContext, audioBuffer: AudioBuffer) {
         self.audioBuffer = audioBuffer
-        Task.detached {
-            let platform: WASIPlatform = await Game.shared.platform
-            let context = (context.reference as! WAContextReference).ctx
+        Task { @MainActor in
+            let platform: WASIPlatform = Game.shared.platform
+            let ctx = (context.reference as! WAContextReference).ctx
 
-            self.buffer = try await context.decodeAudioData(
+            self.buffer = try await ctx.decodeAudioData(
                 audioData: try await platform.loadResourceAsArrayBuffer(from: path),
                 successCallback: { buffer in
                     Task { @MainActor in

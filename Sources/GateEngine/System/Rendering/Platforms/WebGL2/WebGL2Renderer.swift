@@ -5,6 +5,7 @@
  * http://stregasgate.com
  */
 #if HTML5
+import JavaScriptKit
 import WebAPIBase
 import DOM
 import WebGL1
