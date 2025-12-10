@@ -562,15 +562,15 @@ extension WebGL2Renderer {
     static let context: WebGL2RenderingContext = {
         let element = globalThis.document.getElementById(elementId: "mainCanvas")!
         let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
-        let options = [
+        let options: [String: ConvertibleToJSValue] = [
             "powerPreference": "high-performance",
             "preserveDrawingBuffer": true,
             "desynchronized": true,
             "antialias": false,
             "failIfMajorPerformanceCaveat": false,
             "premultipliedAlpha": false,
-        ].jsValue
-        let context = canvas.getContext(WebGL2RenderingContext.self, options: options)!
+        ]
+        let context = canvas.getContext(WebGL2RenderingContext.self, options: options.jsValue)!
         return context
     }()
 
