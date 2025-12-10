@@ -21,12 +21,10 @@ jobs:
 
     - name: Install Android SDK
       run: |
-        cd ..
-        wget -q https://github.com/finagolfin/swift-android-sdk/releases/download/6.0.3/swift-6.0.3-android-24-sdk.tar.xz
-        tar xf swift-6.0.3-android-24-sdk.tar.xz
-        cd GateEngine
+        swift sdk install https://github.com/finagolfin/swift-android-sdk/releases/download/6.0.3/swift-6.0.3-RELEASE-android-24-0.1.artifactbundle.tar.gz
+
     - name: Swift Version
       run: swift --version
 
     - name: Build using Swift
-      run: swift build --destination ../swift-6.0.3-android-24-sdk/usr/swiftpm-android-aarch64.json -Xlinker -rpath -Xlinker \$ORIGIN/lib/swift/android
+      run: swift build --swift-sdk aarch64-unknown-linux-android24
