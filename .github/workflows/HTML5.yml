@@ -28,7 +28,7 @@ jobs:
       run: swift --version
 
     - name: Build for WASI
-      run: swift build --swift-sdk wasm32-unknown-wasi
+      run: swift build --swift-sdk wasm32-unknown-wasi --traits HTML5
     
 #    - name: Archive
 #      uses: actions/upload-artifact@v3

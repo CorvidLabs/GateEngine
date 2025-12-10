@@ -9,9 +9,7 @@
 import XCTest
 @testable import GateEngine
 
-@MainActor
 final class GravityCreateValueTests: GateEngineXCTestCase {
-    let gravity = Gravity()
     func testInt() {
         XCTAssertEqual(GravityValue(1), 1)
         XCTAssertEqual(GravityValue(0), 0)
