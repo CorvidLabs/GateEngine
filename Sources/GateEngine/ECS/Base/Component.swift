@@ -6,9 +6,9 @@
  */
 
 public protocol Component {
-    init()
+    @MainActor init()
     nonisolated static var componentID: ComponentID { get }
-    
+
     nonisolated static func systemThatProcessesThisComponent() -> System.Type?
 }
 

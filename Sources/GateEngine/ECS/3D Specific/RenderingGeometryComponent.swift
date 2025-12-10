@@ -50,7 +50,7 @@ public struct RenderingGeometryComponent: ResourceConstrainedComponent {
         self.points.append(points)
     }
 
-    nonisolated public init() {}
+    public init() {}
     
     public init(geometries: OrderedSet<Geometry>, flags: SceneElementFlags = .default) {
         self.geometries = geometries
