@@ -32,6 +32,7 @@ jobs:
     - name: Build using Swift
       # ANDROID_NDK_ROOT must be unset for the SDK to function properly
       # (GitHub Actions runners have this set by default)
+      # Only build Android-compatible targets (GateEngine has #error for Android)
       env:
         ANDROID_NDK_ROOT: ""
-      run: swift build --swift-sdk aarch64-unknown-linux-android24
+      run: swift build --target GameMath --target GateUtilities --swift-sdk aarch64-unknown-linux-android24
