@@ -37,7 +37,12 @@ public struct WindowOptions: OptionSet, Sendable {
     public static let `default`: WindowOptions = []
 }
 
+#if os(WASI)
+// WASI Swift toolchain doesn't support @MainActor attribute syntax on protocol conformances
+@MainActor public final class Window: View, RenderTargetProtocol, _RenderTargetProtocol {
+#else
 @MainActor public final class Window: View, @MainActor RenderTargetProtocol, @MainActor _RenderTargetProtocol {
+#endif
     public var lastDrawnFrame: UInt = .max
     public let identifier: String
     public let style: WindowStyle

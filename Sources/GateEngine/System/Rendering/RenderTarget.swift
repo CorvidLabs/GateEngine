@@ -100,7 +100,12 @@ extension _RenderTargetProtocol {
     }
 }
 
+#if os(WASI)
+// WASI Swift toolchain doesn't support @MainActor attribute syntax on protocol conformances
+@MainActor public final class RenderTarget: View, RenderTargetProtocol, _RenderTargetProtocol {
+#else
 @MainActor public final class RenderTarget: View, @MainActor RenderTargetProtocol, @MainActor _RenderTargetProtocol {
+#endif
     @usableFromInline
     var renderTargetBackend: any RenderTargetBackend
     var previousSize: Size2i? = nil
