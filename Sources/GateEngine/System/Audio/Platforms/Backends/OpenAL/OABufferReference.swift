@@ -11,7 +11,7 @@ import OpenALSoft
 import LinuxSupport
 #endif
 
-internal class OABufferReference: AudioBufferBackend {
+internal class OABufferReference: AudioBufferBackend, @unchecked Sendable {
     var bufferID: ALuint! = nil
     unowned let audioBuffer: AudioBuffer
     lazy private(set) var duration: Double = {
