@@ -8,7 +8,7 @@
 import Foundation
 import LinuxSupport
 
-public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol {
+public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
     public static let fileSystem: LinuxFileSystem = LinuxFileSystem()
     let staticResourceLocations: [URL]
 

@@ -8,7 +8,7 @@
 import Foundation
 import WinSDK
 
-public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
+public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
     #if GATEENGINE_PLATFORM_HAS_FILESYSTEM
     #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
     public static let fileSystem: some AsynchronousFileSystem = AsynchronousWin32FileSystem()
