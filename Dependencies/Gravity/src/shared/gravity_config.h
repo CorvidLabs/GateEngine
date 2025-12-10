@@ -34,6 +34,12 @@ typedef int         mode_t;
 #else
 #include <unistd.h>
 #define PATH_SEPARATOR  '/'
+// Android doesn't have bzero in strings.h, use memset instead
+#if defined(__ANDROID__)
+#if (!defined(HAVE_BZERO) || !defined(bzero))
+#define bzero(b, len) memset((b), 0, (len))
+#endif
+#endif
 #endif
 
 // check if the compiler supports designated initializers when using c++
