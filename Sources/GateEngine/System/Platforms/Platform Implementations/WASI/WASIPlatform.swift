@@ -13,12 +13,10 @@ import JavaScriptEventLoop
 
 public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
     public static let fileSystem: WASIFileSystem = WASIFileSystem()
-    var staticResourceLocations: [URL]
+    lazy var staticResourceLocations: [URL] = Self.staticResourceLocations(delegate: Game.unsafeShared.delegate)
     var pathCache: [String: String] = [:]
 
-    init(delegate: any GameDelegate) {
-        self.staticResourceLocations = Self.staticResourceLocations(delegate: delegate)
-    }
+    init() {}
 
     static func staticResourceLocations(delegate: any GameDelegate) -> [Foundation.URL] {
         func getGameModuleName(_ delegate: AnyObject) -> String {
