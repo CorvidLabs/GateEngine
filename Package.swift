@@ -45,13 +45,13 @@ let package = Package(
         ])
         #endif
         
-        // SwiftWASM / HTML5 dependencies - only included on macOS (for cross-compilation to WASI)
+        // SwiftWASM / HTML5 dependencies - only included on macOS/Linux (for cross-compilation to WASI)
         // These cause build failures on Windows due to JavaScriptKit's BridgeJS plugin using POSIX kill()
-        // Pinned to specific versions for API compatibility with WASIPlatform code
+        // Updated to versions with Embedded Swift support (required for WASI without Foundation)
         #if os(macOS) || os(Linux)
         packageDependencies.append(contentsOf: [
-            .package(url: "https://github.com/swiftwasm/WebAPIKit.git", exact: "0.1.0"),
-            .package(url: "https://github.com/swiftwasm/JavaScriptKit.git", exact: "0.16.0"),
+            .package(url: "https://github.com/swiftwasm/WebAPIKit.git", from: "0.2.0"),
+            .package(url: "https://github.com/swiftwasm/JavaScriptKit.git", from: "0.20.0"),
         ])
         #endif
         
@@ -390,7 +390,10 @@ let package = Package(
         ])
         #endif
         
-        #if os(Linux) || os(Android)
+        #if os(Linux)
+        // Note: OpenALSoft is only built for Linux (not Android) because oss.cpp
+        // requires sys/soundcard.h which is not available on Android.
+        // Android would need opensl.cpp or oboe.cpp backends instead.
         targets.append(contentsOf: [
         // OpenALSoft
         .target(name: "OpenALSoft",
@@ -639,12 +642,11 @@ var openALSources: [String] {
     array.append(contentsOf: macOS)
     #endif
 
-    #if os(Linux)
-    let linux = [
-        "UnmodifiedSource/alc/backends/oss.cpp",
-    ]
-    array.append(contentsOf: linux)
-    #endif
+    // Note: oss.cpp is excluded because it requires <sys/soundcard.h> which
+    // is not available on Android. When cross-compiling from Linux to Android,
+    // the #if os(Linux) check would still be true (evaluated on host), causing
+    // compilation failures.
+    // TODO: Add proper Linux-only backend support when needed.
     return array
 }
 #endif
