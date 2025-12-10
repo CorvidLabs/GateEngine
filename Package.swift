@@ -47,10 +47,11 @@ let package = Package(
         
         // SwiftWASM / HTML5 dependencies - only included on macOS (for cross-compilation to WASI)
         // These cause build failures on Windows due to JavaScriptKit's BridgeJS plugin using POSIX kill()
+        // Pinned to specific versions for API compatibility with WASIPlatform code
         #if os(macOS) || os(Linux)
         packageDependencies.append(contentsOf: [
-            .package(url: "https://github.com/swiftwasm/WebAPIKit.git", .upToNextMajor(from: "0.1.0")),
-            .package(url: "https://github.com/swiftwasm/JavaScriptKit.git", .upToNextMajor(from: "0.16.0")),
+            .package(url: "https://github.com/swiftwasm/WebAPIKit.git", exact: "0.1.0"),
+            .package(url: "https://github.com/swiftwasm/JavaScriptKit.git", exact: "0.16.0"),
         ])
         #endif
         
