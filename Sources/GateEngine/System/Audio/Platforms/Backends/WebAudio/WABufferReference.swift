@@ -7,7 +7,7 @@
 #if HTML5
 import WebAudio
 
-internal final class WABufferReference: AudioBufferBackend {
+internal final class WABufferReference: AudioBufferBackend, @unchecked Sendable {
     unowned let audioBuffer: AudioBuffer
     nonisolated(unsafe) var buffer: WebAudio.AudioBuffer! = nil
 
