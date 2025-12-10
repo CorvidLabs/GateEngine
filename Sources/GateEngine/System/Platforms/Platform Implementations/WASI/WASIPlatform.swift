@@ -12,7 +12,9 @@ import JavaScriptKit
 import JavaScriptEventLoop
 
 public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
+    #if canImport(FileSystem)
     public static let fileSystem: WASIFileSystem = WASIFileSystem()
+    #endif
     lazy var staticResourceLocations: [URL] = Self.staticResourceLocations(delegate: Game.unsafeShared.delegate)
     var pathCache: [String: String] = [:]
 

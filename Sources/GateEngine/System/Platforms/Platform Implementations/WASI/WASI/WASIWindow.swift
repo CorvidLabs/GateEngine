@@ -154,7 +154,6 @@ final class WASIWindow: WindowBacking {
         pointerLock.setRequestedLockIfNeeded()
     }
 
-    @inlinable
     private func getPositionAndDelta(from event: MouseEvent) -> (
         position: Position2, delta: Position2
     ) {

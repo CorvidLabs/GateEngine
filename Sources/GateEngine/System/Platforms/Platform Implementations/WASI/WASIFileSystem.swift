@@ -13,7 +13,7 @@ import FileSystem
 public struct WASIFileSystem: FileSystem {
     let supportsWebFileSystem: Bool = {
         guard globalThis.isSecureContext else { return false }
-        switch CurrentPlatform.browser {
+        switch Platform.current.browser {
         case .safari(version: _):
             return false
         case .chrome(let version):
