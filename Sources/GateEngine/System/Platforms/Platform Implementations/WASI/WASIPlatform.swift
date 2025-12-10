@@ -160,6 +160,12 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
         return false
     }
 
+    @MainActor
+    public func font(named name: String) -> Font {
+        Log.infoOnce("Current platform does not support system fonts. Using default font.")
+        return .default
+    }
+
     internal enum Browser: CustomStringConvertible {
         case safari(version: Version)
         case mobileSafari(version: Version)

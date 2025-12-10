@@ -48,6 +48,12 @@ public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol {
 
         throw GateEngineError.failedToLocate
     }
+
+    @MainActor
+    public func font(named name: String) -> Font {
+        Log.infoOnce("Current platform does not support system fonts. Using default font.")
+        return .default
+    }
 }
 
 extension LinuxPlatform {

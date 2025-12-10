@@ -61,6 +61,12 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
         throw GateEngineError.failedToLocate
     }
     
+    @MainActor
+    public func font(named name: String) -> Font {
+        Log.infoOnce("Current platform does not support system fonts. Using default font.")
+        return .default
+    }
+
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousLocateResource(from path: String) -> String? {
         if path.hasPrefix("/"), synchronousFileSystem.itemExists(at: path) {
