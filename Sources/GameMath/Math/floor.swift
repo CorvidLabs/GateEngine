@@ -27,7 +27,6 @@ public func floor<T: FloatingPoint>(_ x: T) -> T {
 
 // MARK: - Native
 
-@_transparent
 @inlinable
 public func floor(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
@@ -45,7 +44,6 @@ public func floor(_ x: Float32) -> Float32 {
     #endif
 }
 
-@_transparent
 @inlinable
 public func floor(_ x: Float64) -> Float64 {
     #if canImport(Darwin)

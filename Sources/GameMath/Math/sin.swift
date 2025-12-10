@@ -39,7 +39,6 @@ public func sin<T: BinaryFloatingPoint>(_ x: T) -> T {
 // MARK: - Native
 
 @usableFromInline
-@_transparent
 internal func _sin(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.sinf(x)
@@ -57,7 +56,6 @@ internal func _sin(_ x: Float32) -> Float32 {
 }
 
 @usableFromInline
-@_transparent
 internal func _sin(_ x: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.sin(x)
@@ -74,13 +72,11 @@ internal func _sin(_ x: Float64) -> Float64 {
     #endif
 }
 
-@_transparent
 @inlinable
 public func sin(_ x: Float32) -> Float32 {
     return _sin(x)
 }
 
-@_transparent
 @inlinable
 public func sin(_ x: Float64) -> Float64 {
     return _sin(x)

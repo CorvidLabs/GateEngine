@@ -39,7 +39,6 @@ public func acos<T: BinaryFloatingPoint>(_ x: T) -> T {
 // MARK: - Native
 
 @usableFromInline
-@_transparent
 internal func _acos(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.acosf(x)
@@ -57,7 +56,6 @@ internal func _acos(_ x: Float32) -> Float32 {
 }
 
 @usableFromInline
-@_transparent
 internal func _acos(_ x: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.acos(x)
@@ -74,13 +72,11 @@ internal func _acos(_ x: Float64) -> Float64 {
     #endif
 }
 
-@_transparent
 @inlinable
 public func acos(_ x: Float32) -> Float32 {
     return _acos(x)
 }
 
-@_transparent
 @inlinable
 public func acos(_ x: Float64) -> Float64 {
     return _acos(x)

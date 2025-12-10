@@ -39,7 +39,6 @@ public func atan2<T: BinaryFloatingPoint>(_ lhs: T, _ rhs: T) -> T {
 // MARK: - Native
 
 @usableFromInline
-@_transparent
 internal func _atan2(_ lhs: Float32, _ rhs: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.atan2f(lhs, rhs)
@@ -57,7 +56,6 @@ internal func _atan2(_ lhs: Float32, _ rhs: Float32) -> Float32 {
 }
 
 @usableFromInline
-@_transparent
 internal func _atan2(_ lhs: Float64, _ rhs: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.atan2(lhs, rhs)
@@ -74,13 +72,11 @@ internal func _atan2(_ lhs: Float64, _ rhs: Float64) -> Float64 {
     #endif
 }
 
-@_transparent
 @inlinable
 public func atan2(_ lhs: Float32, _ rhs: Float32) -> Float32 {
     return _atan2(lhs, rhs)
 }
 
-@_transparent
 @inlinable
 public func atan2(_ lhs: Float64, _ rhs: Float64) -> Float64 {
     return _atan2(lhs, rhs)

@@ -39,7 +39,6 @@ public func tan<T: BinaryFloatingPoint>(_ x: T) -> T {
 // MARK: - Native
 
 @usableFromInline
-@_transparent
 internal func _tan(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.tanf(x)
@@ -57,7 +56,6 @@ internal func _tan(_ x: Float32) -> Float32 {
 }
 
 @usableFromInline
-@_transparent
 internal func _tan(_ x: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.tan(x)
@@ -74,13 +72,11 @@ internal func _tan(_ x: Float64) -> Float64 {
     #endif
 }
 
-@_transparent
 @inlinable
 public func tan(_ x: Float32) -> Float32 {
     return _tan(x)
 }
 
-@_transparent
 @inlinable
 public func tan(_ x: Float64) -> Float64 {
     return _tan(x)
