@@ -9,7 +9,14 @@ import Foundation
 import LinuxSupport
 
 public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
+    #if GATEENGINE_PLATFORM_HAS_FILESYSTEM
+    #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
     public static let fileSystem: LinuxFileSystem = LinuxFileSystem()
+    #endif
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
+    public static let synchronousFileSystem: SynchronousLinuxFileSystem = SynchronousLinuxFileSystem()
+    #endif
+    #endif
     let staticResourceLocations: [URL]
 
     init(delegate: any GameDelegate) {
@@ -54,6 +61,36 @@ public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol, @u
         Log.infoOnce("Current platform does not support system fonts. Using default font.")
         return .default
     }
+
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
+    public func synchronousLocateResource(from path: String) -> String? {
+        if path.hasPrefix("/"), synchronousFileSystem.itemExists(at: path) {
+            return path
+        }
+        let searchPaths = Game.unsafeShared.delegate.resolvedCustomResourceLocations() + staticResourceLocations
+        for searchPath in searchPaths {
+            let file = searchPath.appendingPathComponent(path)
+            if synchronousFileSystem.itemExists(at: file.path) {
+                return file.path
+            }
+        }
+
+        return nil
+    }
+
+    public func synchronousLoadResource(from path: String) throws(GateEngineError) -> Data {
+        if let resolvedPath = synchronousLocateResource(from: path) {
+            do {
+                return try synchronousFileSystem.read(from: resolvedPath)
+            } catch {
+                Log.error("Failed to load resource \"\(resolvedPath)\".", error)
+                throw GateEngineError.failedToLoad("\(error)")
+            }
+        }
+
+        throw GateEngineError.failedToLocate
+    }
+    #endif
 }
 
 extension LinuxPlatform {
