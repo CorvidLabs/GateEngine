@@ -382,8 +382,10 @@ extension TileMapView {
     }
 }
 
-extension TileMapView: CustomDebugStringConvertible {
+nonisolated extension TileMapView: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "\(type(of: self))(tileSet: \"\(self.tileSet.cacheKey.requestedPath)\", tileMap: \"\(self.tileMap.cacheKey.requestedPath)\")"
+        return MainActor.assumeIsolated {
+            "\(type(of: self))(tileSet: \"\(self.tileSet.cacheKey.requestedPath)\", tileMap: \"\(self.tileMap.cacheKey.requestedPath)\")"
+        }
     }
 }

@@ -305,8 +305,10 @@ open class Button: Control {
     }
 }
 
-extension Button: CustomDebugStringConvertible {
+nonisolated extension Button: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "\(type(of: self))(label: \"\(label.text)\")"
+        return MainActor.assumeIsolated {
+            "\(type(of: self))(label: \"\(label.text)\")"
+        }
     }
 }
