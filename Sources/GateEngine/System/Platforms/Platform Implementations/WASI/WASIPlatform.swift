@@ -84,7 +84,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return nil
     }
 
-    public func loadResourceAsArrayBuffer(from path: String) async throws -> ArrayBuffer {
+    public func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 if let object = try await fetch(resolvedPath).object {
@@ -94,14 +94,14 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
                 }
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
 
-    public func loadResource(from path: String) async throws -> Data {
+    public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         let arrayBuffer: ArrayBuffer = try await loadResourceAsArrayBuffer(from: path)
         return Data(arrayBuffer)
     }

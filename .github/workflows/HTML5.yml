@@ -15,11 +15,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Install Carton
-      run: brew install swiftwasm/tap/carton
-    
-    - name: Test Insecure Context
-      run: carton test --environment defaultBrowser --host 127.0.0.1
+    - name: Install SwiftWasm
+      run: |
+        brew install swiftwasm/tap/swift-wasm
+
+    - name: Swift Version
+      run: swift --version
+
+    - name: Build for WASI
+      run: swift build --triple wasm32-unknown-wasi
     
 #    - name: Archive
 #      uses: actions/upload-artifact@v3

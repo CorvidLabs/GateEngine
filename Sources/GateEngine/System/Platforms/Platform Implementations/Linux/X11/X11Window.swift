@@ -14,7 +14,7 @@ final class X11Window: WindowBacking {
     nonisolated var xDisplay: OpaquePointer {
         return Self.xDisplay
     }
-    nonisolated let glxContext: GLXContext
+    nonisolated(unsafe) let glxContext: GLXContext
     var state: Window.State = .hidden
 
     // Stoted Metadata

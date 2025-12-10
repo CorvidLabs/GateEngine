@@ -57,17 +57,17 @@ public struct UIKitPlatform: PlatformProtocol, InternalPlatformProtocol {
         return nil
     }
 
-    public func loadResource(from path: String) async throws -> Data {
+    public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 return try await fileSystem.read(from: resolvedPath)
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
     
     @MainActor
