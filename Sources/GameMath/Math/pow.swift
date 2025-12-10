@@ -77,7 +77,6 @@ public func pow<T: FloatingPoint, E: FixedWidthInteger & UnsignedInteger>(_ base
 
 // MARK: - Native
 
-@inlinable
 public func pow(_ base: Float32, _ exponent: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.powf(base, exponent)
@@ -95,7 +94,6 @@ public func pow(_ base: Float32, _ exponent: Float32) -> Float32 {
     #endif
 }
 
-@inlinable
 public func pow(_ base: Float64, _ exponent: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.pow(base, exponent)

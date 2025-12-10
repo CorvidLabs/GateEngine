@@ -27,7 +27,6 @@ public func ceil<T: FloatingPoint>(_ x: T) -> T {
 
 // MARK: - Native
 
-@inlinable
 public func ceil(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.ceilf(x)
@@ -44,7 +43,6 @@ public func ceil(_ x: Float32) -> Float32 {
     #endif
 }
 
-@inlinable
 public func ceil(_ x: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.ceil(x)

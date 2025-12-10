@@ -20,7 +20,6 @@ import WASILibc
 // MARK: - Floats
 
 @_disfavoredOverload // <- prefer native overloads
-@inlinable
 public func cos<T: BinaryFloatingPoint>(_ x: T) -> T {
     switch x {
     #if !((os(macOS) || targetEnvironment(macCatalyst)) && arch(x86_64))
@@ -38,7 +37,6 @@ public func cos<T: BinaryFloatingPoint>(_ x: T) -> T {
 
 // MARK: - Native
 
-@usableFromInline
 internal func _cos(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.cosf(x)
@@ -55,7 +53,6 @@ internal func _cos(_ x: Float32) -> Float32 {
     #endif
 }
 
-@usableFromInline
 internal func _cos(_ x: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.cos(x)
@@ -72,12 +69,10 @@ internal func _cos(_ x: Float64) -> Float64 {
     #endif
 }
 
-@inlinable
 public func cos(_ x: Float32) -> Float32 {
     return _cos(x)
 }
 
-@inlinable
 public func cos(_ x: Float64) -> Float64 {
     return _cos(x)
 }

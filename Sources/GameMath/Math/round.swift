@@ -27,7 +27,6 @@ public func round<T: FloatingPoint>(_ x: T) -> T {
 
 // MARK: - Native
 
-@inlinable
 public func round(_ x: Float32) -> Float32 {
     #if canImport(Darwin)
     return Darwin.roundf(x)
@@ -44,7 +43,6 @@ public func round(_ x: Float32) -> Float32 {
     #endif
 }
 
-@inlinable
 public func round(_ x: Float64) -> Float64 {
     #if canImport(Darwin)
     return Darwin.round(x)
