@@ -45,7 +45,7 @@ public final class MaterialComponent: ResourceConstrainedComponent {
         set { material[keyPath: keyPath] = newValue }
     }
 
-    public init() {
+    nonisolated public init() {
         self.material = Material()
     }
     public init(config: (_ material: inout Material) -> Void) {

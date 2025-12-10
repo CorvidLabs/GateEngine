@@ -66,7 +66,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         if let existing = pathCache[path] {
             return existing
         }
-        let delegatePaths = await Game.shared.delegate.resolvedCustomResourceLocations()
+        let delegatePaths = Game.unsafeShared.delegate.resolvedCustomResourceLocations()
 
         let searchPaths = OrderedSet(delegatePaths + staticResourceLocations)
         for searchPath in searchPaths {

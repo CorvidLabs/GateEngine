@@ -33,7 +33,7 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol, @u
             return path
         }
         let searchPaths =
-            await Game.shared.delegate.resolvedCustomResourceLocations() + staticResourceLocations
+            Game.unsafeShared.delegate.resolvedCustomResourceLocations() + staticResourceLocations
         for searchPath in searchPaths {
             let file = searchPath.appendingPathComponent(path)
             if await fileSystem.itemExists(at: file.path) {
