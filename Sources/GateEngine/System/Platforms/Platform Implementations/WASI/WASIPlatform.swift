@@ -106,7 +106,6 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return Data(arrayBuffer)
     }
 
-    @inlinable
     func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
         let jsFetch = JSObject.global.fetch.function!
         return try await JSPromise(jsFetch(url, options).object!)!.value
