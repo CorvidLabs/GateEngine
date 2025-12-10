@@ -45,11 +45,14 @@ let package = Package(
         ])
         #endif
         
-        // SwiftWASM / HTML5 dependencies - always included but only linked when HTML5 trait is enabled
+        // SwiftWASM / HTML5 dependencies - only included on macOS (for cross-compilation to WASI)
+        // These cause build failures on Windows due to JavaScriptKit's BridgeJS plugin using POSIX kill()
+        #if os(macOS) || os(Linux)
         packageDependencies.append(contentsOf: [
             .package(url: "https://github.com/swiftwasm/WebAPIKit.git", .upToNextMajor(from: "0.1.0")),
             .package(url: "https://github.com/swiftwasm/JavaScriptKit.git", .upToNextMajor(from: "0.16.0")),
         ])
+        #endif
         
         return packageDependencies
     }(),
@@ -111,6 +114,8 @@ let package = Package(
                         ])
 
                         // SwiftWASM / HTML5 dependencies - only linked when HTML5 trait is enabled
+                        // Wrapped in #if to match the package dependency declaration
+                        #if os(macOS) || os(Linux)
                         dependencies.append(contentsOf: [
                             .product(name: "JavaScriptEventLoop",
                                      package: "JavaScriptKit",
@@ -131,6 +136,7 @@ let package = Package(
                                      package: "WebAPIKit",
                                      condition: .whenHTML5),
                         ])
+                        #endif
                         
                         return dependencies
                     }(),
