@@ -26,7 +26,7 @@ class WebGL2Texture: TextureBackend {
 
     var size: Size2 {
         if let renderTarget {
-            return renderTarget.size
+            return renderTarget.size.vector2
         }
         return _size!
     }
@@ -44,7 +44,7 @@ class WebGL2Texture: TextureBackend {
         self._size = size
         let gl = WebGL2Renderer.context
         // Generate and bind texture.
-        self._textureId = gl.createTexture()!
+        self._textureId = gl.createTexture()
         self.replaceData(with: data, size: size, mipMapping: mipMapping)
     }
 

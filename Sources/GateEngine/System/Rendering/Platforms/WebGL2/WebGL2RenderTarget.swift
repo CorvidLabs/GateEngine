@@ -17,7 +17,7 @@ final class WebGL2RenderTarget: RenderTargetBackend {
     let colorTexture: WebGL1.WebGLTexture?
     let depthTexture: WebGL1.WebGLTexture?
 
-    var size: Size2
+    var size: Size2i
 
     var clearColor: Color = .clear
 
@@ -87,12 +87,12 @@ final class WebGL2RenderTarget: RenderTargetBackend {
             self.framebuffer = nil
             self.colorTexture = nil
             self.depthTexture = nil
-            self.size = Size2(Float(canvas.width), Float(canvas.height))
+            self.size = Size2i(Int32(canvas.width), Int32(canvas.height))
         } else {
-            self.framebuffer = context.createFramebuffer()!
-            self.colorTexture = context.createTexture()!
-            self.depthTexture = context.createTexture()!
-            self.size = Size2(2, 2)
+            self.framebuffer = context.createFramebuffer()
+            self.colorTexture = context.createTexture()
+            self.depthTexture = context.createTexture()
+            self.size = Size2i(2, 2)
 
             context.bindTexture(target: GL.TEXTURE_2D, texture: colorTexture)
             context.texImage2D(
@@ -215,7 +215,7 @@ extension WebGL2RenderTarget {
         }
     }
 
-    func willBeginContent(matrices: Matrices?, viewport: Rect?, scissorRect: Rect?) {
+    func willBeginContent(matrices: Matrices?, viewport: Rect?, scissorRect: Rect?, stencil: UInt8?) {
         context.bindFramebuffer(target: GL.FRAMEBUFFER, framebuffer: framebuffer)
         
         if let viewport {

@@ -10,7 +10,7 @@ import DOM
 import WebAPIBase
 import FileSystem
 
-public struct WASIFileSystem: FileSystem {
+public struct WASIFileSystem: AsynchronousFileSystem {
     let supportsWebFileSystem: Bool = {
         guard globalThis.isSecureContext else { return false }
         switch Platform.current.browser {

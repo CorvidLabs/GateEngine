@@ -14,11 +14,11 @@ import Shaders
 
 public typealias GL = WebGL2RenderingContext
 
-class WebGL2Renderer: RendererBackend {
+class WebGL2Renderer: Renderer {
     @inlinable
-    var renderingAPI: RenderingAPI { .webGL2 }
+    nonisolated static var api: RenderingAPI { .webGL2 }
 
-    lazy private var instanceMatriciesVBO: WebGLBuffer = WebGL2Renderer.context.createBuffer()!
+    lazy private var instanceMatriciesVBO: WebGLBuffer = WebGL2Renderer.context.createBuffer()
     let generator = GLSLCodeGenerator(version: .v300es)
 
     var _shaders: [ShaderKey: WebGLShader] = [:]
@@ -76,7 +76,7 @@ class WebGL2Renderer: RendererBackend {
                 "Generated OpenGL ES Vertex Shader \(vsh):\n\n\(GLSLCodeGenerator.addingLineNumbers(sources.vertexSource))\n"
             )
             #endif
-            let _vsh = gl.createShader(type: WebGL2RenderingContext.VERTEX_SHADER)!
+            let _vsh = gl.createShader(type: WebGL2RenderingContext.VERTEX_SHADER)
             gl.shaderSource(shader: _vsh, source: sources.vertexSource)
             gl.compileShader(shader: _vsh)
             if let error = Self.context.getShaderInfoLog(shader: _vsh), error.isEmpty == false {
@@ -88,7 +88,7 @@ class WebGL2Renderer: RendererBackend {
                 "Generated OpenGL ES Fragment Shader \(fsh):\n\n\(GLSLCodeGenerator.addingLineNumbers(sources.fragmentSource))\n"
             )
             #endif
-            let _fsh = gl.createShader(type: WebGL2RenderingContext.FRAGMENT_SHADER)!
+            let _fsh = gl.createShader(type: WebGL2RenderingContext.FRAGMENT_SHADER)
             gl.shaderSource(shader: _fsh, source: sources.fragmentSource)
             gl.compileShader(shader: _fsh)
             #if GATEENGINE_DEBUG_RENDERING
@@ -97,7 +97,7 @@ class WebGL2Renderer: RendererBackend {
             }
             #endif
 
-            let program = gl.createProgram()!
+            let program = gl.createProgram()
             gl.attachShader(program: program, shader: _vsh)
             gl.attachShader(program: program, shader: _fsh)
             gl.linkProgram(program: program)
@@ -188,7 +188,6 @@ class WebGL2Renderer: RendererBackend {
 }
 
 extension WebGL2Renderer {
-    @inlinable
     private func setFlags(_ flags: DrawCommand.Flags, in gl: WebGL2RenderingContext) {
         switch flags.cull {
         case .disabled:
@@ -257,7 +256,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func setWinding(_ winding: DrawCommand.Flags.Winding, in gl: WebGL2RenderingContext) {
         switch winding {
         case .clockwise:
@@ -267,7 +265,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func setUniforms(
         _ matrices: Matrices,
         program: WebGLProgram,
@@ -297,7 +294,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func primitive(from primitive: DrawCommand.Flags.Primitive) -> GLenum {
         switch primitive {
         case .point:
@@ -313,7 +309,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func setTransforms(
         _ transforms: [Transform3],
         at index: inout Int,
@@ -350,7 +345,6 @@ extension WebGL2Renderer {
         #endif
     }
 
-    @inlinable
     private func setMaterial(
         _ drawCommand: DrawCommand,
         generator: GLSLCodeGenerator,
@@ -511,7 +505,6 @@ extension WebGL2Renderer {
         #endif
     }
 
-    @inlinable
     private func setGeometries(
         _ geometries: [WebGL2Geometry],
         at index: inout Int,
