@@ -19,6 +19,10 @@ public final class LinuxPlatform: PlatformProtocol, InternalPlatformProtocol, @u
     #endif
     let staticResourceLocations: [URL] = LinuxPlatform.getStaticSearchPaths()
 
+    func setCursorStyle(_ style: Mouse.Style) {
+        // Linux/X11 cursor styles not yet implemented
+    }
+
     public var supportsMultipleWindows: Bool {
         return true
     }
