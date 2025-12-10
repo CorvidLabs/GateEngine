@@ -1343,39 +1343,41 @@ extension GLTransmissionFormat: TextureImporter {
     #endif
 
     public func loadTexture(options: TextureImporterOptions) async throws(GateEngineError) -> RawTexture {
+        // Capture necessary properties before async work to avoid data races
+        let gltfRef = self.gltf!
         let imageData: Data
-        func loadImageData(image: GLTF.Image) async throws(GateEngineError) -> Data {
-            if let uri = image.uri {
-                return try await Platform.current.loadResource(
-                    from: self.gltf.baseURL!.appendingPathComponent(uri).path
-                )
-            }else if let bufferIndex = image.bufferView {
-                let view = self.gltf.bufferViews[bufferIndex]
 
-                if let buffer = self.gltf.buffer(at: view.buffer) {
-                    return Data(buffer[view.byteOffset..<view.byteOffset+view.byteLength])
-                }else{
-                    throw .failedToDecode("The file does not contain a buffer with index: \(view.buffer)")
-                }
-            }else{
-                throw .failedToDecode("The gltf file is using an unsupported feature or may be corrupt.")
-            }
-        }
         if let name = options.subobjectName {
-            if let image = self.gltf.images?.first(where: {$0.name.caseInsensitiveCompare(name) == .orderedSame}) {
-                imageData = try await loadImageData(image: image)
-            }else{
+            guard let image = gltfRef.images?.first(where: {$0.name.caseInsensitiveCompare(name) == .orderedSame}) else {
                 throw .failedToLoad(resource: "GLTF Content", "No subobject found with name: \(name)")
             }
-        }else{
-            if let image = self.gltf.images?.first {
-                imageData = try await loadImageData(image: image)
-            }else{
-                throw .failedToLoad(resource:  "GLTF Content", "No images found in file.")
+            imageData = try await loadImageDataAsync(image: image, gltf: gltfRef)
+        } else {
+            guard let image = gltfRef.images?.first else {
+                throw .failedToLoad(resource: "GLTF Content", "No images found in file.")
             }
+            imageData = try await loadImageDataAsync(image: image, gltf: gltfRef)
         }
 
         return try PNGDecoder().decode(imageData)
+    }
+
+    private func loadImageDataAsync(image: GLTF.Image, gltf: GLTF) async throws(GateEngineError) -> Data {
+        if let uri = image.uri {
+            return try await Platform.current.loadResource(
+                from: gltf.baseURL!.appendingPathComponent(uri).path
+            )
+        } else if let bufferIndex = image.bufferView {
+            let view = gltf.bufferViews[bufferIndex]
+
+            if let buffer = gltf.buffer(at: view.buffer) {
+                return Data(buffer[view.byteOffset..<view.byteOffset+view.byteLength])
+            } else {
+                throw .failedToDecode("The file does not contain a buffer with index: \(view.buffer)")
+            }
+        } else {
+            throw .failedToDecode("The gltf file is using an unsupported feature or may be corrupt.")
+        }
     }
 }
 
