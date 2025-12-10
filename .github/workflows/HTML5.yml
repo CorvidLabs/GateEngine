@@ -20,10 +20,10 @@ jobs:
       with:
         swift-version: "6.2"
 
-    - name: Install Swift WASM SDK
+    - name: Install SwiftWasm SDK
       run: |
-        # Use official swift.org SDK which includes both standard and embedded variants
-        swift sdk install https://download.swift.org/swift-6.2.2-release/wasm-sdk/swift-6.2.2-RELEASE/swift-6.2.2-RELEASE_wasm.artifactbundle.tar.gz --checksum 128fa003e0cad624897c2b1d5f07cedf400e3c8bd851d304e57440b591cbe606
+        # Use SwiftWasm community SDK which includes WebGL, DOM, and FileSystem modules
+        swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.2-RELEASE/swift-wasm-6.2-RELEASE-wasm32-unknown-wasip1.artifactbundle.zip --checksum f206a9ff2352f726d88a59d2241b9581264326471265229b7ffd133d2593b92b
 
     - name: List SDKs
       run: swift sdk list
@@ -32,9 +32,7 @@ jobs:
       run: swift --version
 
     - name: Build for WASI
-      # Use standard SDK (swift-6.2.2-RELEASE_wasm) not embedded (_wasm-embedded)
-      # Standard SDK includes Foundation/Codable support which GateUtilities requires
-      run: swift build --swift-sdk swift-6.2.2-RELEASE_wasm --traits HTML5
+      run: swift build --swift-sdk wasm32-unknown-wasip1 --traits HTML5
     
 #    - name: Archive
 #      uses: actions/upload-artifact@v3
