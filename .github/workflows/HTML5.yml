@@ -32,7 +32,8 @@ jobs:
       run: swift --version
 
     - name: Build for WASI
-      run: swift build --swift-sdk wasm32-unknown-wasip1 --traits HTML5
+      # Use the standard SDK, not the embedded one (embedded lacks Codable/Foundation)
+      run: swift build --swift-sdk 6.2-RELEASE-wasm32-unknown-wasip1 --traits HTML5
     
 #    - name: Archive
 #      uses: actions/upload-artifact@v3
