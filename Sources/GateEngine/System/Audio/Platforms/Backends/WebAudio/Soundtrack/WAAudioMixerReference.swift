@@ -7,6 +7,7 @@
 #if HTML5
 import WebAudio
 
+@MainActor
 internal class WAAudioMixerReference: AudioMixerReference {
     unowned let contextReference: WAContextReference
     let mixerNode: PannerNode

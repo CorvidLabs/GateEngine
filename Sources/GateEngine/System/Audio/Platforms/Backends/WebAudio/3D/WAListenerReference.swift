@@ -7,6 +7,7 @@
 #if HTML5
 import WebAudio
 
+@MainActor
 internal class WAListenerReference: SpatialAudioListenerBackend {
     let listener: AudioListener
 
