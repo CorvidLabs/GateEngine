@@ -113,7 +113,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
     }
 
     func saveStatePath(forStateNamed name: String) throws -> String {
-        return URL(fileURLWithPath: try fileSystem.pathForSearchPath(.persistent, in: .currentUser))
+        return URL(fileURLWithPath: try Self.fileSystem.pathForSearchPath(.persistent, in: .currentUser))
             .appendingPathComponent(name).path
     }
 
@@ -121,15 +121,15 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         let data = try JSONEncoder().encode(state)
         let path = try self.saveStatePath(forStateNamed: name)
         let dir = URL(fileURLWithPath: path).deletingLastPathComponent().path
-        if await fileSystem.itemExists(at: dir) == false {
-            try await fileSystem.createDirectory(at: dir)
+        if await Self.fileSystem.itemExists(at: dir) == false {
+            try await Self.fileSystem.createDirectory(at: dir)
         }
-        try await fileSystem.write(data, to: path)
+        try await Self.fileSystem.write(data, to: path)
     }
 
     func loadState(named name: String) async -> Game.State {
         do {
-            let data = try await fileSystem.read(from: try saveStatePath(forStateNamed: name))
+            let data = try await Self.fileSystem.read(from: try saveStatePath(forStateNamed: name))
             let state = try JSONDecoder().decode(Game.State.self, from: data)
             state.name = name
             return state
@@ -360,7 +360,7 @@ internal final class WASIUserActivationRenderingSystem: RenderingSystem {
     override func setup(game: Game) {
         game.insertSystem(HIDSystem.self)
         game.windowManager.mainWindow?.clearColor = .stregasgateBackground
-        banner.texture.cacheHint = .whileReferenced
+        banner.texture.cacheHint = CacheHint.whileReferenced
     }
 
     var somethingWasPressed = false
