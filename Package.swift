@@ -491,6 +491,7 @@ var openALCSettings: [CSetting] {
     array.append(.headerSearchPath("ConfiguredSource/macOS/", .when(platforms: [.macOS])))
     array.append(.headerSearchPath("ConfiguredSource/Windows/", .when(platforms: [.windows])))
     array.append(.headerSearchPath("ConfiguredSource/Linux/", .when(platforms: [.linux])))
+    array.append(.headerSearchPath("ConfiguredSource/Android/", .when(platforms: [.android])))
     array.append(.headerSearchPath("ConfiguredSource/iOS/", .when(platforms: [.iOS, .tvOS, .watchOS, .macCatalyst])))
     
     array.append(.headerSearchPath("UnmodifiedSource/"))
