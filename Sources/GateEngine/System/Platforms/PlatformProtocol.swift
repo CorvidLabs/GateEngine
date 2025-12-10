@@ -19,14 +19,14 @@ public protocol PlatformProtocol: Sendable {
     @MainActor func font(named name: String) -> Font
 
     #if GATEENGINE_PLATFORM_HAS_FILESYSTEM
-    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
+    #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
     associatedtype AsyncFileSystem: AsynchronousFileSystem
     func locateResource(from path: String) async -> String?
     func loadResource(from path: String) async throws(GateEngineError) -> Data
     static var fileSystem: AsyncFileSystem { get }
     var fileSystem: AsyncFileSystem { get }
     #endif
-    #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     associatedtype SyncFileSystem: SynchronousFileSystem
     func synchronousLocateResource(from path: String) async -> String?
     func synchronousLoadResource(from path: String) async throws(GateEngineError) -> Data
@@ -46,13 +46,13 @@ extension PlatformProtocol {
 
 #if GATEENGINE_PLATFORM_HAS_FILESYSTEM
 extension PlatformProtocol {
-    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
+    #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
     @inlinable
     public var fileSystem: Self.AsyncFileSystem {
         return Self.fileSystem
     }
     #endif
-    #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     @inlinable
     public var synchronousFileSystem: Self.SyncFileSystem {
         return Self.synchronousFileSystem

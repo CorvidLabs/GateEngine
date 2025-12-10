@@ -345,25 +345,40 @@ extension WASIPlatform {
     }
 }
 
+extension WASIPlatform {
+    func setCursorStyle(_ style: Mouse.Style) {
+        // No-op on WASI/HTML5
+    }
+
+    func prefferedFrameRate() -> Int {
+        return 60
+    }
+
+    func minimumFrameRate() -> Int {
+        return 12
+    }
+}
+
 internal final class WASIUserActivationRenderingSystem: RenderingSystem {
     let text = Text(string: "Click to Start", pointSize: 64, style: .bold, color: .white)
     let banner = Sprite(
         texture: Texture(
             path: "GateEngine/Branding/Banner Logo Transparent.png",
-            sizeHint: Size2(1200, 244)
+            sizeHint: Size2i(1200, 244)
         ),
         bounds: Rect(size: Size2(1200, 244)),
         sampleFilter: .linear
     )
 
-    override func setup(game: Game) {
+    override func setup(context: ECSContext) {
         game.insertSystem(HIDSystem.self)
         game.windowManager.mainWindow?.clearColor = .stregasgateBackground
         banner.texture.cacheHint = CacheHint.whileReferenced
     }
 
     var somethingWasPressed = false
-    override func render(game: Game, window: Window, withTimePassed deltaTime: Float) {
+    override func render(context: ECSContext, into view: GameView, withTimePassed deltaTime: Float) {
+        guard let window = view as? Window else { return }
         var canvas = Canvas()
 
         canvas.insert(
@@ -405,7 +420,7 @@ internal final class WASIUserActivationRenderingSystem: RenderingSystem {
         }
     }
 
-    override func teardown(game: Game) {
+    override func teardown(context: ECSContext) {
         game.windowManager.mainWindow?.clearColor = .black
         game.addPlatformSystems()
         Task {

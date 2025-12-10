@@ -85,7 +85,7 @@ let package = Package(
                         #if os(macOS) || os(Linux)
                         dependencies.append(
                             .target(name: "OpenGL_GateEngine",
-                                    condition: .when(platforms: .any(except: .windows, .wasi)))
+                                    condition: .when(platforms: .any(except: .windows, .wasi, .android)))
                         )
                         #endif
                         
@@ -342,6 +342,8 @@ let package = Package(
                     path: "Dependencies/Direct3D12",
                     swiftSettings: .default(withCustomization: { settings in
                         settings.append(.define("Direct3D12ExcludeOriginalStyleAPI", .when(configuration: .release)))
+                        // Disable @inlinable access control checks for WinSDK imports
+                        settings.append(.unsafeFlags(["-Xfrontend", "-disable-access-control"]))
                     })),
             // XAudio2
             .target(name: "XAudio2",
