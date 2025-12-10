@@ -100,8 +100,9 @@ let package = Package(
                         
                         #if os(Linux)
                         dependencies.append(contentsOf: [
+                            // LinuxSupport uses Glibc which is not available on Android (uses Bionic)
                             .target(name: "LinuxSupport",
-                                    condition: .when(platforms: [.linux, .android])),
+                                    condition: .when(platforms: [.linux])),
                             //.target(name: "OpenALSoft",
                             //        condition: .when(platforms: [.linux, .android])),
                         ])
@@ -365,7 +366,9 @@ let package = Package(
         ])
         #endif
         
-        #if os(Linux) || os(Android)
+        #if os(Linux)
+        // Note: These targets are Linux-only (not Android) because they depend on
+        // Glibc and X11/OpenGL libraries not available on Android
         targets.append(contentsOf: [
             // LinuxSupport
             .target(name: "LinuxSupport",
@@ -380,7 +383,7 @@ let package = Package(
                     path: "Dependencies/LinuxSupport/LinuxExtensions"),
             .systemLibrary(name: "LinuxImports",
                            path: "Dependencies/LinuxSupport/LinuxImports"),
-            
+
             // OpenGL
             .systemLibrary(name: "OpenGL_Linux",
                            path: "Dependencies/OpenGL/OpenGL_Linux"),
