@@ -87,12 +87,12 @@ final class WebGL2RenderTarget: RenderTargetBackend {
             self.framebuffer = nil
             self.colorTexture = nil
             self.depthTexture = nil
-            self.size = Size2i(Int32(canvas.width), Int32(canvas.height))
+            self.size = Size2i(width: Int(canvas.width), height: Int(canvas.height))
         } else {
             self.framebuffer = context.createFramebuffer()
             self.colorTexture = context.createTexture()
             self.depthTexture = context.createTexture()
-            self.size = Size2i(2, 2)
+            self.size = Size2i(width: 2, height: 2)
 
             context.bindTexture(target: GL.TEXTURE_2D, texture: colorTexture)
             context.texImage2D(

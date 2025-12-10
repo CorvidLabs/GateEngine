@@ -12,7 +12,7 @@ import WebGL2
 import GameMath
 import Shaders
 
-public typealias GL = WebGL2RenderingContext
+typealias GL = WebGL2RenderingContext
 
 class WebGL2Renderer: Renderer {
     @inlinable

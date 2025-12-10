@@ -364,7 +364,7 @@ internal final class WASIUserActivationRenderingSystem: RenderingSystem {
     let banner = Sprite(
         texture: Texture(
             path: "GateEngine/Branding/Banner Logo Transparent.png",
-            sizeHint: Size2i(1200, 244)
+            sizeHint: Size2i(width: 1200, height: 244)
         ),
         bounds: Rect(size: Size2(1200, 244)),
         sampleFilter: .linear
