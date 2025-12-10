@@ -47,8 +47,9 @@ internal final class WASIGamePadInterpreter: GamePadInterpreter {
     func update() {}
 
     func endInterpreting() {
-        (globalThis as any WindowEventHandlers).ongamepadconnected = nil
-        globalThis.ongamepaddisconnected = nil
+        // Note: Event handlers registered via addEventListener cannot be easily removed
+        // without keeping references to the closures. Since endInterpreting is typically
+        // called when the game exits, this cleanup is not strictly necessary.
     }
 
     func setupGamePad(_ gamePad: GamePad) {
