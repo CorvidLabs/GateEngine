@@ -30,19 +30,19 @@ class WebGL2Geometry: GeometryBackend, SkinnedGeometryBackend {
         var buffers: ContiguousArray<WebGLBuffer> = []
         buffers.reserveCapacity(3)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let positions: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(lines.positions).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[0])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: positions, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let colors: AllowSharedBufferSource = .arrayBuffer(Float32Array(lines.colors).arrayBuffer)
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[1])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: colors, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let indicies: AllowSharedBufferSource = .arrayBuffer(Uint16Array(lines.indices).arrayBuffer)
         gl.bindBuffer(target: GL.ELEMENT_ARRAY_BUFFER, buffer: buffers[2])
         gl.bufferData(target: GL.ELEMENT_ARRAY_BUFFER, srcData: indicies, usage: GL.STATIC_DRAW)
@@ -67,19 +67,19 @@ class WebGL2Geometry: GeometryBackend, SkinnedGeometryBackend {
         var buffers: ContiguousArray<WebGLBuffer> = []
         buffers.reserveCapacity(3)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let positions: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(points.positions).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[0])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: positions, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let colors: AllowSharedBufferSource = .arrayBuffer(Float32Array(points.colors).arrayBuffer)
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[1])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: colors, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let indicies: AllowSharedBufferSource = .arrayBuffer(
             Uint16Array(points.indices).arrayBuffer
         )
@@ -110,47 +110,47 @@ class WebGL2Geometry: GeometryBackend, SkinnedGeometryBackend {
         var buffers: ContiguousArray<WebGLBuffer> = []
         buffers.reserveCapacity(7)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let positions: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.positions).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[0])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: positions, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let uvs1: AllowSharedBufferSource = .arrayBuffer(Float32Array(geometry.uvSet1).arrayBuffer)
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[1])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: uvs1, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let uvs2: AllowSharedBufferSource = .arrayBuffer(Float32Array(geometry.uvSet2).arrayBuffer)
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[2])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: uvs2, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let tangents: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.tangents).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[3])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: tangents, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let normals: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.normals).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[4])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: normals, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let colors: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.colors).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[5])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: colors, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let indicies: AllowSharedBufferSource = .arrayBuffer(
-            Uint16Array(geometry.indices).arrayBuffer
+            Uint16Array(geometry.indices.map { UInt16($0) }).arrayBuffer
         )
         gl.bindBuffer(target: GL.ELEMENT_ARRAY_BUFFER, buffer: buffers[6])
         gl.bufferData(target: GL.ELEMENT_ARRAY_BUFFER, srcData: indicies, usage: GL.STATIC_DRAW)
@@ -181,61 +181,61 @@ class WebGL2Geometry: GeometryBackend, SkinnedGeometryBackend {
         var buffers: ContiguousArray<WebGLBuffer> = []
         buffers.reserveCapacity(9)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let positions: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.positions).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[0])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: positions, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let uvs1: AllowSharedBufferSource = .arrayBuffer(Float32Array(geometry.uvSet1).arrayBuffer)
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[1])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: uvs1, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let uvs2: AllowSharedBufferSource = .arrayBuffer(Float32Array(geometry.uvSet2).arrayBuffer)
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[2])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: uvs2, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let tangents: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.tangents).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[3])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: tangents, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let normals: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.normals).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[4])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: normals, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let colors: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(geometry.colors).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[5])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: colors, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let jointIndicies: AllowSharedBufferSource = .arrayBuffer(
             Uint32Array(skin.jointIndices).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[6])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: jointIndicies, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let jointWeights: AllowSharedBufferSource = .arrayBuffer(
             Float32Array(skin.jointWeights).arrayBuffer
         )
         gl.bindBuffer(target: GL.ARRAY_BUFFER, buffer: buffers[7])
         gl.bufferData(target: GL.ARRAY_BUFFER, srcData: jointWeights, usage: GL.STATIC_DRAW)
 
-        buffers.append(gl.createBuffer()!)
+        buffers.append(gl.createBuffer())
         let indicies: AllowSharedBufferSource = .arrayBuffer(
-            Uint16Array(geometry.indices).arrayBuffer
+            Uint16Array(geometry.indices.map { UInt16($0) }).arrayBuffer
         )
         gl.bindBuffer(target: GL.ELEMENT_ARRAY_BUFFER, buffer: buffers[8])
         gl.bufferData(target: GL.ELEMENT_ARRAY_BUFFER, srcData: indicies, usage: GL.STATIC_DRAW)
