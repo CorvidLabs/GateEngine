@@ -8,7 +8,7 @@
 import Foundation
 import Collections
 import DOM
-import JavaScriptKit
+@preconcurrency import JavaScriptKit
 import JavaScriptEventLoop
 
 public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
