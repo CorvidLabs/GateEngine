@@ -77,7 +77,7 @@ class WebGL2Renderer: Renderer {
                 "Generated OpenGL ES Vertex Shader \(vsh):\n\n\(GLSLCodeGenerator.addingLineNumbers(sources.vertexSource))\n"
             )
             #endif
-            let _vsh = gl.createShader(type: WebGL2RenderingContext.VERTEX_SHADER)
+            let _vsh = gl.createShader(type: WebGL2RenderingContext.VERTEX_SHADER)!
             gl.shaderSource(shader: _vsh, source: sources.vertexSource)
             gl.compileShader(shader: _vsh)
             if let error = Self.context.getShaderInfoLog(shader: _vsh), error.isEmpty == false {
@@ -89,7 +89,7 @@ class WebGL2Renderer: Renderer {
                 "Generated OpenGL ES Fragment Shader \(fsh):\n\n\(GLSLCodeGenerator.addingLineNumbers(sources.fragmentSource))\n"
             )
             #endif
-            let _fsh = gl.createShader(type: WebGL2RenderingContext.FRAGMENT_SHADER)
+            let _fsh = gl.createShader(type: WebGL2RenderingContext.FRAGMENT_SHADER)!
             gl.shaderSource(shader: _fsh, source: sources.fragmentSource)
             gl.compileShader(shader: _fsh)
             #if GATEENGINE_DEBUG_RENDERING
@@ -98,7 +98,7 @@ class WebGL2Renderer: Renderer {
             }
             #endif
 
-            let program = gl.createProgram()
+            let program = gl.createProgram()!
             gl.attachShader(program: program, shader: _vsh)
             gl.attachShader(program: program, shader: _fsh)
             gl.linkProgram(program: program)

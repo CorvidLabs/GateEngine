@@ -183,14 +183,17 @@ final class WebGL2RenderTarget: RenderTargetBackend {
     }
 
     deinit {
+        // Use nonisolated(unsafe) to access MainActor-isolated context from deinit
+        // This is safe because WASI runs single-threaded
+        nonisolated(unsafe) let gl = WebGL2Renderer.context
         if let framebuffer {
-            WebGL2Renderer.context.deleteFramebuffer(framebuffer: framebuffer)
+            gl.deleteFramebuffer(framebuffer: framebuffer)
         }
         if let colorTexture {
-            WebGL2Renderer.context.deleteTexture(texture: colorTexture)
+            gl.deleteTexture(texture: colorTexture)
         }
         if let depthTexture {
-            WebGL2Renderer.context.deleteTexture(texture: depthTexture)
+            gl.deleteTexture(texture: depthTexture)
         }
     }
 }

@@ -262,7 +262,9 @@ class WebGL2Geometry: GeometryBackend, SkinnedGeometryBackend {
     #endif
 
     deinit {
-        let gl = WebGL2Renderer.context
+        // Use nonisolated(unsafe) to access MainActor-isolated context from deinit
+        // This is safe because WASI runs single-threaded
+        nonisolated(unsafe) let gl = WebGL2Renderer.context
         for buffer in buffers {
             gl.deleteBuffer(buffer: buffer)
         }
