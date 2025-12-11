@@ -106,11 +106,15 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return Data(arrayBuffer)
     }
 
-    // Marked nonisolated to avoid Sendable issues with JSPromise/JSValue
+    // Use nonisolated(unsafe) to bypass Sendable checks for JSPromise/JSValue
     // This is safe because WASI runs single-threaded
     nonisolated func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
         let jsFetch = JSObject.global.fetch.function!
-        return try await JSPromise(jsFetch(url, options).object!)!.value
+        let promise = JSPromise(jsFetch(url, options).object!)!
+        nonisolated(unsafe) let unsafePromise = promise
+        let result = try await unsafePromise.value
+        nonisolated(unsafe) let unsafeResult = result
+        return unsafeResult
     }
 
     func saveStatePath(forStateNamed name: String) throws -> String {
