@@ -98,7 +98,7 @@ class WebGL2Renderer: Renderer {
             }
             #endif
 
-            let program = gl.createProgram()!
+            let program = gl.createProgram()
             gl.attachShader(program: program, shader: _vsh)
             gl.attachShader(program: program, shader: _fsh)
             gl.linkProgram(program: program)
@@ -127,7 +127,7 @@ class WebGL2Renderer: Renderer {
         renderTarget: some _RenderTargetProtocol
     ) {
         let gl = WebGL2Renderer.context
-        let geometries = drawCommand.geometries.map({ $0 as! WebGL2Geometry })
+        guard let geometries = drawCommand.geometries?.map({ $0 as! WebGL2Geometry }) else { return }
 
         #if GATEENGINE_DEBUG_RENDERING
         for geometry in geometries {
@@ -213,6 +213,8 @@ extension WebGL2Renderer {
             gl.depthFunc(func: GL.LESS)
         case .lessEqual:
             gl.depthFunc(func: GL.LEQUAL)
+        case .equal:
+            gl.depthFunc(func: GL.EQUAL)
         case .never:
             gl.depthFunc(func: GL.NEVER)
         }
@@ -366,6 +368,9 @@ extension WebGL2Renderer {
                         gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MAG_FILTER, param: GLint(GL.LINEAR))
                     case .nearest:
                         gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MIN_FILTER, param: GLint(GL.NEAREST))
+                        gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MAG_FILTER, param: GLint(GL.NEAREST))
+                    case .minLinearMaxNearest:
+                        gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MIN_FILTER, param: GLint(GL.LINEAR))
                         gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MAG_FILTER, param: GLint(GL.NEAREST))
                     }
                     
@@ -560,7 +565,9 @@ extension WebGL2Renderer {
     var context: WebGL2RenderingContext {
         return Self.context
     }
-    static let context: WebGL2RenderingContext = {
+    // Marked nonisolated(unsafe) to allow access from deinit in WebGL2Geometry/WebGL2RenderTarget
+    // This is safe because WASI runs single-threaded
+    nonisolated(unsafe) static let context: WebGL2RenderingContext = {
         let element = globalThis.document.getElementById(elementId: "mainCanvas")!
         let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
         let options: [String: ConvertibleToJSValue] = [
