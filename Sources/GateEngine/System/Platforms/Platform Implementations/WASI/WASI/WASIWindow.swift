@@ -5,11 +5,11 @@
  * http://stregasgate.com
  */
 #if HTML5
+import Foundation
 import DOM
 import WebGL2
 import GameMath
 import JavaScriptKit
-import DOM
 
 final class WASIWindow: WindowBacking {
     unowned let window: Window
