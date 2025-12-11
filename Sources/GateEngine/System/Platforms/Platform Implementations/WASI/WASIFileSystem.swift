@@ -9,6 +9,7 @@ import Foundation
 import DOM
 import WebAPIBase
 import FileSystem
+import JavaScriptKit
 
 public struct WASIFileSystem: AsynchronousFileSystem {
     let supportsWebFileSystem: Bool = {
@@ -162,7 +163,7 @@ public struct WASIFileSystem: AsynchronousFileSystem {
                 window.localStorage[destinationPath] = value
                 window.localStorage.removeValue(forKey: originPath)
             } else {
-                throw GateEngineError.failedToLocate
+                throw GateEngineError.failedToLocate(resource: originPath, nil)
             }
         }
     }
@@ -221,7 +222,7 @@ public struct WASIFileSystem: AsynchronousFileSystem {
                 )
                 try await stream.close()
             }
-            throw GateEngineError.failedToLocate
+            throw GateEngineError.failedToLocate(resource: path, nil)
         } else {
             let window: DOM.Window = globalThis
             window.localStorage[url.path] = data.base64EncodedString()
@@ -242,17 +243,17 @@ public struct WASIFileSystem: AsynchronousFileSystem {
                 let buffer = try await file.arrayBuffer()
                 return Data(buffer)
             }
-            throw GateEngineError.failedToLocate
+            throw GateEngineError.failedToLocate(resource: path, nil)
         } else {
             let window: DOM.Window = globalThis
             if let base64 = window.localStorage[url.path] {
                 if let data = Data(base64Encoded: base64) {
                     return data
                 } else {
-                    throw GateEngineError.failedToLoad("Data is corrupted and cannot be read.")
+                    throw GateEngineError.failedToLoad(resource: path, "Data is corrupted and cannot be read.")
                 }
             } else {
-                throw GateEngineError.failedToLocate
+                throw GateEngineError.failedToLocate(resource: path, nil)
             }
         }
     }

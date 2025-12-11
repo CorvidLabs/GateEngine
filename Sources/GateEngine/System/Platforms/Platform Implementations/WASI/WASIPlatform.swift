@@ -62,6 +62,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return files
     }
 
+    @MainActor
     public func locateResource(from path: String) async -> String? {
         if let existing = pathCache[path] {
             return existing
@@ -84,6 +85,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return nil
     }
 
+    @MainActor
     func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
         if let resolvedPath = await locateResource(from: path) {
             do {
@@ -101,11 +103,13 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         throw GateEngineError.failedToLocate(resource: path, nil)
     }
 
+    @MainActor
     public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         let arrayBuffer: ArrayBuffer = try await loadResourceAsArrayBuffer(from: path)
         return Data(arrayBuffer)
     }
 
+    @MainActor
     func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
         let jsFetch = JSObject.global.fetch.function!
         return try await JSPromise(jsFetch(url, options).object!)!.value
@@ -297,19 +301,20 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
 
 extension WASIPlatform {
     @MainActor func setupDocument() {
-        globalThis.onbeforeunload = { event -> String? in
+        globalThis.jsObject.onbeforeunload = .object(JSClosure { event -> JSValue in
             Game.shared.willTerminate()
-            return nil
-        }
+            return .null
+        }.jsValue.object!)
         let document: Document = globalThis.document
 
         if let ele = document.head?.children.namedItem(name: "viewport") {
-            if let meta = HTMLMetaElement(from: ele) {
+            if let meta = HTMLMetaElement(from: ele.jsValue) {
                 meta.content += ", viewport-fit=cover"
             }
         }
 
-        if let style = HTMLStyleElement(from: document.createElement(localName: "style")) {
+        let createdElement = document.createElement(localName: "style")
+        if let style = HTMLStyleElement(from: createdElement.jsValue) {
             style.innerText = """
                 html, body, canvas {
                     margin: 0 !important; padding: 0 !important; height: 100%; overflow: hidden;
