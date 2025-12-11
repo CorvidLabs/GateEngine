@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the type of heap. When resident, heaps reside in a particular physical memory pool with certain CPU cache properties.
-public enum D3DHeapType {
+public enum D3DHeapType: Sendable {
     public typealias RawValue = WinSDK.D3D12_HEAP_TYPE
     /**	Specifies the default heap.
     This heap type experiences the most bandwidth for the GPU, but cannot provide CPU access.

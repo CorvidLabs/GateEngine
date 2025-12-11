@@ -9,7 +9,7 @@ public import WinSDK
 
 
 /// Flags indicating the method the raster uses to create an image on a surface.
-public enum DGIModeScaling {
+public enum DGIModeScaling: Sendable {
     public typealias RawValue = WinSDK.DXGI_MODE_SCALING 
     
     /// Unspecified scaling.

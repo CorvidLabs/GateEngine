@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies texture layout options.
-public enum D3DTextureLayout {
+public enum D3DTextureLayout: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEXTURE_LAYOUT
 
     /**

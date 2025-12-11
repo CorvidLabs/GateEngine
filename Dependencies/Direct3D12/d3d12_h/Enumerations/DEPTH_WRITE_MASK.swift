@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies the portion of a depth-stencil buffer for writing depth data.
-public enum D3DDepthWriteMask {
+public enum D3DDepthWriteMask: Sendable {
     public typealias RawValue = WinSDK.D3D12_DEPTH_WRITE_MASK
     ///	Turn off writes to the depth-stencil buffer.
     case zero

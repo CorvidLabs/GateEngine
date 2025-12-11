@@ -9,7 +9,7 @@ public import WinSDK
 
 
 /// Specifies a shader model.
-public enum DGIScaling {
+public enum DGIScaling: Sendable {
     public typealias RawValue = WinSDK.DXGI_SCALING 
     
     /// Directs DXGI to make the back-buffer contents appear without any scaling when the presentation target size is not equal to the back-buffer size. The top edges of the back buffer and presentation target are aligned together. If the WS_EX_LAYOUTRTL style is associated with the HWND handle to the target output window, the right edges of the back buffer and presentation target are aligned together; otherwise, the left edges are aligned together. All target area outside the back buffer is filled with window background color.

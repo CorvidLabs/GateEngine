@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies what type of texture copy is to take place.
-public enum D3DTextureCopyType {
+public enum D3DTextureCopyType: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEXTURE_COPY_TYPE
 
     ///	Indicates a subresource, identified by an index, is to be copied.

@@ -7,7 +7,7 @@
 
 public import WinSDK
 
-public enum D3DMessageSeverity {
+public enum D3DMessageSeverity: Sendable {
     public typealias RawValue = WinSDK.D3D12_MESSAGE_SEVERITY
 
     case corruption

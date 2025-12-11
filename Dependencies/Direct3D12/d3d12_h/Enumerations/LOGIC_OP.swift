@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Defines constants that specify logical operations to configure for a render target.
-public enum D3DLogicOperation {
+public enum D3DLogicOperation: Sendable {
     public typealias RawValue = WinSDK.D3D12_LOGIC_OP
 
     ///	Clears the render target (0).	

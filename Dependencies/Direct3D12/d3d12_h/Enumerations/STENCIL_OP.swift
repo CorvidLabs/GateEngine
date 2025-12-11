@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies the stencil operations that can be performed during depth-stencil testing.
-public enum D3DStencilOperation {
+public enum D3DStencilOperation: Sendable {
     public typealias RawValue = WinSDK.D3D12_STENCIL_OP
     ///	Keep the existing stencil data.
     case keep

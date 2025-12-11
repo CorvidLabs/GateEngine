@@ -9,7 +9,7 @@ public import WinSDK
 
 
 /// Options for handling pixels in a display surface after calling IDXGISwapChain1::Present1.
-public enum DGISwapEffect {
+public enum DGISwapEffect: Sendable {
     public typealias RawValue = WinSDK.DXGI_SWAP_EFFECT 
     
     /// Use this flag to specify the flip presentation model and to specify that DXGI persist the contents of the back buffer after you call IDXGISwapChain1::Present1. This flag cannot be used with multisampling.

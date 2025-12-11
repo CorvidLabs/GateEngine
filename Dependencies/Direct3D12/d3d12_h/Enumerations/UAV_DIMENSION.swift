@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies unordered-access view options.
-public enum D3DUnorderedAccessViewDimension {
+public enum D3DUnorderedAccessViewDimension: Sendable {
     public typealias RawValue = WinSDK.D3D12_UAV_DIMENSION
 
     ///	The view type is unknown.

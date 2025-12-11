@@ -44,7 +44,7 @@ public struct D3DShaderComponentMap {
 }
 
 /// Specifies how memory gets routed by a shader resource view (SRV).
-public enum D3DShaderComponentMapping {
+public enum D3DShaderComponentMapping: Sendable {
     public typealias RawValue = WinSDK.D3D12_SHADER_COMPONENT_MAPPING
 
     ///	Indicates return component 0 (red).

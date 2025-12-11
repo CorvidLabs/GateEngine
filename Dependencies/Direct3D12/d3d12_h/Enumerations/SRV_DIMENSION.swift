@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies the type of resource that will be viewed as a shader resource.
-public enum D3DShaderResourceViewDimension {
+public enum D3DShaderResourceViewDimension: Sendable {
     public typealias RawValue = WinSDK.D3D12_SRV_DIMENSION
 
     ///	The type is unknown.

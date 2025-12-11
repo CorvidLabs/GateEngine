@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies a shader model.
-public enum D3DFeatureLevel {
+public enum D3DFeatureLevel: Sendable {
     public typealias RawValue = WinSDK.D3D_FEATURE_LEVEL
     
     case v1Core

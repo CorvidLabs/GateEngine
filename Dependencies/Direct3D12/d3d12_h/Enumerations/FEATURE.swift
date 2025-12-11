@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Defines constants that specify a Direct3D 12 feature or feature set to query about. When you want to query for the level to which an adapter supports a feature, pass one of these values to ID3D12Device::CheckFeatureSupport.
-public enum D3DFeature {
+public enum D3DFeature: Sendable {
     public typealias RawValue = WinSDK.D3D12_FEATURE
     ///	Indicates a query for the level of support for basic Direct3D 12 feature options. The corresponding data structure for this value is D3D12_FEATURE_DATA_D3D12_OPTIONS.
     case options

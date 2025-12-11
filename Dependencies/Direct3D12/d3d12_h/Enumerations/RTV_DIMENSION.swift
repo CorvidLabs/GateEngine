@@ -8,7 +8,7 @@
 public import WinSDK
 
 ///Identifies the type of resource to view as a render target.
-public enum D3DRenderTargetViewDiemension {
+public enum D3DRenderTargetViewDiemension: Sendable {
     public typealias RawValue = WinSDK.D3D12_RTV_DIMENSION
 
     ///	Do not use this value, as it will cause ID3D12Device::CreateRenderTargetView to fail.

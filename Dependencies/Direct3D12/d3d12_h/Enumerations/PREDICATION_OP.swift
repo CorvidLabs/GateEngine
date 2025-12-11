@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the predication operation to apply.
-public enum D3DPredictionOperation {
+public enum D3DPredictionOperation: Sendable {
     public typealias RawValue = WinSDK.D3D12_PREDICATION_OP
     ///	Enables predication if all 64-bits are zero.
     case equalZero

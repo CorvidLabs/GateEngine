@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies a technique for resolving texture coordinates that are outside of the boundaries of a texture.
-public enum D3DTextureAddressMode {
+public enum D3DTextureAddressMode: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEXTURE_ADDRESS_MODE
     
     ///	Tile the texture at every (u,v) integer junction.

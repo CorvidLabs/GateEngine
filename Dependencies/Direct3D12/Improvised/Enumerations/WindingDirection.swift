@@ -7,7 +7,7 @@
 
 public import WinSDK
 
-public enum D3DWindingDirection {
+public enum D3DWindingDirection: Sendable {
     case clockwise
     case counterClockwise
 }

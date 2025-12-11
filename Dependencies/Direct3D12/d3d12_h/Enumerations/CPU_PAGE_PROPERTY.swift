@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the CPU-page properties for the heap.
-public enum D3DCPUPageProperty {
+public enum D3DCPUPageProperty: Sendable {
     public typealias RawValue = WinSDK.D3D12_CPU_PAGE_PROPERTY
     ///	The CPU-page property is unknown.
     case unknown

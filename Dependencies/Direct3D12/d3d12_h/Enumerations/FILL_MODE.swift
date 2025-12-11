@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the fill mode to use when rendering triangles.
-public enum D3DFillMode {
+public enum D3DFillMode: Sendable {
     public typealias RawValue = WinSDK.D3D12_FILL_MODE
 
     ///	Draw lines connecting the vertices. Adjacent vertices are not drawn.

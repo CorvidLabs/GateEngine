@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// When using triangle strip primitive topology, vertex positions are interpreted as vertices of a continuous triangle “strip”. There is a special index value that represents the desire to have a discontinuity in the strip, the cut index value. This enum lists the supported cut values.
-public enum D3DIndexBufferStripCutValue {
+public enum D3DIndexBufferStripCutValue: Sendable {
     public typealias RawValue = WinSDK.D3D12_INDEX_BUFFER_STRIP_CUT_VALUE
 
     ///	Indicates that there is no cut value.

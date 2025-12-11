@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies blend factors, which modulate values for the pixel shader and render target.
-public enum D3DBlendFactor {
+public enum D3DBlendFactor: Sendable {
     public typealias RawValue = WinSDK.D3D12_BLEND
 
     ///	The blend factor is (0, 0, 0, 0). No pre-blend operation.

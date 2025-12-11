@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the type of a command list.
-public enum D3DCommandListType {
+public enum D3DCommandListType: Sendable {
     ///	Specifies a command buffer that the GPU can execute. A direct command list doesn't inherit any GPU state.
     case direct
     ///	Specifies a command buffer that can be executed only directly via a direct command list. A bundle command list inherits all GPU state (except for the currently set pipeline state object and primitive topology).

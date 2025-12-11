@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the type of the indirect parameter.
-public enum D3DIndirectArgumentType {
+public enum D3DIndirectArgumentType: Sendable {
     public typealias RawValue = WinSDK.D3D12_INDIRECT_ARGUMENT_TYPE
 
     ///	Indicates the type is a Draw call.

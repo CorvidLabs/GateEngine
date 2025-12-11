@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies the memory pool for the heap.
-public enum D3DMemoryPool {
+public enum D3DMemoryPool: Sendable {
     public typealias RawValue = WinSDK.D3D12_MEMORY_POOL
 
     ///	The memory pool is unknown.

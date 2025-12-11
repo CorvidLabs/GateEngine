@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies whether conservative rasterization is on or off.
-public enum D3DConservativeRasterizationMode {
+public enum D3DConservativeRasterizationMode: Sendable {
     public typealias RawValue = WinSDK.D3D12_CONSERVATIVE_RASTERIZATION_MODE
 
     ///	Conservative rasterization is off.
