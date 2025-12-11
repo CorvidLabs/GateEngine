@@ -62,8 +62,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return files
     }
 
-    @MainActor
-    public func locateResource(from path: String) async -> String? {
+    nonisolated public func locateResource(from path: String) async -> String? {
         if let existing = pathCache[path] {
             return existing
         }
@@ -85,8 +84,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         return nil
     }
 
-    @MainActor
-    func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
+    nonisolated func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 if let object = try await fetch(resolvedPath).object {
@@ -103,14 +101,14 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @un
         throw GateEngineError.failedToLocate(resource: path, nil)
     }
 
-    @MainActor
-    public func loadResource(from path: String) async throws(GateEngineError) -> Data {
+    nonisolated public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         let arrayBuffer: ArrayBuffer = try await loadResourceAsArrayBuffer(from: path)
         return Data(arrayBuffer)
     }
 
-    @MainActor
-    func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
+    // Marked nonisolated to avoid Sendable issues with JSPromise/JSValue
+    // This is safe because WASI runs single-threaded
+    nonisolated func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
         let jsFetch = JSObject.global.fetch.function!
         return try await JSPromise(jsFetch(url, options).object!)!.value
     }
