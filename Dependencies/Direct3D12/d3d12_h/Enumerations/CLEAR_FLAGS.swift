@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies what to clear from the depth stencil view.
 public struct D3DClearFlags: OptionSet {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public struct D3DTexture3DUnorderedAccessView {
     public typealias RawValue = WinSDK.D3D12_TEX3D_UAV

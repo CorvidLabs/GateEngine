@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a tiled subresource volume.
 public struct D3DSubresourceTiling {

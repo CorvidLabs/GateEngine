@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the tile structure of a tiled resource with mipmaps.
 public struct D3DPackedMipInfo {

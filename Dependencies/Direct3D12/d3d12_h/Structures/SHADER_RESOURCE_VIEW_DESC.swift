@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a shader-resource view (SRV).
 public struct D3DShaderResourceViewDescription {

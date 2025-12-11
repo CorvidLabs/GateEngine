@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresources from a resource that are accessible by using an unordered-access view.
 public struct D3DUnorderedAccessViewDescription {

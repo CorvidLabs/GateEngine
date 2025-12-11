@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Defines priority levels for a command queue.
 public enum D3DCommandQueuePriority {

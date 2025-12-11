@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes parameters needed to allocate resources.
 public struct D3DResourceAllocationInfo {

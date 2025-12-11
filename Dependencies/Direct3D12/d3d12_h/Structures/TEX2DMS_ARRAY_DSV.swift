@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresources from an array of multi sampled 2D textures for a depth-stencil view.
 public struct D3DTexture2DMultiSampledArrayDepthStencilView {

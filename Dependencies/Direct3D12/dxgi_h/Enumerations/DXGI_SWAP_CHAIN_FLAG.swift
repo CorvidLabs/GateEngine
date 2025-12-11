@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public struct DGISwapChainFlags: OptionSet {
     public typealias RawType = WinSDK.DXGI_SWAP_CHAIN_FLAG

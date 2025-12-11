@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes multi-sampling parameters for a resource.
 public struct DGISampleDescription {

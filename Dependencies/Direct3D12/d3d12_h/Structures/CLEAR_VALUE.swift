@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a value used to optimize clear operations for a particular resource.
 public struct D3DClearValue {

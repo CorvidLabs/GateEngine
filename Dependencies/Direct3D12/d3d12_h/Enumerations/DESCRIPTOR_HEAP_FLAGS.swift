@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies options for a heap.
 public struct D3DDescriptorHeapFlags: OptionSet {

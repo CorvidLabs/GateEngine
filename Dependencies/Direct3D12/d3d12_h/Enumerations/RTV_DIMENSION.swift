@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 ///Identifies the type of resource to view as a render target.
 public enum D3DRenderTargetViewDiemension {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresource from a 2D texture that is accessible to a depth-stencil view.
 public struct D3DTexture2DDepthStencilView {

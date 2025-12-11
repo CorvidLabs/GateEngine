@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Identifies the type of resource being used.
 public enum D3DResourceDimension {

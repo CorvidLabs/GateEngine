@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies options for root signature layout.
 public struct D3DRootSignatureFlags: OptionSet {

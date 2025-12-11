@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public struct D3DTexture1DArrayShaderResourceView {
     public typealias RawValue = WinSDK.D3D12_TEX1D_ARRAY_SRV

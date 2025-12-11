@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the blend state for a render target.
 public struct D3DRenderTargetBlendDescription {

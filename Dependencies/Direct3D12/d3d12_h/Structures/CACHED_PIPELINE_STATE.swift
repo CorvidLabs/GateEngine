@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Stores a pipeline state.
 public struct D3DCachedPipelineState {

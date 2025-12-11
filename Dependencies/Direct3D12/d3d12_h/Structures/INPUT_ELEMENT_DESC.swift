@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a single element for the input-assembler stage of the graphics pipeline.
 public struct D3DInputElementDescription {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public struct DGIPresentParameters {
     public typealias RawValue = WinSDK.DXGI_PRESENT_PARAMETERS

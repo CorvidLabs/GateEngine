@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes details for the discard-resource operation.
 public struct D3DDiscardRegion {

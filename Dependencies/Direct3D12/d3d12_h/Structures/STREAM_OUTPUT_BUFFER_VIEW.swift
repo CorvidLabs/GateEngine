@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a stream output buffer.
 public struct D3DStreamOutputBufferView {

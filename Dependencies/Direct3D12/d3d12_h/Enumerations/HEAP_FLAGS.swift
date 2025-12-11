@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies heap options, such as whether the heap can contain textures, and whether resources are shared across adapters.
 public struct D3DHeapFlags: OptionSet {

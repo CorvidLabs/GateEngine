@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies a type of descriptor heap.
 public enum D3DDescriptorHeapType {

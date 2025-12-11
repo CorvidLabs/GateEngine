@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a vertex element in a vertex buffer in an output slot.
 public struct D3DStreamOutputDeclarationEntry {

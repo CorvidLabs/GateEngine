@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public struct D3DConstantBufferViewDescription {
     public typealias RawValue = WinSDK.D3D12_CONSTANT_BUFFER_VIEW_DESC

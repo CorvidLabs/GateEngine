@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Identifies whether conservative rasterization is on or off.
 public enum D3DConservativeRasterizationMode {

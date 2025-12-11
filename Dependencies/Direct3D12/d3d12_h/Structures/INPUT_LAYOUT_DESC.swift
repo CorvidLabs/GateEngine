@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the input-buffer data for the input-assembler stage.
 public struct D3DInputLayoutDescription {

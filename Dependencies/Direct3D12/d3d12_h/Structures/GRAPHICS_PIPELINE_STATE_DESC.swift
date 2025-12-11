@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a graphics pipeline state object.
 public struct D3DGraphicsPipelineStateDescription {

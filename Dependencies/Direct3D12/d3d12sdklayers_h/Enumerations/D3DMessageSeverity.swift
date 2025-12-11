@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public enum D3DMessageSeverity {
     public typealias RawValue = WinSDK.D3D12_MESSAGE_SEVERITY

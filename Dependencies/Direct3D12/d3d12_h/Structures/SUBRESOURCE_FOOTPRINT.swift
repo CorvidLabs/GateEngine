@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the format, width, height, depth, and row-pitch of the subresource into the parent resource.
 public struct D3DSubresourceFootprint {

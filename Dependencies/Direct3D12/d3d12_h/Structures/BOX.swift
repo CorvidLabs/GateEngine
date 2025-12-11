@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public struct D3DBox {
     public typealias RawValue = WinSDK.D3D12_BOX

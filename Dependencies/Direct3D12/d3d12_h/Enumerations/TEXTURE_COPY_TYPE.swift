@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies what type of texture copy is to take place.
 public enum D3DTextureCopyType {

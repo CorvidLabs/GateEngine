@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies filtering options during texture sampling.
 public struct D3DFilter: OptionSet {
