@@ -8,8 +8,8 @@
 import DOM
 import WebAPIBase
 import JavaScriptKit
-import typealias WebGL1.GLsizei
-import class WebGL1.WebGLBuffer
+@preconcurrency import typealias WebGL1.GLsizei
+@preconcurrency import class WebGL1.WebGLBuffer
 import WebGL2
 
 class WebGL2Geometry: GeometryBackend, SkinnedGeometryBackend {

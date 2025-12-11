@@ -8,7 +8,7 @@
 import JavaScriptKit
 import WebAPIBase
 import DOM
-import WebGL1
+@preconcurrency import WebGL1
 import WebGL2
 
 class WebGL2Texture: TextureBackend {

@@ -6,7 +6,7 @@
  */
 #if HTML5
 import DOM
-import WebGL1
+@preconcurrency import WebGL1
 import WebGL2
 import GameMath
 
