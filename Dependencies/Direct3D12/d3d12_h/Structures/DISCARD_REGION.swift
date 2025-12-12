@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes details for the discard-resource operation.
-public struct D3DDiscardRegion {
+public struct D3DDiscardRegion: Sendable {
     public typealias RawValue = WinSDK.D3D12_DISCARD_REGION
     @usableFromInline
     internal var rawValue: RawValue

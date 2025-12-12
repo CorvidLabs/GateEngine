@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the subresource from a 2D texture to use in a render-target view.
-public struct D3DTexture2DRenderTargetView {
+public struct D3DTexture2DRenderTargetView: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2D_RTV
     @usableFromInline
     internal var rawValue: RawValue

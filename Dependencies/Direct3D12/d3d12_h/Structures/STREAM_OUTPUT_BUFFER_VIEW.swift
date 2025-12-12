@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a stream output buffer.
-public struct D3DStreamOutputBufferView {
+public struct D3DStreamOutputBufferView: Sendable {
     public typealias RawValue = WinSDK.D3D12_STREAM_OUTPUT_BUFFER_VIEW
     @usableFromInline
     internal var rawValue: RawValue

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies filtering options during texture sampling.
-public struct D3DFilter: OptionSet {
+public struct D3DFilter: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_FILTER
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_FILTER.RawValue

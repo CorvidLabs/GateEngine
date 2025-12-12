@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the purpose of a query heap. A query heap contains an array of individual queries.
-public struct D3DQueryHeapDescription {
+public struct D3DQueryHeapDescription: Sendable {
     public typealias RawValue = WinSDK.D3D12_QUERY_HEAP_DESC
     @usableFromInline
     internal var rawValue: RawValue

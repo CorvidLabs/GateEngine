@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies what to clear from the depth stencil view.
-public struct D3DClearFlags: OptionSet {
+public struct D3DClearFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_CLEAR_FLAGS
     public typealias RawValue = WinSDK.D3D12_CLEAR_FLAGS.RawValue
     public let rawValue: RawValue

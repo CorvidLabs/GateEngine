@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the elements in a buffer to use in a unordered-access view.
-public struct D3DUnorderedAccessViewBuffer {
+public struct D3DUnorderedAccessViewBuffer: Sendable {
     public typealias RawValue = WinSDK.D3D12_BUFFER_UAV
     @usableFromInline
     internal var rawValue: RawValue

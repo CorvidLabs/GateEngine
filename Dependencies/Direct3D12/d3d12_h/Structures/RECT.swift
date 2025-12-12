@@ -9,7 +9,7 @@ public import WinSDK
 
 public typealias D3DRect = MSRect
 
-public struct MSPosition: Equatable {
+public struct MSPosition: Equatable, Sendable {
     public var x: Int
     public var y: Int
 
@@ -29,7 +29,7 @@ public struct MSPosition: Equatable {
     }
 }
 
-public struct MSSize: Equatable {
+public struct MSSize: Equatable, Sendable {
     public var width: Int
     public var height: Int
 
@@ -49,7 +49,7 @@ public struct MSSize: Equatable {
     }
 }
 
-public struct MSRect: Equatable {
+public struct MSRect: Equatable, Sendable {
     public var origin: MSPosition
     public var size: MSSize
 

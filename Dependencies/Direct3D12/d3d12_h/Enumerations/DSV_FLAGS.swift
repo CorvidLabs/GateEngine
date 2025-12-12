@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies depth-stencil view options.
-public struct D3DDepthStencilViewFlags: OptionSet {
+public struct D3DDepthStencilViewFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_DSV_FLAGS
     public typealias RawValue = WinSDK.D3D12_DSV_FLAGS.RawValue
     public let rawValue: RawValue

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies options for a heap.
-public struct D3DDescriptorHeapFlags: OptionSet {
+public struct D3DDescriptorHeapFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_DESCRIPTOR_HEAP_FLAGS
     public var rawType: RawType {RawType(rawValue: rawValue)}
     public typealias RawValue = WinSDK.D3D12_DESCRIPTOR_HEAP_FLAGS.RawValue

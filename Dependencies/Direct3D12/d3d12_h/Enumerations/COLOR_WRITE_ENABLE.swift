@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies which components of each pixel of a render target are writable during blending.
-public struct D3DColorWriteEnable: OptionSet {
+public struct D3DColorWriteEnable: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_COLOR_WRITE_ENABLE
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_COLOR_WRITE_ENABLE.RawValue

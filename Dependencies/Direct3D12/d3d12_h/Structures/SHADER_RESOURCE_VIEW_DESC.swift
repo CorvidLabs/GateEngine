@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a shader-resource view (SRV).
-public struct D3DShaderResourceViewDescription {
+public struct D3DShaderResourceViewDescription: Sendable {
     public typealias RawValue = WinSDK.D3D12_SHADER_RESOURCE_VIEW_DESC
     @usableFromInline
     internal var rawValue: RawValue

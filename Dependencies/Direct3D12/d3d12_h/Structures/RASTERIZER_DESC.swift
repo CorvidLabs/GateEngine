@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes rasterizer state.
-public struct D3DRasterizerDescription {
+public struct D3DRasterizerDescription: Sendable {
     public typealias RawValue = WinSDK.D3D12_RASTERIZER_DESC
     @usableFromInline
     internal var rawValue: RawValue

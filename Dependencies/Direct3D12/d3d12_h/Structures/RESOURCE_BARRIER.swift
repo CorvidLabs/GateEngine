@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a resource barrier (transition in resource use).
-public struct D3DResourceBarrier {
+public struct D3DResourceBarrier: Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_BARRIER
     @usableFromInline
     internal var rawValue: RawValue

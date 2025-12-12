@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Specifies options for working with resources.
-public struct D3DResourceFlags: OptionSet {
+public struct D3DResourceFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_RESOURCE_FLAGS
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_RESOURCE_FLAGS.RawValue

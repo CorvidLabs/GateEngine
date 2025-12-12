@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes an indirect argument (an indirect parameter), for use with a command signature.
-public struct D3DIndirectArgumentDescription {
+public struct D3DIndirectArgumentDescription: Sendable {
     public typealias RawValue = WinSDK.D3D12_INDIRECT_ARGUMENT_DESC
     @usableFromInline
     internal var rawValue: RawValue

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the root signature 1.0 layout of a descriptor table as a collection of descriptor ranges that are all relative to a single base descriptor handle.
-public struct D3DRootDescriptorTable {
+public struct D3DRootDescriptorTable: Sendable {
     public typealias RawValue = WinSDK.D3D12_ROOT_DESCRIPTOR_TABLE
 
     /// An array of D3D12_DESCRIPTOR_RANGE structures that describe the descriptor ranges.

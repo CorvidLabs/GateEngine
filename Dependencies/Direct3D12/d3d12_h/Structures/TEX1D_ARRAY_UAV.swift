@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes an array of unordered-access 1D texture resources.
-public struct D3DTexture1DArrayUnorderedAccessView {
+public struct D3DTexture1DArrayUnorderedAccessView: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX1D_ARRAY_UAV
     @usableFromInline
     internal var rawValue: RawValue

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the footprint of a placed subresource, including the offset and the D3D12_SUBRESOURCE_FOOTPRINT.
-public struct D3DPlacedSubresourceFootprint {
+public struct D3DPlacedSubresourceFootprint: Sendable {
     public typealias RawValue = WinSDK.D3D12_PLACED_SUBRESOURCE_FOOTPRINT
     @usableFromInline
     internal var rawValue: RawValue

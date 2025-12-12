@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a tiled subresource volume.
-public struct D3DSubresourceTiling {
+public struct D3DSubresourceTiling: Sendable {
     public typealias RawValue = WinSDK.D3D12_SUBRESOURCE_TILING
     @usableFromInline
     internal var rawValue: RawValue

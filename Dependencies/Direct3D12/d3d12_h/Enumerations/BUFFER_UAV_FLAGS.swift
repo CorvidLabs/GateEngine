@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies unordered-access view options for a buffer resource.
-public struct D3DBufferUnorderedAccessViewFlags: OptionSet {
+public struct D3DBufferUnorderedAccessViewFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_BUFFER_UAV_FLAGS
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_BUFFER_UAV_FLAGS.RawValue

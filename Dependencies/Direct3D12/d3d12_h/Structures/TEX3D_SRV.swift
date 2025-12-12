@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the subresources from a 3D texture to use in a shader-resource view.
-public struct D3DTexture3DShaderResourceView {
+public struct D3DTexture3DShaderResourceView: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX3D_SRV
     @usableFromInline
     internal var rawValue: RawValue

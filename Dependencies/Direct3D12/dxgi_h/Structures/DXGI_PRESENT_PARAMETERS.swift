@@ -7,7 +7,7 @@
 
 public import WinSDK
 
-public struct DGIPresentParameters {
+public struct DGIPresentParameters: Sendable {
     public typealias RawValue = WinSDK.DXGI_PRESENT_PARAMETERS
     @usableFromInline
     internal var rawValue: RawValue

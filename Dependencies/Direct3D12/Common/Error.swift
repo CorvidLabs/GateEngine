@@ -15,7 +15,7 @@ extension Error {
     }
 }
 
-public struct Error: Swift.Error {
+public struct Error: Swift.Error, Sendable {
     @usableFromInline
     let kind: Kind
     

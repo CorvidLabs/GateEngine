@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the arguments (parameters) of a command signature.
-public struct D3DCommandSignatureDescription {
+public struct D3DCommandSignatureDescription: Sendable {
     public typealias RawValue = WinSDK.D3D12_COMMAND_SIGNATURE_DESC
     @usableFromInline
     internal var rawValue: RawValue

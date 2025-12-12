@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Stores a pipeline state.
-public struct D3DCachedPipelineState {
+public struct D3DCachedPipelineState: Sendable {
     public typealias RawValue = WinSDK.D3D12_CACHED_PIPELINE_STATE
     @usableFromInline
     internal var rawValue: RawValue

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes heap properties.
-public struct D3DHeapProperties {
+public struct D3DHeapProperties: Sendable {
     public typealias RawValue = WinSDK.D3D12_HEAP_PROPERTIES
     @usableFromInline
     internal var rawValue: RawValue

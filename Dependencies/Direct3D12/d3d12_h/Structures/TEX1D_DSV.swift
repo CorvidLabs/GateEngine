@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the subresource from a 1D texture that is accessible to a depth-stencil view.
-public struct D3DTexture1DDepthStencilView {
+public struct D3DTexture1DDepthStencilView: Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX1D_DSV
     @usableFromInline
     internal var rawValue: RawValue

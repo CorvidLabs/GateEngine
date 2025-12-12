@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a single element for the input-assembler stage of the graphics pipeline.
-public struct D3DInputElementDescription {
+public struct D3DInputElementDescription: Sendable {
     public typealias RawValue = WinSDK.D3D12_INPUT_ELEMENT_DESC
 
     /// The HLSL semantic associated with this element in a shader input-signature.

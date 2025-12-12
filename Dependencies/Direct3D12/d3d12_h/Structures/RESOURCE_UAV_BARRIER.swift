@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Represents a resource in which all UAV accesses must complete before any future UAV accesses can begin.
-public struct D3DResourceUnorderedAccessViewBarrier {
+public struct D3DResourceUnorderedAccessViewBarrier: Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_UAV_BARRIER
     @usableFromInline
     internal var rawValue: RawValue

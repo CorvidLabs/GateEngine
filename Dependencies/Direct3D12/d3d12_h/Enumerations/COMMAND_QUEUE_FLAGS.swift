@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Identifies unordered-access view options for a buffer resource.
-public struct D3DCommandQueueFlags: OptionSet {
+public struct D3DCommandQueueFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_COMMAND_QUEUE_FLAGS
     public typealias RawValue = WinSDK.D3D12_COMMAND_QUEUE_FLAGS.RawValue
     public let rawValue: RawValue
