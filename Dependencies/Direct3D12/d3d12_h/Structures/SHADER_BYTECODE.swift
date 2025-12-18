@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes shader data.
-public struct D3DShaderBytecode: Sendable {
+public struct D3DShaderBytecode: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_SHADER_BYTECODE
 
     /// A pointer to a memory block that contains the shader data.

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the index buffer to view.
-public struct D3DIndexBufferView: Sendable {
+public struct D3DIndexBufferView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_INDEX_BUFFER_VIEW
     @usableFromInline
     internal var rawValue: RawValue

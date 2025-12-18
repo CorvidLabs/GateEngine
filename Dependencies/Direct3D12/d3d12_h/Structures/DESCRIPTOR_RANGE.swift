@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a descriptor range.
-public struct D3DDescriptorRange: Sendable {
+public struct D3DDescriptorRange: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_DESCRIPTOR_RANGE
 
     /// A D3D12_DESCRIPTOR_RANGE_TYPE-typed value that specifies the type of descriptor range.

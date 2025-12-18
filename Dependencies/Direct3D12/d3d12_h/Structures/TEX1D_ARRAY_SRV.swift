@@ -7,7 +7,7 @@
 
 public import WinSDK
 
-public struct D3DTexture1DArrayShaderResourceView: Sendable {
+public struct D3DTexture1DArrayShaderResourceView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX1D_ARRAY_SRV
     @usableFromInline
     internal var rawValue: RawValue

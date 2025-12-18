@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a compute pipeline state object.
-public struct D3DComputePipelineStateDescription: Sendable {
+public struct D3DComputePipelineStateDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_COMPUTE_PIPELINE_STATE_DESC
 
     /// A pointer to the ID3D12RootSignature object.

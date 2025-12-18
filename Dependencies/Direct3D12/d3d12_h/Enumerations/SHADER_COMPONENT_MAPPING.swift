@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Implements the D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING, D3D12_DECODE_SHADER_4_COMPONENT_MAPPING, and D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING macros.
-public struct D3DShaderComponentMap: Sendable {
+public struct D3DShaderComponentMap: @unchecked Sendable {
     public typealias RawValue = Int32
     public let rawValue: RawValue
 

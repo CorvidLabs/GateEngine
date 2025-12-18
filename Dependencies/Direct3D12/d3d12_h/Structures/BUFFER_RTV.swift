@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the elements in a buffer resource to use in a render-target view.
-public struct D3DRenderTargetViewBuffer: Sendable {
+public struct D3DRenderTargetViewBuffer: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_BUFFER_RTV
     @usableFromInline
     internal var rawValue: RawValue

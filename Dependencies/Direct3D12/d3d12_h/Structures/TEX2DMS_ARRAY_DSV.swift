@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the subresources from an array of multi sampled 2D textures for a depth-stencil view.
-public struct D3DTexture2DMultiSampledArrayDepthStencilView: Sendable {
+public struct D3DTexture2DMultiSampledArrayDepthStencilView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2DMS_ARRAY_DSV
     @usableFromInline
     internal var rawValue: RawValue

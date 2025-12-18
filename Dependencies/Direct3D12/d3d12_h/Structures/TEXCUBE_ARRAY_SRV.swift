@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the subresources from an array of cube textures to use in a shader-resource view.
-public struct D3DTextureCubeArrayShaderResourceView: Sendable {
+public struct D3DTextureCubeArrayShaderResourceView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEXCUBE_ARRAY_SRV
     @usableFromInline
     internal var rawValue: RawValue

@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the subresources from a resource that are accessible by using a render-target view.
-public struct D3DRenderTargetViewDescription: Sendable {
+public struct D3DRenderTargetViewDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_RENDER_TARGET_VIEW_DESC
     @usableFromInline
     internal var rawValue: RawValue

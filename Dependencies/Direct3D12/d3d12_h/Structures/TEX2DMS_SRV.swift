@@ -7,7 +7,7 @@
 
 public import WinSDK
 
-public struct D3DTexture2DMultiSampledShaderResourceView: Sendable {
+public struct D3DTexture2DMultiSampledShaderResourceView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2DMS_SRV
     @usableFromInline
     internal var rawValue: RawValue

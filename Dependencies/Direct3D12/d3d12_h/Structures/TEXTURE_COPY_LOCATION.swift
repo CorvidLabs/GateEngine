@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a portion of a texture for the purpose of texture copies.
-public struct D3DTextureCopyLocation: Sendable {
+public struct D3DTextureCopyLocation: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEXTURE_COPY_LOCATION
     @usableFromInline
     internal var rawValue: RawValue

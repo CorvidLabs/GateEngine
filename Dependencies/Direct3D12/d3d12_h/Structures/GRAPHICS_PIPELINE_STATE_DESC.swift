@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes a graphics pipeline state object.
-public struct D3DGraphicsPipelineStateDescription: Sendable {
+public struct D3DGraphicsPipelineStateDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_GRAPHICS_PIPELINE_STATE_DESC
 
     /// A pointer to the ID3D12RootSignature object.

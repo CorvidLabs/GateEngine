@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the blend state for a render target.
-public struct D3DRenderTargetBlendDescription: Sendable {
+public struct D3DRenderTargetBlendDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_RENDER_TARGET_BLEND_DESC
     @usableFromInline
     internal var rawValue: RawValue

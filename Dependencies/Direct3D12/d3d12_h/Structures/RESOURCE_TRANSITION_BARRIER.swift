@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the transition of subresources between different usages.
-public struct D3DResourceTransitionBarrier: Sendable {
+public struct D3DResourceTransitionBarrier: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_TRANSITION_BARRIER
     @usableFromInline
     internal var rawValue: RawValue

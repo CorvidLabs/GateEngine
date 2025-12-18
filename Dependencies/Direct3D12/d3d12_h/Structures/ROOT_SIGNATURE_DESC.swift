@@ -8,7 +8,7 @@
 public import WinSDK
 
 /// Describes the layout of a root signature version 1.0.
-public struct D3DRootSignatureDescription: Sendable {
+public struct D3DRootSignatureDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_ROOT_SIGNATURE_DESC
 
     /// An array of D3D12_ROOT_PARAMETER structures for the slots in the root signature.    

@@ -7,7 +7,7 @@
 
 public import WinSDK
 
-public struct D3DVertexBufferView: Sendable {
+public struct D3DVertexBufferView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_VERTEX_BUFFER_VIEW
     @usableFromInline
     internal var rawValue: RawValue
