@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies the CPU-page properties for the heap.
 public enum D3DCPUPageProperty: Sendable {

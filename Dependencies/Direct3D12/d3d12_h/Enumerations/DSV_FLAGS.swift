@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies depth-stencil view options.
 public struct D3DDepthStencilViewFlags: OptionSet, Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a tiled subresource volume.
 public struct D3DSubresourceTiling: @unchecked Sendable {

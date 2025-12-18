@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public typealias D3DRange = ClosedRange<WinSDK.SIZE_T>
 internal extension D3DRange {

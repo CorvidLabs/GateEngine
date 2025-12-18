@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Stores a pipeline state.
 public struct D3DCachedPipelineState: @unchecked Sendable {

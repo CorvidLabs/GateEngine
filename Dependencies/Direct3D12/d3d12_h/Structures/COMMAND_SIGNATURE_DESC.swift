@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the arguments (parameters) of a command signature.
 public struct D3DCommandSignatureDescription: @unchecked Sendable {

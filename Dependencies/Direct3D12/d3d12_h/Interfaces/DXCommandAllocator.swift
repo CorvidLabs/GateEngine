@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Represents the allocations of storage for graphics processing unit (GPU) commands.
 public final class D3DCommandAllocator: D3DPageable {

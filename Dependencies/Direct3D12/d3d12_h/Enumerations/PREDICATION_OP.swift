@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies the predication operation to apply.
 public enum D3DPredictionOperation: Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Represents a resource in which all UAV accesses must complete before any future UAV accesses can begin.
 public struct D3DResourceUnorderedAccessViewBarrier: @unchecked Sendable {

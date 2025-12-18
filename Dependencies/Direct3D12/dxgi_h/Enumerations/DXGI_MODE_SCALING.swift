@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 
 /// Flags indicating the method the raster uses to create an image on a surface.

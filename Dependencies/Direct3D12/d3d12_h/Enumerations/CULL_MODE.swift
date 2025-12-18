@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies triangles facing a particular direction are not drawn.
 public enum D3DCullMode: Sendable {

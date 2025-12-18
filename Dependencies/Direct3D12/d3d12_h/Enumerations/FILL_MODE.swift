@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies the fill mode to use when rendering triangles.
 public enum D3DFillMode: Sendable {

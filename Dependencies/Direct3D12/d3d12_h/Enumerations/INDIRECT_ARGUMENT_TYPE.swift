@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies the type of the indirect parameter.
 public enum D3DIndirectArgumentType: Sendable {

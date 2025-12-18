@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the slot of a root signature version 1.0.
 public struct D3DRootParameter: @unchecked Sendable {

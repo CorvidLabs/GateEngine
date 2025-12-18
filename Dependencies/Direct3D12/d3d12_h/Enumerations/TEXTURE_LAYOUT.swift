@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies texture layout options.
 public enum D3DTextureLayout: Sendable {

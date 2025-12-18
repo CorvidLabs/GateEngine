@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the input-buffer data for the input-assembler stage.
 public struct D3DInputLayoutDescription: @unchecked Sendable {

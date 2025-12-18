@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public struct DGIPresentParameters: @unchecked Sendable {
     public typealias RawValue = WinSDK.DXGI_PRESENT_PARAMETERS

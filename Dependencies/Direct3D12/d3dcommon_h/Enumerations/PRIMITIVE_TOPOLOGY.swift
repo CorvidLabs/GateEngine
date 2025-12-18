@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 // The explicit D3D10 and D3D12 variants in d3dcommon.h are just aliases
 

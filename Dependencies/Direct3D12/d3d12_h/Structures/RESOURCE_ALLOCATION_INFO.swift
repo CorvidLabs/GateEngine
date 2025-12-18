@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes parameters needed to allocate resources.
 public struct D3DResourceAllocationInfo: @unchecked Sendable {

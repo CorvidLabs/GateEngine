@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies blend factors, which modulate values for the pixel shader and render target.
 public enum D3DBlendFactor: Sendable {

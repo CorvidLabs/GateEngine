@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a single element for the input-assembler stage of the graphics pipeline.
 public struct D3DInputElementDescription: @unchecked Sendable {

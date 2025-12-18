@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes shader data.
 public struct D3DShaderBytecode: @unchecked Sendable {

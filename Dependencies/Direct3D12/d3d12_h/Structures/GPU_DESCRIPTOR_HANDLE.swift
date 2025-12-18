@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a GPU descriptor handle.
 public struct D3DGPUDescriptorHandle: @unchecked Sendable {

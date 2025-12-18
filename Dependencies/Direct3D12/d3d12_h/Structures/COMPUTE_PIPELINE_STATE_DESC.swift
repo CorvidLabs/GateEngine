@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a compute pipeline state object.
 public struct D3DComputePipelineStateDescription: @unchecked Sendable {

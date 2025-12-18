@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a swap chain.
 public struct DGISwapChainDescription1: @unchecked Sendable {

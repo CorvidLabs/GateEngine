@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the subresources from a resource that are accessible by using a render-target view.
 public struct D3DRenderTargetViewDescription: @unchecked Sendable {

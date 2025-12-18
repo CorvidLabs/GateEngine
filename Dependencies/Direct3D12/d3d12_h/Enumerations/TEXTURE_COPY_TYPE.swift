@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies what type of texture copy is to take place.
 public enum D3DTextureCopyType: Sendable {

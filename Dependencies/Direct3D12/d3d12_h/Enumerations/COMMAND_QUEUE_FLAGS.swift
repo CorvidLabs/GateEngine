@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies unordered-access view options for a buffer resource.
 public struct D3DCommandQueueFlags: OptionSet, Sendable {

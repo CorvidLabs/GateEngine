@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Defines priority levels for a command queue.
 public enum D3DCommandQueuePriority: Sendable {

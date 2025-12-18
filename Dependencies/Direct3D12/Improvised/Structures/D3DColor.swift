@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public struct D3DColor: Equatable, Sendable {
     public typealias RawValue = Array<Float>

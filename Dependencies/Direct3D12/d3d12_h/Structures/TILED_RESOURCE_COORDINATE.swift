@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the coordinates of a tiled resource.
 public struct D3DTiledResourceCoordinate: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Defines constants that specify logical operations to configure for a render target.
 public enum D3DLogicOperation: Sendable {

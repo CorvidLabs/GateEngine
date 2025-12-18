@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public struct D3DBox: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_BOX

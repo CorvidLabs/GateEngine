@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Flags to control pipeline state.
 public struct D3DPipelineStateFlags: OptionSet, Sendable {

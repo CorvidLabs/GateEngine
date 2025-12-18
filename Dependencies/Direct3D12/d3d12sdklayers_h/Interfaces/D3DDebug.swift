@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// An interface used to turn on the debug layer. See EnableDebugLayer for more information.
 public final class D3DDebug: IUnknown {

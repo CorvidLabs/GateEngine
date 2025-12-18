@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Flags for setting split resource barriers
 public struct D3DResourceBarrierFlags: OptionSet, Sendable {

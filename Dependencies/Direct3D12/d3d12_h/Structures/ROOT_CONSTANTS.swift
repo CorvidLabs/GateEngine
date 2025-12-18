@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes constants inline in the root signature that appear in shaders as one constant buffer.
 public struct D3DRootConstants: @unchecked Sendable {

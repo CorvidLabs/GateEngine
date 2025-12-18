@@ -6,7 +6,7 @@
  */
 
 import Foundation
-public import WinSDK
+internal import WinSDK
 
 /// This interface is used to return arbitrary-length data.
 public final class D3DBlob: IUnknown {

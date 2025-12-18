@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies a type of descriptor heap.
 public enum D3DDescriptorRangeType: Sendable {

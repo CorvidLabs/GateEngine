@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies how to view a buffer resource.
 public struct D3DBufferShaderResourceViewFlags: OptionSet, Sendable {

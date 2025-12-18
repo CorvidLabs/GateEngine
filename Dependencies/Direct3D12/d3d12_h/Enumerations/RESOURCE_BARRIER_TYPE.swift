@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies a type of resource barrier (transition in resource use) description.
 public enum D3DResourceBarrierType: Sendable {

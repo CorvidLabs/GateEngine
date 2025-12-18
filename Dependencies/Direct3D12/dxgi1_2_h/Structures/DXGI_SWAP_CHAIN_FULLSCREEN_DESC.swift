@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes full-screen mode for a swap chain.
 public struct DGISwapChainFullscreenDescription: @unchecked Sendable {

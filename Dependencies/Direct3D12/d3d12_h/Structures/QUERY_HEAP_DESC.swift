@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the purpose of a query heap. A query heap contains an array of individual queries.
 public struct D3DQueryHeapDescription: @unchecked Sendable {

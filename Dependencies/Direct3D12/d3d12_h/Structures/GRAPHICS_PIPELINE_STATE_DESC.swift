@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a graphics pipeline state object.
 public struct D3DGraphicsPipelineStateDescription: @unchecked Sendable {

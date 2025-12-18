@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies options for working with resources.
 public struct D3DResourceFlags: OptionSet, Sendable {

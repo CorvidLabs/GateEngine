@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies the type of resource being used.
 public enum D3DResourceDimension: Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies RGB or alpha blending operations.
 public enum D3DBlendOperation: Sendable {

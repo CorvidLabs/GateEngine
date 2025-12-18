@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Flags for surface and resource creation options.
 public struct DGIUsage: OptionSet, Sendable {

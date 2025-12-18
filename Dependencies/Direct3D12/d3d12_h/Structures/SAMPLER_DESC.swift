@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a sampler state.
 public struct D3DSamplerDescription: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Represents a rational number.
 public struct DGIRational: @unchecked Sendable {

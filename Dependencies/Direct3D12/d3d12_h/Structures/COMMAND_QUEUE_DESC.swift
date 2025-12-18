@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a command queue.
 public struct D3DCommandQueueDescription: @unchecked Sendable {

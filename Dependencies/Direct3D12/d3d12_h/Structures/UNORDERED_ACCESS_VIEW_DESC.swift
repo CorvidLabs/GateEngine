@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the subresources from a resource that are accessible by using an unordered-access view.
 public struct D3DUnorderedAccessViewDescription: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public final class D3DQueryHeap: D3DPageable {
     @inlinable

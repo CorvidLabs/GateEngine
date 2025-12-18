@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the subresources from an array of 2D textures to use in a render-target view.
 public struct D3DTexture2DArrayRenderTargetView: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the subresources from a 3D texture to use in a shader-resource view.
 public struct D3DTexture3DShaderResourceView: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies the version of root signature layout.
 public enum D3DRootSignatureVersion: Sendable {

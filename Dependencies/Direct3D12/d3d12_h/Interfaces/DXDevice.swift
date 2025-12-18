@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 import WinSDK.DirectX
 
 public final class D3DDevice: D3DObject {

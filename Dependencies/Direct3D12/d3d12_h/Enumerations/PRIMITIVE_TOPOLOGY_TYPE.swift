@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies how the pipeline interprets geometry or hull shader input primitives.
 public enum D3DPrimitiveTopologyType: Sendable {

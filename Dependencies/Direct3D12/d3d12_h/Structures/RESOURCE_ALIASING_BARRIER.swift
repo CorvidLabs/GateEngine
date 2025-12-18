@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the transition between usages of two different resources that have mappings into the same heap.
 public struct D3DResourceAliasingBarrier: @unchecked Sendable {

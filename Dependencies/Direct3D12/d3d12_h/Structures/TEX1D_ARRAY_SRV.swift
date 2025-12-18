@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public struct D3DTexture1DArrayShaderResourceView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX1D_ARRAY_SRV

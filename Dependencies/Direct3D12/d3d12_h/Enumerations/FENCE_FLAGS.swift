@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies fence options.
 public struct D3DFenceFlags: OptionSet, Sendable {

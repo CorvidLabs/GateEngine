@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies whether conservative rasterization is on or off.
 public enum D3DConservativeRasterizationMode: Sendable {

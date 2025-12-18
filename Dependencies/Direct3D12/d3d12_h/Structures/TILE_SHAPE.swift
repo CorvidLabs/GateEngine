@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the shape of a tile by specifying its dimensions.
 public struct D3DTileShape: @unchecked Sendable {

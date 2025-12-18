@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies the type of data contained in an input slot.
 public enum D3DInputClassification: Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a descriptor range.
 public struct D3DDescriptorRange: @unchecked Sendable {

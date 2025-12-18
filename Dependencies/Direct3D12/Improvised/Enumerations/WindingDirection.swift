@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 public enum D3DWindingDirection: Sendable {
     case clockwise

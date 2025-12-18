@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Represents a fence, an object used for synchronization of the CPU and one or more GPUs.
 public final class D3DFence: D3DPageable {

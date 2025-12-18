@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies the stencil operations that can be performed during depth-stencil testing.
 public enum D3DStencilOperation: Sendable {

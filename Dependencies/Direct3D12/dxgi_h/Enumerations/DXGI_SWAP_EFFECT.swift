@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 
 /// Options for handling pixels in a display surface after calling IDXGISwapChain1::Present1.

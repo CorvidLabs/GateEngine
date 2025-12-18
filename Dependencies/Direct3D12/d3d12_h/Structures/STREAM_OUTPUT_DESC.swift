@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes a streaming output buffer.
 public struct D3DStreamOutputDescription: @unchecked Sendable {

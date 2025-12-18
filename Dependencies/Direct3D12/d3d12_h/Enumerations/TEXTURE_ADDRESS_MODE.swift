@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies a technique for resolving texture coordinates that are outside of the boundaries of a texture.
 public enum D3DTextureAddressMode: Sendable {

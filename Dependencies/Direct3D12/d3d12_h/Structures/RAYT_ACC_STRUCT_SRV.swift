@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// A shader resource view (SRV) structure for storing a raytracing acceleration structure.
 public struct D3DRaytracingAccelerationStructureShaderResourceView: @unchecked Sendable {

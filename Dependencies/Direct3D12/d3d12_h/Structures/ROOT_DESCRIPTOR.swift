@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes descriptors inline in the root signature version 1.0 that appear in shaders.
 public struct D3DRootDescriptor: @unchecked Sendable {

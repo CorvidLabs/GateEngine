@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Represents the state of all currently set shaders as well as certain fixed function state objects.
 public final class D3DPipelineState: D3DPageable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes the index buffer to view.
 public struct D3DIndexBufferView: @unchecked Sendable {

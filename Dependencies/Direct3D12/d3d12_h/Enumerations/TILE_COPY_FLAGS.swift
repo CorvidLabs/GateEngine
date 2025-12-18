@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies how to copy a tile.
 public struct D3DTileCopyFlags: OptionSet, Sendable {

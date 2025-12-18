@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Identifies the portion of a depth-stencil buffer for writing depth data.
 public enum D3DDepthWriteMask: Sendable {

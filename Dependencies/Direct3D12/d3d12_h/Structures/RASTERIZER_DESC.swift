@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes rasterizer state.
 public struct D3DRasterizerDescription: @unchecked Sendable {

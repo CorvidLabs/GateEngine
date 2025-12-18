@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies the subresource from a 1D texture to use in a shader-resource view.
 public struct D3DTexture1DShaderResourceView: @unchecked Sendable {

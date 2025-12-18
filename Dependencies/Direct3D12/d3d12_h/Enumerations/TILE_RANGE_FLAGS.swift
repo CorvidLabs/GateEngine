@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Specifies a range of tile mappings.
 public struct D3DTileRangeFlags: OptionSet, Sendable {

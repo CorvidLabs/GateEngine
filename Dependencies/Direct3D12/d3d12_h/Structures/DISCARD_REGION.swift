@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-public import WinSDK
+internal import WinSDK
 
 /// Describes details for the discard-resource operation.
 public struct D3DDiscardRegion: @unchecked Sendable {
