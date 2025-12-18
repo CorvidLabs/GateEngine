@@ -27,7 +27,6 @@ public final class D3DBlob: IUnknown {
         }
     }
 
-    @inlinable
     public var data: Data? {
         guard bufferPointer != nil && bufferSize > 0 else {return nil}
         return withUnsafeBytes(of: bufferPointer) {
@@ -35,7 +34,6 @@ public final class D3DBlob: IUnknown {
         }
     }
 
-    @inlinable
     public var stringValue: String? {
         guard bufferSize > 0, let bufferPointer = bufferPointer else {return nil}
         let pointer = bufferPointer.bindMemory(to: CHAR.self, capacity: Int(bufferSize))

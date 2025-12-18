@@ -12,7 +12,6 @@ public struct D3DMessage: Swift.Error, CustomStringConvertible, Sendable {
     @usableFromInline
     internal var rawValue: RawValue
 
-    @inlinable
     public var description: String {
         let buffer: UnsafeRawBufferPointer = UnsafeRawBufferPointer(start: rawValue.pDescription, count: Int(rawValue.DescriptionByteLength))
         return String(bytes: buffer, encoding: .utf8) ?? String(bytes: buffer, encoding: .ascii) ?? String(cString: rawValue.pDescription)
