@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the layout of a root signature version 1.0.
 public struct D3DRootSignatureDescription: @unchecked Sendable {

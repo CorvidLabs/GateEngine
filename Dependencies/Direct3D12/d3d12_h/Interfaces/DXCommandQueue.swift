@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 public final class D3DCommandQueue: D3DPageable {
 

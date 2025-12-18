@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies how to perform a tile-mapping operation.
 public struct D3DTileMappingFlags: OptionSet, Sendable {

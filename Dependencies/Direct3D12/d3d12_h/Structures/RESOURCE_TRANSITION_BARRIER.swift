@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the transition of subresources between different usages.
 public struct D3DResourceTransitionBarrier: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Identifies which components of each pixel of a render target are writable during blending.
 public struct D3DColorWriteEnable: OptionSet, Sendable {

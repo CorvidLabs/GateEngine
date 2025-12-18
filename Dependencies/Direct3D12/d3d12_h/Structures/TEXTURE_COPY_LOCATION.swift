@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes a portion of a texture for the purpose of texture copies.
 public struct D3DTextureCopyLocation: @unchecked Sendable {

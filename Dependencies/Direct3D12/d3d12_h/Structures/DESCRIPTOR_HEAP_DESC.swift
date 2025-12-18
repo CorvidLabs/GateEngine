@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the descriptor heap.
 public struct D3DDescriptorHeapDescription: @unchecked Sendable {

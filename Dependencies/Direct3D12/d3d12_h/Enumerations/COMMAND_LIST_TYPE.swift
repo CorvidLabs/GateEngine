@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies the type of a command list.
 public enum D3DCommandListType: Sendable {

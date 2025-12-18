@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies comparison options.
 public enum D3DComparisonFunction: Sendable {

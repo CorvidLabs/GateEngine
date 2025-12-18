@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Identifies the type of resource that will be viewed as a shader resource.
 public enum D3DShaderResourceViewDimension: Sendable {

@@ -6,7 +6,7 @@
  */
 
 import Foundation
-internal import WinSDK
+public import WinSDK
 
 @inlinable
 public func compileFromFile(_ url: URL, functionName: String, target: String) throws -> D3DBlob {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 
 /// Identifies the alpha value, transparency behavior, of a surface.

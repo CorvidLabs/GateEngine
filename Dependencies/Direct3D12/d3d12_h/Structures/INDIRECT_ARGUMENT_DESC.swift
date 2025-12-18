@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes an indirect argument (an indirect parameter), for use with a command signature.
 public struct D3DIndirectArgumentDescription: @unchecked Sendable {

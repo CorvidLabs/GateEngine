@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies the type of query heap to create.
 public enum D3DQueryHeapType: Sendable {

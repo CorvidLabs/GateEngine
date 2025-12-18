@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the blend state.
 public struct D3DBlendDescription: @unchecked Sendable {

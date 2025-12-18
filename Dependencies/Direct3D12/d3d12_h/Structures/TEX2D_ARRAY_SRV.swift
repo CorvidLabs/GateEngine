@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the subresources from an array of 2D textures to use in a shader-resource view.
 public struct D3DTexture2DArrayShaderResourceView: @unchecked Sendable {

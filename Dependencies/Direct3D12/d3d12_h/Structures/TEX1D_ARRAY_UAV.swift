@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes an array of unordered-access 1D texture resources.
 public struct D3DTexture1DArrayUnorderedAccessView: @unchecked Sendable {

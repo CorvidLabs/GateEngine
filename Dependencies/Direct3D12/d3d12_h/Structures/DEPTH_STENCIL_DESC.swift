@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes depth-stencil state.
 public struct D3DDepthStencilDescription: @unchecked Sendable {

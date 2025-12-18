@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies the type of root signature slot.
 public enum D3DRootParameterType: Sendable {

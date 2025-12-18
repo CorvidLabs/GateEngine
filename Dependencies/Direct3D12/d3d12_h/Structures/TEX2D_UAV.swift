@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes a unordered-access 2D texture resource.
 public struct D3DTexture2DUnorderedAccessView: @unchecked Sendable {

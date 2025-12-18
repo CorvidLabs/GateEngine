@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the subresource from a 1D texture that is accessible to a depth-stencil view.
 public struct D3DTexture1DDepthStencilView: @unchecked Sendable {

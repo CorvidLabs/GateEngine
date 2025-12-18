@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the elements in a buffer resource to use in a render-target view.
 public struct D3DRenderTargetViewBuffer: @unchecked Sendable {

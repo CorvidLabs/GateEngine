@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// The DXGI_PRESENT constants specify options for presenting frames to the output.
 public struct DGIPresentFlags: OptionSet, Sendable {

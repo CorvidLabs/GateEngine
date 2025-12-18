@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes heap properties.
 public struct D3DHeapProperties: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 public class D3DCommandList: D3DDeviceChild {
     /// Gets the type of the command list, such as direct, bundle, compute, or copy.

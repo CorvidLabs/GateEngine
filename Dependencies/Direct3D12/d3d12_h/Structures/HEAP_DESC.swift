@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes a heap.
 public struct D3DHeapDescription: @unchecked Sendable {

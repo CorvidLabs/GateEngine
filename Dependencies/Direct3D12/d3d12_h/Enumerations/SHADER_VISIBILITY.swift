@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies the shaders that can access the contents of a given root signature slot.
 public enum D3DShaderVisibility: Sendable {

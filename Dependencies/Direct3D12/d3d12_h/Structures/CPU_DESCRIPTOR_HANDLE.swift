@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes a CPU descriptor handle.
 public struct D3DCPUDescriptorHandle: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes a resource barrier (transition in resource use).
 public struct D3DResourceBarrier: @unchecked Sendable {

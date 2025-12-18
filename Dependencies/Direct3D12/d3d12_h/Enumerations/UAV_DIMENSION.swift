@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Identifies unordered-access view options.
 public enum D3DUnorderedAccessViewDimension: Sendable {

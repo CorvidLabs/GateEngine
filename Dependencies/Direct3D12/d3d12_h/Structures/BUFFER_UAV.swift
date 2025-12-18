@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the elements in a buffer to use in a unordered-access view.
 public struct D3DUnorderedAccessViewBuffer: @unchecked Sendable {

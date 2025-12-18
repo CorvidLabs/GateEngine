@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes multi-sampling parameters for a resource.
 public struct DGISampleDescription: @unchecked Sendable {

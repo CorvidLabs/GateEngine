@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the size of a tiled region.
 public struct D3DTileRegionSize: @unchecked Sendable {

@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies a depth and stencil value.
 public struct D3DDepthStencilValue: @unchecked Sendable {

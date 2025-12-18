@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies the border color for a static sampler.
 public enum D3DStaticBorderColor: Sendable {

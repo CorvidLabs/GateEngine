@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes the subresource from a cube texture to use in a shader-resource view.
 public struct D3DTextureCubeShaderResourceView: @unchecked Sendable {

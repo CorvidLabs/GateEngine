@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Specifies how to access a resource used in a depth-stencil view.
 public enum D3DDSVDimension: Sendable {

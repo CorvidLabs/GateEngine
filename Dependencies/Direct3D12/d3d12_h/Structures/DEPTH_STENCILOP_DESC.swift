@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 
 /// Describes stencil operations that can be performed based on the results of stencil test.
 public struct D3DDepthStencilOperationDescription: @unchecked Sendable {

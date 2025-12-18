@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-internal import WinSDK
+public import WinSDK
 import struct Foundation.Data
 public struct D3DMessage: Swift.Error, CustomStringConvertible, Sendable {
     public typealias RawValue = WinSDK.D3D12_MESSAGE
