@@ -4,16 +4,37 @@ on:
   push:
     branches:
     - 'main'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/Android.yml'
   pull_request:
     branches:
     - '**'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/Android.yml'
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Build_Test-Linux-Android:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v5
+
     - name: Install Android SDK
       run: |
         cd ..
@@ -22,7 +43,7 @@ jobs:
         cd GateEngine
     - name: Swift Version
       run: swift --version
-    
+
     - name: Build using Swift
       run: swift build --destination ../swift-5.8-android-24-sdk/usr/swiftpm-android-aarch64.json -Xlinker -rpath -Xlinker \$ORIGIN/lib/swift/android
     - name: Test using Swift

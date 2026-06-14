@@ -6,13 +6,26 @@ on:
   pull_request:
     branches:
     - '**'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/iOS-tvOS.yml'
+
+concurrency:
+  group: ios-tvos-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Build_Test-macOS-iOS:
     runs-on: macos-latest
+    timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v4
-  
+    - uses: actions/checkout@v5
+
     - name: Swift Version
       run: swift --version
 

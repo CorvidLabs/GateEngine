@@ -5,24 +5,45 @@ on:
   push:
     branches:
     - 'main'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/Linux.yml'
   pull_request:
     branches:
     - '**'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/Linux.yml'
+
+concurrency:
+  group: linux-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Build_Test-Linux-Linux:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v5
+
     - name: Install Linux Dependencies
       run: sudo apt-get update --fix-missing; sudo apt-get install freeglut3-dev; sudo apt-get install libopenal-dev
-    
+
     - name: Swift Version
       run: swift --version
-      
+
     - name: Build
       run: swift build
     - name: Test
