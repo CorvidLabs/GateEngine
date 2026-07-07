@@ -63,12 +63,12 @@ class DX12Geometry: GeometryBackend, SkinnedGeometryBackend {
             ),
 
             DX12Renderer.createBuffer(
-                withData: geometry.indices,
+                withData: geometry.vertexIndicies,
                 heapProperties: .forBuffer,
                 state: .genericRead
             ),
         ]
-        self.indicesCount = geometry.indices.count
+        self.indicesCount = geometry.vertexIndicies.count
     }
 
     required init(geometry: RawGeometry, skin: Skin) {
@@ -129,12 +129,12 @@ class DX12Geometry: GeometryBackend, SkinnedGeometryBackend {
             ),
 
             DX12Renderer.createBuffer(
-                withData: geometry.indices,
+                withData: geometry.vertexIndicies,
                 heapProperties: .forBuffer,
                 state: .genericRead
             ),
         ]
-        self.indicesCount = geometry.indices.count
+        self.indicesCount = geometry.vertexIndicies.count
     }
 
     required init(lines: RawLines) {

@@ -46,7 +46,7 @@ final class Win32Window: WindowBacking {
         case .system:
             hWnd = Self.makeHWND(withSize: pixelSize, style: .standard)
             self.hwndStyle = .standard
-        case .bestForGames:
+        case .minimalSystemDecorations:
             hWnd = Self.makeHWND(withSize: pixelSize, style: .modern)
             self.hwndStyle = .modern
         }

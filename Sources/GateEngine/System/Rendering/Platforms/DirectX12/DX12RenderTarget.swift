@@ -48,7 +48,7 @@ class DX12RenderTarget: RenderTargetBackend {
     }
 
     @inlinable
-    private var renderer: DX12Renderer {
+    internal var renderer: DX12Renderer {
         return Game.shared.renderer.backend
     }
 
@@ -268,7 +268,7 @@ class DX12RenderTarget: RenderTargetBackend {
                     D3DViewport(width: viewport.size.width, height: viewport.size.height)
                 ])
             } else {
-                self.commandList.setViewports([D3DViewport(width: size.width, height: size.height)])
+                self.commandList.setViewports([D3DViewport(width: Float(size.width), height: Float(size.height))])
             }
             
             if let scissorRect: Rect = scissorRect {

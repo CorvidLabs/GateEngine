@@ -79,10 +79,22 @@ func getFILETIMEoffset() -> WinSDK.LARGE_INTEGER {
     return t
 }
 
-private var offset: WinSDK.LARGE_INTEGER = WinSDK.LARGE_INTEGER()
-private var frequencyToMicroseconds: Double = 0
-private var initialized: Bool = false
-private var usePerformanceCounter: Bool = false
+/// Lazily-initialized monotonic clock state backing the `clock_gettime` shim below.
+///
+/// `clock_gettime` is only ever driven synchronously from GateEngine's single timing
+/// hot path (`InternalPlatformProtocol.systemTime()`), which the engine always calls
+/// from one thread at a time, so there is no concurrent first-call race in practice.
+/// Grouping the mutable fields into one holder -- instead of scattering
+/// `nonisolated(unsafe)` across four separate globals -- keeps the unsafety contained
+/// and documented in a single place.
+private final class Win32ClockState {
+    var offset: WinSDK.LARGE_INTEGER = WinSDK.LARGE_INTEGER()
+    var frequencyToMicroseconds: Double = 0
+    var initialized: Bool = false
+    var usePerformanceCounter: Bool = false
+}
+nonisolated(unsafe) private let clockState: Win32ClockState = Win32ClockState()
+
 internal struct timespec {
     var tv_sec: Double = 0
     var tv_nsec: Double = 0
@@ -93,19 +105,19 @@ internal func clock_gettime(_ X: Int, _ tv: inout timespec) -> Int {
     var f: WinSDK.FILETIME = FILETIME()
     var microseconds: Double = 0
 
-    if !initialized {
+    if !clockState.initialized {
         var performanceFrequency: WinSDK.LARGE_INTEGER = WinSDK.LARGE_INTEGER()
-        initialized = true
-        usePerformanceCounter = WinSDK.QueryPerformanceFrequency(&performanceFrequency)
-        if usePerformanceCounter {
-            WinSDK.QueryPerformanceCounter(&offset)
-            frequencyToMicroseconds = Double(performanceFrequency.QuadPart) / 1_000_000
+        clockState.initialized = true
+        clockState.usePerformanceCounter = WinSDK.QueryPerformanceFrequency(&performanceFrequency)
+        if clockState.usePerformanceCounter {
+            WinSDK.QueryPerformanceCounter(&clockState.offset)
+            clockState.frequencyToMicroseconds = Double(performanceFrequency.QuadPart) / 1_000_000
         } else {
-            offset = getFILETIMEoffset()
-            frequencyToMicroseconds = 10
+            clockState.offset = getFILETIMEoffset()
+            clockState.frequencyToMicroseconds = 10
         }
     }
-    if usePerformanceCounter {
+    if clockState.usePerformanceCounter {
         WinSDK.QueryPerformanceCounter(&t)
     } else {
         WinSDK.GetSystemTimeAsFileTime(&f)
@@ -114,8 +126,8 @@ internal func clock_gettime(_ X: Int, _ tv: inout timespec) -> Int {
         t.QuadPart |= Int64(f.dwLowDateTime)
     }
 
-    t.QuadPart -= offset.QuadPart
-    microseconds = Double(t.QuadPart) / frequencyToMicroseconds
+    t.QuadPart -= clockState.offset.QuadPart
+    microseconds = Double(t.QuadPart) / clockState.frequencyToMicroseconds
     t.QuadPart = LONGLONG(microseconds)
     tv.tv_sec = Double(t.QuadPart) / 1_000_000
     tv.tv_nsec = Double(t.QuadPart).truncatingRemainder(dividingBy: 1_000_000)
