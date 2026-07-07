@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 #if canImport(WinSDK) && GATEENGINE_PLATFORM_HAS_FILESYSTEM
-import WinSDK
+public import WinSDK
 import Foundation
 
 internal enum Win32FileSystem {

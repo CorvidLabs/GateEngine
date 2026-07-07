@@ -6,7 +6,7 @@
  */
 #if canImport(WinSDK)
 import Foundation
-import WinSDK
+public import WinSDK
 import Direct3D12
 
 final class Win32Window: WindowBacking {

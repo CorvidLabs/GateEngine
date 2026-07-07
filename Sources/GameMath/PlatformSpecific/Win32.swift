@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 #if canImport(WinSDK)
-import WinSDK
+public import WinSDK
 
 public extension Rect {
     @inlinable

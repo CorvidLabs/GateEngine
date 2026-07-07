@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 #if canImport(WinSDK)
-import WinSDK
+public import WinSDK
 
 @_transparent
 @_specialize(where T == UInt64)
