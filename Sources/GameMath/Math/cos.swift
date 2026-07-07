@@ -15,6 +15,8 @@ import Bionic
 import Musl
 #elseif canImport(WASILibc)
 import WASILibc
+#elseif os(Windows)
+import ucrt
 #endif
 
 // MARK: - Floats
@@ -48,6 +50,8 @@ internal func _cos(_ x: Float32) -> Float32 {
     return Musl.cosf(x)
     #elseif canImport(WASILibc)
     return WASILibc.cosf(x)
+    #elseif os(Windows)
+    return ucrt.cosf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
@@ -64,6 +68,8 @@ internal func _cos(_ x: Float64) -> Float64 {
     return Musl.cos(x)
     #elseif canImport(WASILibc)
     return WASILibc.cos(x)
+    #elseif os(Windows)
+    return ucrt.cos(x)
     #else
     fatalError("Unsupported platform.")
     #endif

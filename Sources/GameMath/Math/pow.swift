@@ -15,6 +15,8 @@ import Bionic
 import Musl
 #elseif canImport(WASILibc)
 import WASILibc
+#elseif os(Windows)
+import ucrt
 #endif
 
 // MARK: - Integers
@@ -88,6 +90,8 @@ public func pow(_ base: Float32, _ exponent: Float32) -> Float32 {
     return Musl.powf(base, exponent)
     #elseif canImport(WASILibc)
     return WASILibc.powf(base, exponent)
+    #elseif os(Windows)
+    return ucrt.powf(base, exponent)
     #else
     // Fallback using integer exponent if available
     fatalError("Unsupported platform.")
@@ -105,6 +109,8 @@ public func pow(_ base: Float64, _ exponent: Float64) -> Float64 {
     return Musl.pow(base, exponent)
     #elseif canImport(WASILibc)
     return WASILibc.pow(base, exponent)
+    #elseif os(Windows)
+    return ucrt.pow(base, exponent)
     #else
     fatalError("Unsupported platform.")
     #endif

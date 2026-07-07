@@ -15,6 +15,8 @@ import Bionic
 import Musl
 #elseif canImport(WASILibc)
 import WASILibc
+#elseif os(Windows)
+import ucrt
 #endif
 
 // MARK: - Floats
@@ -48,6 +50,8 @@ internal func _sin(_ x: Float32) -> Float32 {
     return Musl.sinf(x)
     #elseif canImport(WASILibc)
     return WASILibc.sinf(x)
+    #elseif os(Windows)
+    return ucrt.sinf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
@@ -64,6 +68,8 @@ internal func _sin(_ x: Float64) -> Float64 {
     return Musl.sin(x)
     #elseif canImport(WASILibc)
     return WASILibc.sin(x)
+    #elseif os(Windows)
+    return ucrt.sin(x)
     #else
     fatalError("Unsupported platform.")
     #endif

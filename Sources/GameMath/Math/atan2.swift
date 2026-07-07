@@ -15,6 +15,8 @@ import Bionic
 import Musl
 #elseif canImport(WASILibc)
 import WASILibc
+#elseif os(Windows)
+import ucrt
 #endif
 
 // MARK: - Floats
@@ -48,6 +50,8 @@ internal func _atan2(_ lhs: Float32, _ rhs: Float32) -> Float32 {
     return Musl.atan2f(lhs, rhs)
     #elseif canImport(WASILibc)
     return WASILibc.atan2f(lhs, rhs)
+    #elseif os(Windows)
+    return ucrt.atan2f(lhs, rhs)
     #else
     fatalError("Unsupported platform.")
     #endif
@@ -64,6 +68,8 @@ internal func _atan2(_ lhs: Float64, _ rhs: Float64) -> Float64 {
     return Musl.atan2(lhs, rhs)
     #elseif canImport(WASILibc)
     return WASILibc.atan2(lhs, rhs)
+    #elseif os(Windows)
+    return ucrt.atan2(lhs, rhs)
     #else
     fatalError("Unsupported platform.")
     #endif

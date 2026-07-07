@@ -15,6 +15,8 @@ import Bionic
 import Musl
 #elseif canImport(WASILibc)
 import WASILibc
+#elseif os(Windows)
+import ucrt
 #endif
 
 // MARK: - Floats
@@ -48,6 +50,8 @@ internal func _tan(_ x: Float32) -> Float32 {
     return Musl.tanf(x)
     #elseif canImport(WASILibc)
     return WASILibc.tanf(x)
+    #elseif os(Windows)
+    return ucrt.tanf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
@@ -64,6 +68,8 @@ internal func _tan(_ x: Float64) -> Float64 {
     return Musl.tan(x)
     #elseif canImport(WASILibc)
     return WASILibc.tan(x)
+    #elseif os(Windows)
+    return ucrt.tan(x)
     #else
     fatalError("Unsupported platform.")
     #endif

@@ -15,6 +15,8 @@ import Bionic
 import Musl
 #elseif canImport(WASILibc)
 import WASILibc
+#elseif os(Windows)
+import ucrt
 #endif
 
 // MARK: - Floats
@@ -48,6 +50,8 @@ internal func _acos(_ x: Float32) -> Float32 {
     return Musl.acosf(x)
     #elseif canImport(WASILibc)
     return WASILibc.acosf(x)
+    #elseif os(Windows)
+    return ucrt.acosf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
@@ -64,6 +68,8 @@ internal func _acos(_ x: Float64) -> Float64 {
     return Musl.acos(x)
     #elseif canImport(WASILibc)
     return WASILibc.acos(x)
+    #elseif os(Windows)
+    return ucrt.acos(x)
     #else
     fatalError("Unsupported platform.")
     #endif
