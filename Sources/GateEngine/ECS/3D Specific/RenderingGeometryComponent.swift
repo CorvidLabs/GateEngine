@@ -5,6 +5,8 @@
  * http://stregasgate.com
  */
 
+public import OrderedCollections
+
 @MainActor
 public struct RenderingGeometryComponent: ResourceConstrainedComponent {
     /// Rendering options applied to all `geometries`

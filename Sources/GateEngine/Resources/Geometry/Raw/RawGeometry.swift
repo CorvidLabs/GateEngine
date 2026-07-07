@@ -6,6 +6,7 @@
  */
 
 import GameMath
+public import DequeModule
 
 /// An element array object formatted as triangle primitives
 public struct RawGeometry: Codable, Sendable, Equatable, Hashable {
