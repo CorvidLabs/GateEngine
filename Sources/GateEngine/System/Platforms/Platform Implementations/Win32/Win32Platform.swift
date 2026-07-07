@@ -24,6 +24,36 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol, @u
     
     let staticResourceLocations: [URL] = Win32Platform.getStaticSearchPaths()
 
+    func setCursorStyle(_ style: Mouse.Style) {
+        // The WinSDK Swift module doesn't expose the IDC_* cursor identifiers as linkable
+        // symbols (they're C macros wrapping MAKEINTRESOURCEW), so the resource ordinals from
+        // WinUser.h are used directly here, matching the pattern already used for IDC_ARROW in
+        // Win32WindowClass's window-class registration. Windows has no distinct standard cursors
+        // for an open vs. closed hand, so both map to IDC_HAND alongside .handPointing.
+        let resourceOrdinal: UInt16
+        switch style {
+        case .arrow:
+            resourceOrdinal = 32512  // IDC_ARROW
+        case .resizeHorizontal:
+            resourceOrdinal = 32644  // IDC_SIZEWE
+        case .resizeVertical:
+            resourceOrdinal = 32645  // IDC_SIZENS
+        case .iBeam:
+            resourceOrdinal = 32513  // IDC_IBEAM
+        case .handPointing, .handOpen, .handClosed:
+            resourceOrdinal = 32649  // IDC_HAND
+        case .crosshair:
+            resourceOrdinal = 32515  // IDC_CROSS
+        }
+        guard let cursorID = UnsafePointer<WCHAR>(bitPattern: UInt(resourceOrdinal)) else {
+            return
+        }
+        guard let cursor = LoadCursorW(nil, cursorID) else {
+            return
+        }
+        SetCursor(cursor)
+    }
+
     public var supportsMultipleWindows: Bool {
         return true
     }
