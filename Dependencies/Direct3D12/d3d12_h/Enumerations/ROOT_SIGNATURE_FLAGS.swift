@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies options for root signature layout.
-public struct D3DRootSignatureFlags: OptionSet {
+public struct D3DRootSignatureFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_ROOT_SIGNATURE_FLAGS
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_ROOT_SIGNATURE_FLAGS.RawValue

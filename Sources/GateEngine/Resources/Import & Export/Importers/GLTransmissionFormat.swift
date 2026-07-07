@@ -272,9 +272,16 @@ private class GLTF: Decodable {
             let base64String = uri[uri.index(after: index)...]
             buffer = Data(base64Encoded: String(base64String))
         } else {
+            #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
             buffer = try? Platform.current.synchronousLoadResource(
                 from: self.baseURL!.appendingPathComponent(uri).path
             )
+            #else
+            // WASI/HTML5 doesn't support synchronous file loading
+            // External buffer references in GLTF files won't work
+            // GLB files (buffer 0 pre-cached) will still work
+            return nil
+            #endif
         }
 
         cachedBuffers[index] = buffer
@@ -670,6 +677,7 @@ public final class GLTransmissionFormat: ResourceImporter {
     fileprivate var gltf: GLTF! = nil
     required public init() {}
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         guard let path = Platform.current.synchronousLocateResource(from: path) else { throw .failedToLocate(resource: path, nil) }
         let baseURL = URL(fileURLWithPath: path).deletingLastPathComponent()
@@ -680,6 +688,7 @@ public final class GLTransmissionFormat: ResourceImporter {
             throw GateEngineError(error)
         }
     }
+    #endif
     public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         guard let path = await Platform.current.locateResource(from: path) else { throw .failedToLocate(resource: path, nil) }
         let baseURL = URL(fileURLWithPath: path).deletingLastPathComponent()
@@ -1295,6 +1304,7 @@ extension GLTransmissionFormat: ObjectAnimation3DImporter {
 
 extension GLTransmissionFormat: TextureImporter {
     // TODO: Supports only PNG. Add other formats (JPEG, WebP, ...)
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousLoadTexture(options: TextureImporterOptions) throws(GateEngineError) -> RawTexture {
         let imageData: Data
         func loadImageData(image: GLTF.Image) throws(GateEngineError) -> Data {
@@ -1304,7 +1314,7 @@ extension GLTransmissionFormat: TextureImporter {
                 )
             }else if let bufferIndex = image.bufferView {
                 let view = self.gltf.bufferViews[bufferIndex]
-                
+
                 if let buffer = self.gltf.buffer(at: view.buffer) {
                     return Data(buffer[view.byteOffset..<view.byteOffset+view.byteLength])
                 }else{
@@ -1327,12 +1337,47 @@ extension GLTransmissionFormat: TextureImporter {
                 throw .failedToLoad(resource:  "GLTF Content", "No images found in file.")
             }
         }
-        
+
         return try PNGDecoder().decode(imageData)
     }
-    
+    #endif
+
     public func loadTexture(options: TextureImporterOptions) async throws(GateEngineError) -> RawTexture {
-        return try synchronousLoadTexture(options: options)
+        // Capture necessary properties before async work to avoid data races
+        let gltfRef = self.gltf!
+        let imageData: Data
+
+        if let name = options.subobjectName {
+            guard let image = gltfRef.images?.first(where: {$0.name.caseInsensitiveCompare(name) == .orderedSame}) else {
+                throw .failedToLoad(resource: "GLTF Content", "No subobject found with name: \(name)")
+            }
+            imageData = try await loadImageDataAsync(image: image, gltf: gltfRef)
+        } else {
+            guard let image = gltfRef.images?.first else {
+                throw .failedToLoad(resource: "GLTF Content", "No images found in file.")
+            }
+            imageData = try await loadImageDataAsync(image: image, gltf: gltfRef)
+        }
+
+        return try PNGDecoder().decode(imageData)
+    }
+
+    private func loadImageDataAsync(image: GLTF.Image, gltf: GLTF) async throws(GateEngineError) -> Data {
+        if let uri = image.uri {
+            return try await Platform.current.loadResource(
+                from: gltf.baseURL!.appendingPathComponent(uri).path
+            )
+        } else if let bufferIndex = image.bufferView {
+            let view = gltf.bufferViews[bufferIndex]
+
+            if let buffer = gltf.buffer(at: view.buffer) {
+                return Data(buffer[view.byteOffset..<view.byteOffset+view.byteLength])
+            } else {
+                throw .failedToDecode("The file does not contain a buffer with index: \(view.buffer)")
+            }
+        } else {
+            throw .failedToDecode("The gltf file is using an unsupported feature or may be corrupt.")
+        }
     }
 }
 

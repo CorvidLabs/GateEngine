@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies a range of tile mappings.
-public struct D3DTileRangeFlags: OptionSet {
+public struct D3DTileRangeFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_TILE_RANGE_FLAGS
     public typealias RawValue = WinSDK.D3D12_TILE_RANGE_FLAGS.RawValue
     public let rawValue: RawValue

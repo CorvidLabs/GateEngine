@@ -6,6 +6,7 @@
  */
 #if !DISABLE_GRAVITY_TESTS
 
+@MainActor
 final class Unittest01SyntaxTests: GravityXCTestCase {
     func testSyntaxClassDeclaration() async {
         await runGravity(at: "unittest/01-syntax/class_declaration.gravity")

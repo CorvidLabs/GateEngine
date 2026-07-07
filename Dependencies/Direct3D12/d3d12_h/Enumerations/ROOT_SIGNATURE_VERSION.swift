@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies the version of root signature layout.
-public enum D3DRootSignatureVersion {
+public enum D3DRootSignatureVersion: Sendable {
     public typealias RawValue = WinSDK.D3D_ROOT_SIGNATURE_VERSION
     /// Version one of root signature layout.
     case v1_0

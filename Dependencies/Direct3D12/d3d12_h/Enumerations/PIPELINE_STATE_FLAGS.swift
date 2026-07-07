@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Flags to control pipeline state.
-public struct D3DPipelineStateFlags: OptionSet {
+public struct D3DPipelineStateFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_PIPELINE_STATE_FLAGS
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_PIPELINE_STATE_FLAGS.RawValue

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies how the pipeline interprets geometry or hull shader input primitives.
-public enum D3DPrimitiveTopologyType {
+public enum D3DPrimitiveTopologyType: Sendable {
     public typealias RawValue = WinSDK.D3D12_PRIMITIVE_TOPOLOGY_TYPE
 
     ///	The shader has not been initialized with an input primitive type.

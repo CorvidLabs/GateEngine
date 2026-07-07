@@ -21,21 +21,19 @@ public struct Music: Sendable {
         self.path = path
     }
 
+    @MainActor
     @discardableResult
     public static func play(
         _ music: Music,
         as kind: Kind = .soundTrack,
         config: ((_ activeMusic: ActiveMusic) -> Void)? = nil
     ) -> ActiveMusic {
-        
         let handle = ActiveMusic()
         config?(handle)
-        Task { @MainActor in
-            #if os(Windows) 
-                return
-            #endif
-            Game.unsafeShared.system(ofType: AudioSystem.self).queueMusic(music, as: kind, handle: handle)
-        }
+        #if os(Windows)
+            return handle
+        #endif
+        Game.shared.system(ofType: AudioSystem.self).queueMusic(music, as: kind, handle: handle)
         return handle
     }
     
@@ -63,7 +61,7 @@ extension Music: Hashable {
     }
 }
 
-public class ActiveMusic {
+public class ActiveMusic: @unchecked Sendable {
     private var playingWasSet: Bool = false
     weak var playing: AudioSystem.PlayingMusic? = nil {
         didSet {

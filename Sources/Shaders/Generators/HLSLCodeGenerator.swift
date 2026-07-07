@@ -6,7 +6,10 @@
  */
 #if DEBUG || canImport(Direct3D12)
 
-import Collections
+// Import the module that actually defines `OrderedSet` rather than the `Collections` umbrella
+// module (which only re-exports it) so member lookups (append, sort(by:), etc.) resolve under
+// Swift 6's member import visibility checking.
+import OrderedCollections
 import Foundation
 
 package final class HLSLCodeGenerator: CodeGenerator {

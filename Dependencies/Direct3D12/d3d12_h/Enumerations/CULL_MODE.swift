@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies triangles facing a particular direction are not drawn.
-public enum D3DCullMode {
+public enum D3DCullMode: Sendable {
     public typealias RawValue = WinSDK.D3D12_CULL_MODE
 
     ///	Always draw all triangles.

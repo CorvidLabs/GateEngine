@@ -12,6 +12,7 @@ public final class WavefrontOBJImporter: GeometryImporter {
     
     public required init() {}
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         do {
             let data = try Platform.current.synchronousLoadResource(from: path)
@@ -25,6 +26,7 @@ public final class WavefrontOBJImporter: GeometryImporter {
             throw GateEngineError(error)
         }
     }
+    #endif
     public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         do {
             let data = try await Platform.current.loadResource(from: path)

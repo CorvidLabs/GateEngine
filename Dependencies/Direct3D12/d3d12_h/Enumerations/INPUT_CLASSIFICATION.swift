@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Identifies the type of data contained in an input slot.
-public enum D3DInputClassification {
+public enum D3DInputClassification: Sendable {
     public typealias RawValue = WinSDK.D3D12_INPUT_CLASSIFICATION
     
     ///	Input data is per-vertex data.

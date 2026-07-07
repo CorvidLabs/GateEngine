@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies the border color for a static sampler.
-public enum D3DStaticBorderColor {
+public enum D3DStaticBorderColor: Sendable {
     public typealias RawValue = WinSDK.D3D12_STATIC_BORDER_COLOR
 
     ///	Indicates black, with the alpha component as fully transparent.

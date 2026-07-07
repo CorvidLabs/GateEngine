@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies comparison options.
-public enum D3DComparisonFunction {
+public enum D3DComparisonFunction: Sendable {
     public typealias RawValue = WinSDK.D3D12_COMPARISON_FUNC
     ///	Never pass the comparison.
     case neverSucceed

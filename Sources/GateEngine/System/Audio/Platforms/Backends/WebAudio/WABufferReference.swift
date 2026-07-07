@@ -7,9 +7,9 @@
 #if HTML5
 import WebAudio
 
-internal class WABufferReference: AudioBufferBackend {
+internal final class WABufferReference: AudioBufferBackend, @unchecked Sendable {
     unowned let audioBuffer: AudioBuffer
-    var buffer: WebAudio.AudioBuffer! = nil
+    nonisolated(unsafe) var buffer: WebAudio.AudioBuffer! = nil
 
     @inlinable
     var duration: Double {
@@ -18,26 +18,29 @@ internal class WABufferReference: AudioBufferBackend {
 
     required init(path: String, context: AudioContext, audioBuffer: AudioBuffer) {
         self.audioBuffer = audioBuffer
-        Task.detached {
-            let platform: WASIPlatform = await Game.shared.platform
-            let context = (context.reference as! WAContextReference).ctx
+        Task { @MainActor in
+            await self.loadAudio(path: path, context: context)
+        }
+    }
 
-            self.buffer = try await context.decodeAudioData(
-                audioData: try await platform.loadResourceAsArrayBuffer(from: path),
-                successCallback: { buffer in
-                    Task { @MainActor in
-                        self.buffer = buffer
-                        self.audioBuffer.state = .ready
-                    }
-                },
-                errorCallback: { error in
-                    #if DEBUG
-                    Log.warn("Resource \"\(path)\" failed ->", error)
-                    #endif
-                    self.audioBuffer.state = .failed(
-                        error: GateEngineError.failedToDecode("\(error)")
-                    )
-                }
+    @MainActor
+    private func loadAudio(path: String, context: AudioContext) async {
+        let platform: WASIPlatform = Game.shared.platform
+        let ctx = (context.reference as! WAContextReference).ctx
+
+        do {
+            let arrayBuffer = try await platform.loadResourceAsArrayBuffer(from: path)
+            // Use nonisolated(unsafe) to allow passing the ArrayBuffer to decodeAudioData
+            // This is safe because we're on the MainActor and WASI runs single-threaded
+            nonisolated(unsafe) let unsafeArrayBuffer = arrayBuffer
+            self.buffer = try await ctx.decodeAudioData(audioData: unsafeArrayBuffer)
+            self.audioBuffer.state = .ready
+        } catch {
+            #if DEBUG
+            Log.warn("Resource \"\(path)\" failed ->", error)
+            #endif
+            self.audioBuffer.state = .failed(
+                error: GateEngineError.failedToDecode("\(error)")
             )
         }
     }

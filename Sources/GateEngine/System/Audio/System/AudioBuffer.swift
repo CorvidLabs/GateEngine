@@ -10,7 +10,7 @@ internal protocol AudioBufferBackend: AnyObject {
     init(path: String, context: AudioContext, audioBuffer: AudioBuffer)
 }
 
-public class AudioBuffer: OldResource {
+public class AudioBuffer: OldResource, @unchecked Sendable {
     internal var reference: (any AudioBufferBackend)! = nil
 
     internal init(path: String, context: AudioContext) {

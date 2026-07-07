@@ -5,11 +5,11 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 
 /// Identifies the alpha value, transparency behavior, of a surface.
-public enum DGIAlphaMode {
+public enum DGIAlphaMode: Sendable {
     public typealias RawValue = WinSDK.DXGI_ALPHA_MODE  
     
     /// Indicates that the transparency behavior is not specified.

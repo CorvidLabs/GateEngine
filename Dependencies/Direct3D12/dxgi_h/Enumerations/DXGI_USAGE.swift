@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Flags for surface and resource creation options.
-public struct DGIUsage: OptionSet {
+public struct DGIUsage: OptionSet, Sendable {
     public typealias RawValue = WinSDK.DXGI_USAGE
     public let rawValue: RawValue
 

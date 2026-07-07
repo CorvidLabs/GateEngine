@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies RGB or alpha blending operations.
-public enum D3DBlendOperation {
+public enum D3DBlendOperation: Sendable {
     public typealias RawValue = WinSDK.D3D12_BLEND_OP
 
     ///	Add source 1 and source 2.

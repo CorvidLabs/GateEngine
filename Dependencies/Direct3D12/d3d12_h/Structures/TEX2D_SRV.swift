@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresource from a 2D texture to use in a shader-resource view.
-public struct D3DTexture2DShaderResourceView {
+public struct D3DTexture2DShaderResourceView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2D_SRV
     @usableFromInline
     internal var rawValue: RawValue

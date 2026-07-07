@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies a type of resource barrier (transition in resource use) description.
-public enum D3DResourceBarrierType {
+public enum D3DResourceBarrierType: Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_BARRIER_TYPE
 
     ///	A transition barrier that indicates a transition of a set of subresources between different usages. The caller must specify the before and after usages of the subresources.

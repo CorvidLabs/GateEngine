@@ -5,9 +5,9 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
-public struct D3DViewport {
+public struct D3DViewport: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_VIEWPORT
     @usableFromInline
     internal var rawValue: RawValue

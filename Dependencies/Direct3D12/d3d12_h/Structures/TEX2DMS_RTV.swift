@@ -5,9 +5,9 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
-public struct D3DTexture2DMultiSampledRenderTargetView {
+public struct D3DTexture2DMultiSampledRenderTargetView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2DMS_RTV
     @usableFromInline
     internal var rawValue: RawValue

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresources from a resource that are accessible by using an unordered-access view.
-public struct D3DUnorderedAccessViewDescription {
+public struct D3DUnorderedAccessViewDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_UNORDERED_ACCESS_VIEW_DESC
     @usableFromInline
     internal var rawValue: RawValue

@@ -100,7 +100,7 @@ extension _RenderTargetProtocol {
     }
 }
 
-@MainActor public final class RenderTarget: View, RenderTargetProtocol, _RenderTargetProtocol {
+@MainActor public final class RenderTarget: View, @MainActor RenderTargetProtocol, @MainActor _RenderTargetProtocol {
     @usableFromInline
     var renderTargetBackend: any RenderTargetBackend
     var previousSize: Size2i? = nil
@@ -158,6 +158,20 @@ extension _RenderTargetProtocol {
     }
 
     public private(set) lazy var texture: Texture = Texture(renderTarget: self)
+}
+
+extension RenderTarget: Equatable {
+    @inlinable
+    nonisolated public static func == (lhs: RenderTarget, rhs: RenderTarget) -> Bool {
+        return lhs === rhs
+    }
+}
+
+extension RenderTarget: Hashable {
+    @inlinable
+    nonisolated public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
 }
 
 extension _RenderTargetProtocol {

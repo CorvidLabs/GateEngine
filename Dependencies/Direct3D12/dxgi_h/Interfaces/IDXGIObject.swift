@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public class DGIObject: IUnknown {
     @inlinable

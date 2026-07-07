@@ -14,7 +14,7 @@ final class X11Window: WindowBacking {
     nonisolated var xDisplay: OpaquePointer {
         return Self.xDisplay
     }
-    nonisolated let glxContext: GLXContext
+    nonisolated(unsafe) let glxContext: GLXContext
     var state: Window.State = .hidden
 
     // Stoted Metadata
@@ -609,8 +609,8 @@ final class X11Window: WindowBacking {
 }
 
 extension X11Window {
-    static let xDisplay: OpaquePointer = XOpenDisplay(nil)!
-    static let xScreen: Int32 = XDefaultScreen(xDisplay)
+    nonisolated(unsafe) static let xDisplay: OpaquePointer = XOpenDisplay(nil)!
+    nonisolated(unsafe) static let xScreen: Int32 = XDefaultScreen(xDisplay)
     static let visualInfo: XVisualInfo = {
         var att: [Int32] = [
             GLX_RGBA, 1,

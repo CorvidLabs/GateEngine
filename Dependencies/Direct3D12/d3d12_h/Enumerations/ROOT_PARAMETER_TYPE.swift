@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies the type of root signature slot.
-public enum D3DRootParameterType {
+public enum D3DRootParameterType: Sendable {
     public typealias RawValue = WinSDK.D3D12_ROOT_PARAMETER_TYPE
 
     ///	The slot is for a descriptor table.

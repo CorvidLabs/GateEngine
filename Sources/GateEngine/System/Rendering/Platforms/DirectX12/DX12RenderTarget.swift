@@ -48,7 +48,7 @@ class DX12RenderTarget: RenderTargetBackend {
     }
 
     @inlinable
-    private var renderer: DX12Renderer {
+    internal var renderer: DX12Renderer {
         return Game.shared.renderer.backend
     }
 
@@ -246,7 +246,7 @@ class DX12RenderTarget: RenderTargetBackend {
         renderer.cachedContent.removeAll(keepingCapacity: true)
     }
 
-    func willBeginContent(matrices: Matrices?, viewport: GameMath.Rect?, scissorRect: GameMath.Rect?) {
+    func willBeginContent(matrices: Matrices?, viewport: GameMath.Rect?, scissorRect: GameMath.Rect?, stencil: UInt8?) {
         do {
             try self.commandList.reset(
                 usingOriginalAllocator: commandAllocator,
@@ -268,7 +268,7 @@ class DX12RenderTarget: RenderTargetBackend {
                     D3DViewport(width: viewport.size.width, height: viewport.size.height)
                 ])
             } else {
-                self.commandList.setViewports([D3DViewport(width: size.width, height: size.height)])
+                self.commandList.setViewports([D3DViewport(width: Float(size.width), height: Float(size.height))])
             }
             
             if let scissorRect: Rect = scissorRect {
@@ -284,6 +284,10 @@ class DX12RenderTarget: RenderTargetBackend {
                 self.commandList.setScissorRects([
                     D3DRect(x: 0, y: 0, width: Int(size.width), height: Int(size.height))
                 ])
+            }
+
+            if let stencil {
+                self.commandList.setStencilReference(UInt32(stencil))
             }
         } catch {
             DX12Renderer.checkError(error)

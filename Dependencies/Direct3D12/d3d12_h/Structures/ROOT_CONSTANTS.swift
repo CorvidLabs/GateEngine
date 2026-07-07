@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes constants inline in the root signature that appear in shaders as one constant buffer.
-public struct D3DRootConstants {
+public struct D3DRootConstants: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_ROOT_CONSTANTS
     @usableFromInline
     internal var rawValue: RawValue

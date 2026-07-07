@@ -6,7 +6,7 @@
  */
 #if HTML5
 import DOM
-import WebGL1
+@preconcurrency import WebGL1
 import WebGL2
 import GameMath
 
@@ -17,14 +17,14 @@ final class WebGL2RenderTarget: RenderTargetBackend {
     let colorTexture: WebGL1.WebGLTexture?
     let depthTexture: WebGL1.WebGLTexture?
 
-    var size: Size2
+    var size: Size2i
 
     var clearColor: Color = .clear
 
     func reshape() {
         if isWindow {
             let element = globalThis.document.getElementById(elementId: "mainCanvas")!
-            let canvas = HTMLCanvasElement(from: element)!
+            let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
             canvas.width = UInt32(self.size.width)
             canvas.height = UInt32(self.size.height)
         } else {
@@ -83,16 +83,16 @@ final class WebGL2RenderTarget: RenderTargetBackend {
 
         if isWindow {
             let element = globalThis.document.getElementById(elementId: "mainCanvas")!
-            let canvas = HTMLCanvasElement(from: element)!
+            let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
             self.framebuffer = nil
             self.colorTexture = nil
             self.depthTexture = nil
-            self.size = Size2(Float(canvas.width), Float(canvas.height))
+            self.size = Size2i(width: Int(canvas.width), height: Int(canvas.height))
         } else {
-            self.framebuffer = context.createFramebuffer()!
-            self.colorTexture = context.createTexture()!
-            self.depthTexture = context.createTexture()!
-            self.size = Size2(2, 2)
+            self.framebuffer = context.createFramebuffer()
+            self.colorTexture = context.createTexture()
+            self.depthTexture = context.createTexture()
+            self.size = Size2i(width: 2, height: 2)
 
             context.bindTexture(target: GL.TEXTURE_2D, texture: colorTexture)
             context.texImage2D(
@@ -183,14 +183,15 @@ final class WebGL2RenderTarget: RenderTargetBackend {
     }
 
     deinit {
+        let gl = WebGL2Renderer.context
         if let framebuffer {
-            WebGL2Renderer.context.deleteFramebuffer(framebuffer: framebuffer)
+            gl.deleteFramebuffer(framebuffer: framebuffer)
         }
         if let colorTexture {
-            WebGL2Renderer.context.deleteTexture(texture: colorTexture)
+            gl.deleteTexture(texture: colorTexture)
         }
         if let depthTexture {
-            WebGL2Renderer.context.deleteTexture(texture: depthTexture)
+            gl.deleteTexture(texture: depthTexture)
         }
     }
 }
@@ -215,7 +216,7 @@ extension WebGL2RenderTarget {
         }
     }
 
-    func willBeginContent(matrices: Matrices?, viewport: Rect?, scissorRect: Rect?) {
+    func willBeginContent(matrices: Matrices?, viewport: Rect?, scissorRect: Rect?, stencil: UInt8?) {
         context.bindFramebuffer(target: GL.FRAMEBUFFER, framebuffer: framebuffer)
         
         if let viewport {

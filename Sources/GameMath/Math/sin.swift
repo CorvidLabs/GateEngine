@@ -5,44 +5,80 @@
  * http://stregasgate.com
  */
 
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Bionic)
+import Bionic
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(WASILibc)
+import WASILibc
+#elseif os(Windows)
+import ucrt
+#endif
+
 // MARK: - Floats
 
 @_disfavoredOverload // <- prefer native overloads
-@inlinable
 public func sin<T: BinaryFloatingPoint>(_ x: T) -> T {
-    #if canImport(Foundation)
     switch x {
     #if !((os(macOS) || targetEnvironment(macCatalyst)) && arch(x86_64))
     case let x as Float16:
-        return T(Foundation.sin(Float32(x)))
+        return T(_sin(Float32(x)))
     #endif
     case let x as Float32:
-        return T(Foundation.sin(x))
+        return T(_sin(x))
     case let x as Float64:
-        return T(Foundation.sin(x))
+        return T(_sin(x))
     default:
-        return T(Foundation.sin(Float64(x)))
+        return T(_sin(Float64(x)))
     }
+}
+
+// MARK: - Native
+
+internal func _sin(_ x: Float32) -> Float32 {
+    #if canImport(Darwin)
+    return Darwin.sinf(x)
+    #elseif canImport(Glibc)
+    return Glibc.sinf(x)
+    #elseif canImport(Bionic)
+    return Bionic.sinf(x)
+    #elseif canImport(Musl)
+    return Musl.sinf(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.sinf(x)
+    #elseif os(Windows)
+    return ucrt.sinf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
 }
 
-// MARK: - Native
+internal func _sin(_ x: Float64) -> Float64 {
+    #if canImport(Darwin)
+    return Darwin.sin(x)
+    #elseif canImport(Glibc)
+    return Glibc.sin(x)
+    #elseif canImport(Bionic)
+    return Bionic.sin(x)
+    #elseif canImport(Musl)
+    return Musl.sin(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.sin(x)
+    #elseif os(Windows)
+    return ucrt.sin(x)
+    #else
+    fatalError("Unsupported platform.")
+    #endif
+}
 
-#if canImport(Foundation)
-public import func Foundation.sin
-
-@_transparent
-@inlinable
 public func sin(_ x: Float32) -> Float32 {
-    return Foundation.sin(x)
+    return _sin(x)
 }
 
-@_transparent
-@inlinable
 public func sin(_ x: Float64) -> Float64 {
-    return Foundation.sin(x)
+    return _sin(x)
 }
-
-#endif

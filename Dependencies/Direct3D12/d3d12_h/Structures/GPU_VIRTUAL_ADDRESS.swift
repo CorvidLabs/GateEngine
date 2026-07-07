@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 public typealias D3DGPUVirtualAddress = WinSDK.D3D12_GPU_VIRTUAL_ADDRESS
 

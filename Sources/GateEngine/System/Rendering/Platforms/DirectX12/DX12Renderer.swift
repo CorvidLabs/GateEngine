@@ -10,9 +10,9 @@ import Direct3D12
 import GameMath
 import Shaders
 
-final class DX12Renderer: RendererBackend {
+final class DX12Renderer: Renderer {
     @inlinable
-    var renderingAPI: RenderingAPI { .d3d12 }
+    nonisolated static var api: RenderingAPI { .d3d12 }
     let factory: DGIFactory
     let device: D3DDevice
 
@@ -58,7 +58,7 @@ final class DX12Renderer: RendererBackend {
         renderTarget: some _RenderTargetProtocol
     ) {
         let renderTarget: DX12RenderTarget = renderTarget.renderTargetBackend as! DX12RenderTarget
-        guard let geometries = drawCommand.geometries?.map({ unsafeDowncast(_geometries, to: DX12Geometry.self) }) else {return}
+        guard let geometries = drawCommand.geometries?.map({ unsafeDowncast($0, to: DX12Geometry.self) }) else {return}
         let commandList: D3DGraphicsCommandList = renderTarget.commandList
         let data = createUniforms(drawCommand, camera, matrices)
         let shader: DX12Renderer.DXShader = getShader(
@@ -181,7 +181,7 @@ final class DX12Renderer: RendererBackend {
 
 extension DX12Renderer {
     @inlinable
-    private func setGeometries(
+    internal func setGeometries(
         _ geometries: [DX12Geometry],
         on commandList: D3DGraphicsCommandList,
         at index: inout UInt32
@@ -215,7 +215,7 @@ extension DX12Renderer {
     }
 
     @inlinable
-    private func setTransforms(
+    internal func setTransforms(
         _ transforms: [Transform3],
         on commandList: D3DGraphicsCommandList,
         at index: inout UInt32
@@ -257,7 +257,7 @@ extension DX12Renderer {
     }
 
     @inlinable
-    private func setUniforms(
+    internal func setUniforms(
         _ uniforms: ContiguousArray<UInt8>,
         commandList: D3DGraphicsCommandList,
         at index: inout UInt32,
@@ -289,7 +289,7 @@ extension DX12Renderer {
     }
 
     @inlinable
-    private func setMaterials(
+    internal func setMaterials(
         _ materials: ContiguousArray<ShaderMaterial>,
         commandList: D3DGraphicsCommandList,
         at index: inout UInt32,
@@ -321,7 +321,7 @@ extension DX12Renderer {
     }
 
     @inlinable
-    private func setTextures(
+    internal func setTextures(
         _ textures: ContiguousArray<D3DResource?>,
         commandList: D3DGraphicsCommandList,
         at index: inout UInt32,
@@ -363,6 +363,7 @@ extension DX12Renderer {
         enum SampleFilter: UInt32 {
             case linear = 1
             case nearest = 2
+            case minLinearMaxNearest = 3
         }
 
         let scale: SIMD2<Float>
@@ -379,7 +380,7 @@ extension DX12Renderer {
     }
 
     @inlinable
-    private func createUniforms(_ drawCommand: DrawCommand, _ camera: Camera?, _ matricies: Matrices) -> (
+    internal func createUniforms(_ drawCommand: DrawCommand, _ camera: Camera?, _ matricies: Matrices) -> (
         uniforms: ContiguousArray<UInt8>, materials: ContiguousArray<ShaderMaterial>,
         textures: ContiguousArray<D3DResource?>
     ) {
@@ -467,6 +468,8 @@ extension DX12Renderer {
                 sampleFilter = .linear
             case .nearest:
                 sampleFilter = .nearest
+            case .minLinearMaxNearest:
+                sampleFilter = .minLinearMaxNearest
             }
 
             materials.append(
@@ -768,6 +771,8 @@ extension DX12Renderer {
             switch flags.depthTest {
             case .always:
                 description.depthStencilState.depthFunction = .alwaysSucceed
+            case .equal:
+                description.depthStencilState.depthFunction = .equalTo
             case .greater:
                 description.depthStencilState.depthFunction = .greaterThan
             case .greaterEqual:
@@ -992,7 +997,7 @@ extension DX12Renderer {
 
 extension Renderer {
     var backend: DX12Renderer {
-        return self._backend as! DX12Renderer
+        return unsafeDowncast(self, to: DX12Renderer.self)
     }
     var device: D3DDevice {
         return backend.device

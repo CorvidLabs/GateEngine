@@ -7,18 +7,19 @@
 #if HTML5
 import Foundation
 import Collections
+import OrderedCollections
 import DOM
-import JavaScriptKit
+@preconcurrency import JavaScriptKit
 import JavaScriptEventLoop
 
-public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
+public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
+    #if canImport(FileSystem)
     public static let fileSystem: WASIFileSystem = WASIFileSystem()
-    var staticResourceLocations: [URL]
+    #endif
+    lazy var staticResourceLocations: [URL] = Self.staticResourceLocations(delegate: Game.unsafeShared.delegate)
     var pathCache: [String: String] = [:]
 
-    init(delegate: any GameDelegate) {
-        self.staticResourceLocations = Self.staticResourceLocations(delegate: delegate)
-    }
+    init() {}
 
     static func staticResourceLocations(delegate: any GameDelegate) -> [Foundation.URL] {
         func getGameModuleName(_ delegate: AnyObject) -> String {
@@ -62,11 +63,11 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
         return files
     }
 
-    public func locateResource(from path: String) async -> String? {
+    nonisolated public func locateResource(from path: String) async -> String? {
         if let existing = pathCache[path] {
             return existing
         }
-        let delegatePaths = await Game.shared.delegate.resolvedCustomResourceLocations()
+        let delegatePaths = Game.unsafeShared.delegate.resolvedCustomResourceLocations()
 
         let searchPaths = OrderedSet(delegatePaths + staticResourceLocations)
         for searchPath in searchPaths {
@@ -84,7 +85,7 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
         return nil
     }
 
-    public func loadResourceAsArrayBuffer(from path: String) async throws -> ArrayBuffer {
+    nonisolated func loadResourceAsArrayBuffer(from path: String) async throws(GateEngineError) -> ArrayBuffer {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 if let object = try await fetch(resolvedPath).object {
@@ -94,26 +95,31 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
                 }
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
 
-    public func loadResource(from path: String) async throws -> Data {
+    nonisolated public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         let arrayBuffer: ArrayBuffer = try await loadResourceAsArrayBuffer(from: path)
         return Data(arrayBuffer)
     }
 
-    @inlinable
-    func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
+    // Use nonisolated(unsafe) to bypass Sendable checks for JSPromise/JSValue
+    // This is safe because WASI runs single-threaded
+    nonisolated func fetch(_ url: String, _ options: [String: JSValue] = [:]) async throws -> JSValue {
         let jsFetch = JSObject.global.fetch.function!
-        return try await JSPromise(jsFetch(url, options).object!)!.value
+        let promise = JSPromise(jsFetch(url, options).object!)!
+        nonisolated(unsafe) let unsafePromise = promise
+        let result = try await unsafePromise.value
+        nonisolated(unsafe) let unsafeResult = result
+        return unsafeResult
     }
 
     func saveStatePath(forStateNamed name: String) throws -> String {
-        return URL(fileURLWithPath: try fileSystem.pathForSearchPath(.persistent, in: .currentUser))
+        return URL(fileURLWithPath: try Self.fileSystem.pathForSearchPath(.persistent, in: .currentUser))
             .appendingPathComponent(name).path
     }
 
@@ -121,15 +127,15 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
         let data = try JSONEncoder().encode(state)
         let path = try self.saveStatePath(forStateNamed: name)
         let dir = URL(fileURLWithPath: path).deletingLastPathComponent().path
-        if await fileSystem.itemExists(at: dir) == false {
-            try await fileSystem.createDirectory(at: dir)
+        if await Self.fileSystem.itemExists(at: dir) == false {
+            try await Self.fileSystem.createDirectory(at: dir)
         }
-        try await fileSystem.write(data, to: path)
+        try await Self.fileSystem.write(data, to: path)
     }
 
     func loadState(named name: String) async -> Game.State {
         do {
-            let data = try await fileSystem.read(from: try saveStatePath(forStateNamed: name))
+            let data = try await Self.fileSystem.read(from: try saveStatePath(forStateNamed: name))
             let state = try JSONDecoder().decode(Game.State.self, from: data)
             state.name = name
             return state
@@ -158,6 +164,12 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
 
     public var supportsMultipleWindows: Bool {
         return false
+    }
+
+    @MainActor
+    public func font(named name: String) -> Font {
+        Log.infoOnce("Current platform does not support system fonts. Using default font.")
+        return .default
     }
 
     internal enum Browser: CustomStringConvertible {
@@ -292,19 +304,20 @@ public final class WASIPlatform: PlatformProtocol, InternalPlatformProtocol {
 
 extension WASIPlatform {
     @MainActor func setupDocument() {
-        globalThis.onbeforeunload = { event -> String? in
+        globalThis.jsObject.onbeforeunload = .object(JSClosure { event -> JSValue in
             Game.shared.willTerminate()
-            return nil
-        }
+            return .null
+        }.jsValue.object!)
         let document: Document = globalThis.document
 
         if let ele = document.head?.children.namedItem(name: "viewport") {
-            if let meta = HTMLMetaElement(from: ele) {
+            if let meta = HTMLMetaElement(from: ele.jsValue) {
                 meta.content += ", viewport-fit=cover"
             }
         }
 
-        if let style = HTMLStyleElement(from: document.createElement(localName: "style")) {
+        let createdElement = document.createElement(localName: "style")
+        if let style = HTMLStyleElement(from: createdElement.jsValue) {
             style.innerText = """
                 html, body, canvas {
                     margin: 0 !important; padding: 0 !important; height: 100%; overflow: hidden;
@@ -340,25 +353,40 @@ extension WASIPlatform {
     }
 }
 
+extension WASIPlatform {
+    func setCursorStyle(_ style: Mouse.Style) {
+        // No-op on WASI/HTML5
+    }
+
+    func prefferedFrameRate() -> Int {
+        return 60
+    }
+
+    func minimumFrameRate() -> Int {
+        return 12
+    }
+}
+
 internal final class WASIUserActivationRenderingSystem: RenderingSystem {
     let text = Text(string: "Click to Start", pointSize: 64, style: .bold, color: .white)
     let banner = Sprite(
         texture: Texture(
             path: "GateEngine/Branding/Banner Logo Transparent.png",
-            sizeHint: Size2(1200, 244)
+            sizeHint: Size2i(width: 1200, height: 244)
         ),
         bounds: Rect(size: Size2(1200, 244)),
         sampleFilter: .linear
     )
 
-    override func setup(game: Game) {
+    override func setup(context: ECSContext) {
         game.insertSystem(HIDSystem.self)
         game.windowManager.mainWindow?.clearColor = .stregasgateBackground
-        banner.texture.cacheHint = .whileReferenced
+        banner.texture.cacheHint = CacheHint.whileReferenced
     }
 
     var somethingWasPressed = false
-    override func render(game: Game, window: Window, withTimePassed deltaTime: Float) {
+    override func render(context: ECSContext, into view: GameView, withTimePassed deltaTime: Float) {
+        guard let window = view as? Window else { return }
         var canvas = Canvas()
 
         canvas.insert(
@@ -400,7 +428,7 @@ internal final class WASIUserActivationRenderingSystem: RenderingSystem {
         }
     }
 
-    override func teardown(game: Game) {
+    override func teardown(context: ECSContext) {
         game.windowManager.mainWindow?.clearColor = .black
         game.addPlatformSystems()
         Task {

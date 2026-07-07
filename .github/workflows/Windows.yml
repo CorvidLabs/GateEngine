@@ -14,14 +14,14 @@ jobs:
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:
-          branch: swift-5.10-release
-          tag: 5.10-RELEASE
+          swift-version: swift-6.2-release
+          swift-build: 6.2-RELEASE
       - uses: actions/checkout@v3
       
       - name: Swift Version
         run: swift --version
       
       - name: Build
-        run: swift build
+        run: swift build -v -j 1 -Xlinker /VERBOSE
       - name: Test
-        run: swift test
+        run: swift test -v -j 1 -Xlinker /VERBOSE

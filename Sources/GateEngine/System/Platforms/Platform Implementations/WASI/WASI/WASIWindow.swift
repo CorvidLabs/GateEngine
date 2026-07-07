@@ -5,11 +5,11 @@
  * http://stregasgate.com
  */
 #if HTML5
+import Foundation
 import DOM
 import WebGL2
 import GameMath
 import JavaScriptKit
-import DOM
 
 final class WASIWindow: WindowBacking {
     unowned let window: Window
@@ -71,7 +71,7 @@ final class WASIWindow: WindowBacking {
 
         let _canvas = document.createElement(localName: "canvas")
         _canvas.id = "mainCanvas"
-        canvas = HTMLCanvasElement(from: _canvas)!
+        canvas = HTMLCanvasElement(unsafelyWrapping: _canvas.jsObject)
         _ = document.body!.appendChild(node: canvas)
     }
 
@@ -154,7 +154,6 @@ final class WASIWindow: WindowBacking {
         pointerLock.setRequestedLockIfNeeded()
     }
 
-    @inlinable
     private func getPositionAndDelta(from event: MouseEvent) -> (
         position: Position2, delta: Position2
     ) {
@@ -188,10 +187,10 @@ final class WASIWindow: WindowBacking {
                 Game.shared.hid.mouse.mode = .standard
             }
         }
-        globalThis.onresize = { event -> JSValue in
-            self.updateStoredMetaData()
+        globalThis.jsObject.onresize = .object(JSClosure { [weak self] event -> JSValue in
+            self?.updateStoredMetaData()
             return .null
-        }
+        }.jsValue.object!)
 
         globalThis.addEventListener(type: "keydown") { event in
             let event = DOM.KeyboardEvent(unsafelyWrapping: event.jsObject)
@@ -348,10 +347,13 @@ final class WASIWindow: WindowBacking {
                         y: Float(touch.pageY)
                     )
                     Game.shared.hid.screenTouchChange(
-                        id: touch.identifier,
+                        id: self.touchID(for: touch.identifier),
                         kind: .physical,
                         event: .began,
-                        position: position
+                        position: position,
+                        precisionPosition: nil,
+                        pressure: 1.0,
+                        window: self.window
                     )
                 }
             }
@@ -367,10 +369,13 @@ final class WASIWindow: WindowBacking {
                         y: Float(touch.pageY)
                     )
                     Game.shared.hid.screenTouchChange(
-                        id: touch.identifier,
+                        id: self.touchID(for: touch.identifier),
                         kind: .physical,
                         event: .moved,
-                        position: position
+                        position: position,
+                        precisionPosition: nil,
+                        pressure: 1.0,
+                        window: self.window
                     )
                 }
             }
@@ -386,11 +391,15 @@ final class WASIWindow: WindowBacking {
                         y: Float(touch.pageY)
                     )
                     Game.shared.hid.screenTouchChange(
-                        id: touch.identifier,
+                        id: self.touchID(for: touch.identifier),
                         kind: .physical,
                         event: .ended,
-                        position: position
+                        position: position,
+                        precisionPosition: nil,
+                        pressure: 1.0,
+                        window: self.window
                     )
+                    self.removeTouchID(for: touch.identifier)
                 }
                 if event.isTrusted {
                     self.performedUserGesture()
@@ -408,15 +417,36 @@ final class WASIWindow: WindowBacking {
                         y: Float(touch.pageY)
                     )
                     Game.shared.hid.screenTouchChange(
-                        id: touch.identifier,
+                        id: self.touchID(for: touch.identifier),
                         kind: .physical,
                         event: .canceled,
-                        position: position
+                        position: position,
+                        precisionPosition: nil,
+                        pressure: 1.0,
+                        window: self.window
                     )
+                    self.removeTouchID(for: touch.identifier)
                 }
             }
             event.preventDefault()
         }
+    }
+
+    // MARK: - Touch ID mapping
+    // Map browser touch identifiers (Int32) to UUIDs for the HID system
+    private var touchIDMap: [Int32: UUID] = [:]
+
+    private func touchID(for browserID: Int32) -> UUID {
+        if let existing = touchIDMap[browserID] {
+            return existing
+        }
+        let newID = UUID()
+        touchIDMap[browserID] = newID
+        return newID
+    }
+
+    private func removeTouchID(for browserID: Int32) {
+        touchIDMap.removeValue(forKey: browserID)
     }
 
     @inlinable

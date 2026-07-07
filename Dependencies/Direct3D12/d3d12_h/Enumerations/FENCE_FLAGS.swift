@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies fence options.
-public struct D3DFenceFlags: OptionSet {
+public struct D3DFenceFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_FENCE_FLAGS
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_FENCE_FLAGS.RawValue

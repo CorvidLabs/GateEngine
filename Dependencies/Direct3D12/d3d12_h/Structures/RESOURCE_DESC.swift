@@ -5,11 +5,11 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 // @available(Windows, deprecated: 10.0.19041, renamed: "ResourceDescription1")
 /// Describes a resource, such as a texture. This structure is used extensively.
-public struct D3DResourceDescription {
+public struct D3DResourceDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_DESC
     @usableFromInline
     internal var rawValue: RawValue

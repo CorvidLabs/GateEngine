@@ -7,7 +7,13 @@
 
 #if canImport(Collections)
 
-import Collections
+// `Deque`, `OrderedSet`, and `OrderedDictionary` are all re-exported from `Collections` as type
+// aliases for the types defined in `DequeModule`/`OrderedCollections`. Importing `Collections`
+// alongside the modules that actually define these types makes every lookup ambiguous, so these
+// extensions import the defining modules directly instead of the `Collections` umbrella module.
+// They must be `public import`s since these types appear in `public extension` members below.
+public import DequeModule
+public import OrderedCollections
 
 extension Deque: BinaryCodable where Element: BinaryCodable {}
 public extension Deque where Element: BinaryCodable {

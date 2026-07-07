@@ -11,7 +11,7 @@ import OpenALSoft
 import LinuxSupport
 #endif
 
-internal class OABufferReference: AudioBufferBackend {
+internal class OABufferReference: AudioBufferBackend, @unchecked Sendable {
     var bufferID: ALuint! = nil
     unowned let audioBuffer: AudioBuffer
     lazy private(set) var duration: Double = {
@@ -20,10 +20,10 @@ internal class OABufferReference: AudioBufferBackend {
 
     required init(path: String, context: AudioContext, audioBuffer: AudioBuffer) {
         self.audioBuffer = audioBuffer
-        Task.detached {
+        Task.detached { @Sendable in
             do {
                 guard let path = await Platform.current.locateResource(from: path) else {
-                    throw GateEngineError.failedToLocate
+                    throw GateEngineError.failedToLocate(resource: path, nil)
                 }
 
                 let data = try await Platform.current.loadResource(from: path)

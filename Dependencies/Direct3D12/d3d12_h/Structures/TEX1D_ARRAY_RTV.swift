@@ -5,9 +5,9 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
-public struct D3DTexture1DArrayRenderTargetView {
+public struct D3DTexture1DArrayRenderTargetView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX1D_ARRAY_RTV
     @usableFromInline
     internal var rawValue: RawValue

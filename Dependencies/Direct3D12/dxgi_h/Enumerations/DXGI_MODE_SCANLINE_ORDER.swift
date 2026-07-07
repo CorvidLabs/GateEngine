@@ -5,11 +5,11 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 
 /// Flags indicating the method the raster uses to create an image on a surface.
-public enum DGIModeScanlineOrder {
+public enum DGIModeScanlineOrder: Sendable {
     public typealias RawValue = WinSDK.DXGI_MODE_SCANLINE_ORDER 
     
     /// Scanline order is unspecified.

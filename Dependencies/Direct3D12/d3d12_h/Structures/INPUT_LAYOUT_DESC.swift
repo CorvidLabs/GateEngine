@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the input-buffer data for the input-assembler stage.
-public struct D3DInputLayoutDescription {
+public struct D3DInputLayoutDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_INPUT_LAYOUT_DESC
 
     /// An array of D3D12_INPUT_ELEMENT_DESC structures that describe the data types of the input-assembler stage.

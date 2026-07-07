@@ -164,7 +164,9 @@ extension Texture: Equatable, Hashable {
 // MARK: - Resource Manager
 
 public protocol TextureImporter: ResourceImporter {
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     func synchronousLoadTexture(options: TextureImporterOptions) throws(GateEngineError) -> RawTexture
+    #endif
     func loadTexture(options: TextureImporterOptions) async throws(GateEngineError) -> RawTexture
 }
 

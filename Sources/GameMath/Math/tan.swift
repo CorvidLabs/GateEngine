@@ -5,44 +5,80 @@
  * http://stregasgate.com
  */
 
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Bionic)
+import Bionic
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(WASILibc)
+import WASILibc
+#elseif os(Windows)
+import ucrt
+#endif
+
 // MARK: - Floats
 
 @_disfavoredOverload // <- prefer native overloads
-@inlinable
 public func tan<T: BinaryFloatingPoint>(_ x: T) -> T {
-    #if canImport(Foundation)
     switch x {
     #if !((os(macOS) || targetEnvironment(macCatalyst)) && arch(x86_64))
     case let x as Float16:
-        return T(Foundation.tan(Float32(x)))
+        return T(_tan(Float32(x)))
     #endif
     case let x as Float32:
-        return T(Foundation.tan(x))
+        return T(_tan(x))
     case let x as Float64:
-        return T(Foundation.tan(x))
+        return T(_tan(x))
     default:
-        return T(Foundation.tan(Float64(x)))
+        return T(_tan(Float64(x)))
     }
+}
+
+// MARK: - Native
+
+internal func _tan(_ x: Float32) -> Float32 {
+    #if canImport(Darwin)
+    return Darwin.tanf(x)
+    #elseif canImport(Glibc)
+    return Glibc.tanf(x)
+    #elseif canImport(Bionic)
+    return Bionic.tanf(x)
+    #elseif canImport(Musl)
+    return Musl.tanf(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.tanf(x)
+    #elseif os(Windows)
+    return ucrt.tanf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
 }
 
-// MARK: - Native
+internal func _tan(_ x: Float64) -> Float64 {
+    #if canImport(Darwin)
+    return Darwin.tan(x)
+    #elseif canImport(Glibc)
+    return Glibc.tan(x)
+    #elseif canImport(Bionic)
+    return Bionic.tan(x)
+    #elseif canImport(Musl)
+    return Musl.tan(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.tan(x)
+    #elseif os(Windows)
+    return ucrt.tan(x)
+    #else
+    fatalError("Unsupported platform.")
+    #endif
+}
 
-#if canImport(Foundation)
-public import func Foundation.tan
-
-@_transparent
-@inlinable
 public func tan(_ x: Float32) -> Float32 {
-    return Foundation.tan(x)
+    return _tan(x)
 }
 
-@_transparent
-@inlinable
 public func tan(_ x: Float64) -> Float64 {
-    return Foundation.tan(x)
+    return _tan(x)
 }
-
-#endif

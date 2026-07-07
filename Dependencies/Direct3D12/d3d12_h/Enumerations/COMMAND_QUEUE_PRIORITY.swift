@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Defines priority levels for a command queue.
-public enum D3DCommandQueuePriority {
+public enum D3DCommandQueuePriority: Sendable {
     public typealias RawValue = WinSDK.D3D12_COMMAND_QUEUE_PRIORITY
     
     ///	Normal priority.

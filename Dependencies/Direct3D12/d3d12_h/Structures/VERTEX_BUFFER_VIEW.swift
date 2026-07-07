@@ -5,9 +5,9 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
-public struct D3DVertexBufferView {
+public struct D3DVertexBufferView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_VERTEX_BUFFER_VIEW
     @usableFromInline
     internal var rawValue: RawValue

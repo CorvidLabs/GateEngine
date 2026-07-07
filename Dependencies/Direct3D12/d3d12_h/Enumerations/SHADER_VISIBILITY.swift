@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies the shaders that can access the contents of a given root signature slot.
-public enum D3DShaderVisibility {
+public enum D3DShaderVisibility: Sendable {
     public typealias RawValue = WinSDK.D3D12_SHADER_VISIBILITY
 
     ///	Specifies that all shader stages can access whatever is bound at the root signature slot.

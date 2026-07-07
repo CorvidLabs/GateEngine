@@ -14,16 +14,25 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Swift 6.2
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "6.2"
+
     - name: Install Android SDK
       run: |
-        cd ..
-        wget -q https://github.com/finagolfin/swift-android-sdk/releases/download/5.8/swift-5.8-android-24-sdk.tar.xz
-        tar xf swift-5.8-android-24-sdk.tar.xz
-        cd GateEngine
+        swift sdk install https://github.com/finagolfin/swift-android-sdk/releases/download/6.2/swift-6.2-RELEASE-android-24-0.1.artifactbundle.tar.gz --checksum c26ebfd4e32c0ca1beabcc45729b62042da57ee76d7d043f63f2235da90dc491
+
+    - name: List SDKs
+      run: swift sdk list
+
     - name: Swift Version
       run: swift --version
-    
+
     - name: Build using Swift
-      run: swift build --destination ../swift-5.8-android-24-sdk/usr/swiftpm-android-aarch64.json -Xlinker -rpath -Xlinker \$ORIGIN/lib/swift/android
-    - name: Test using Swift
-      run: swift test --destination ../swift-5.8-android-24-sdk/usr/swiftpm-android-aarch64.json -Xlinker -rpath -Xlinker \$ORIGIN/lib/swift/android
+      # ANDROID_NDK_ROOT must be unset for the SDK to function properly
+      # (GitHub Actions runners have this set by default)
+      # Only build Android-compatible targets (GateEngine has #error for Android)
+      env:
+        ANDROID_NDK_ROOT: ""
+      run: swift build --target GameMath --target GateUtilities --swift-sdk aarch64-unknown-linux-android24

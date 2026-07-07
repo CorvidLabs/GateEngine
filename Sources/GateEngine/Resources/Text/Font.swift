@@ -33,7 +33,7 @@ protocol FontBackend {
     ) -> AlignedCharacter
 }
 
-public final class Font: OldResource {
+public final class Font: OldResource, @unchecked Sendable {
     @RequiresState(.ready)
     var backend: (any FontBackend)! = nil
 
@@ -48,24 +48,21 @@ public final class Font: OldResource {
         return .regular
     }
 
+    @MainActor
     public init(ttfRegular regular: String, bold: String? = nil, italic: String? = nil, boldItalic: String? = nil) {
         super.init()
         #if DEBUG
         self._backend.configure(withOwner: self)
         #endif
         #if canImport(TrueType)
-        Task.detached {
+        Task { @MainActor in
             do {
                 let backend = try await TTFFont(regular: regular, bold: bold, italic: italic, boldItalic: boldItalic)
-                Task { @MainActor in
-                    self.backend = backend
-                    self.state = .ready
-                }
+                self.backend = backend
+                self.state = .ready
             } catch let error as GateEngineError {
-                Task { @MainActor in
-                    Log.debug("Resource \(regular) failed ->", error)
-                    self.state = .failed(error: error)
-                }
+                Log.debug("Resource \(regular) failed ->", error)
+                self.state = .failed(error: error)
             } catch {
                 Log.fatalError("error must be a GateEngineError")
             }
@@ -78,23 +75,20 @@ public final class Font: OldResource {
         #endif
     }
 
+    @MainActor
     public init(pngRegular regular: String) {
         super.init()
         #if DEBUG
         self._backend.configure(withOwner: self)
         #endif
-        Task.detached {
+        Task { @MainActor in
             do {
                 let backend = try await ImageFont(regular: regular)
-                Task { @MainActor in
-                    self.backend = backend
-                    self.state = .ready
-                }
+                self.backend = backend
+                self.state = .ready
             } catch let error as GateEngineError {
-                Task { @MainActor in
-                    Log.debug("Resource \(regular) failed ->", error)
-                    self.state = .failed(error: error)
-                }
+                Log.debug("Resource \(regular) failed ->", error)
+                self.state = .failed(error: error)
             } catch {
                 fatalError("error must be a GateEngineError")
             }
@@ -146,17 +140,18 @@ public final class Font: OldResource {
     }
 
     @inlinable
-    public nonisolated static var `default`: Font { .tuffy }
+    @MainActor public static var `default`: Font { .tuffy }
 
-    public nonisolated static let tuffy: Font = Font(
+    @MainActor public static let tuffy: Font = Font(
         ttfRegular: "GateEngine/Fonts/Tuffy/Tuffy.ttf",
         bold: "GateEngine/Fonts/Tuffy/Tuffy_Bold.ttf",
         italic: "GateEngine/Fonts/Tuffy/Tuffy_Italic.ttf",
         boldItalic: "GateEngine/Fonts/Tuffy/Tuffy_Bold_Italic.ttf"
     )
-    public nonisolated static let micro: Font = Font(pngRegular: "GateEngine/Fonts/Micro/micro.png")
-    public nonisolated static let babel: Font = Font(pngRegular: "GateEngine/Fonts/Babel/Babel.png")
+    @MainActor public static let micro: Font = Font(pngRegular: "GateEngine/Fonts/Micro/micro.png")
+    @MainActor public static let babel: Font = Font(pngRegular: "GateEngine/Fonts/Babel/Babel.png")
     
+    @MainActor
     public static func named(_ name: String) -> Font {
         return Platform.current.font(named: name)
     }

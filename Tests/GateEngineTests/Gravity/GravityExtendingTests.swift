@@ -13,7 +13,7 @@ import XCTest
 final class GravityExtendingTests: GateEngineXCTestCase {
     var gravity: Gravity! = nil
     var randomValue: Int = 0
-    override func setUp() {
+    override func setUp() async throws {
         gravity = Gravity()
         randomValue = Int.random(in: -10000 ..< 10000)
     }
