@@ -7,7 +7,6 @@
 #if HTML5
 import Foundation
 import OrderedCollections
-import OrderedCollections
 import DOM
 @preconcurrency import JavaScriptKit
 import JavaScriptEventLoop

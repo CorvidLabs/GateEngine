@@ -6,7 +6,6 @@
  */
 
 import DequeModule
-import DequeModule
 
 public typealias DeferredClosure = () -> Void
 public typealias DelayClosure = () -> Void
