@@ -254,7 +254,7 @@ extension Vector3 {
     public mutating func normalize() {
         if self != Self.zero {
             #if GameMathUseSIMD && canImport(simd)
-            self.simd = simd_fast_normalize(self.simd)
+            self.simd = simd_normalize(self.simd)
             #else
             let magnitude = self.magnitude
             let factor = 1 / magnitude
@@ -641,7 +641,7 @@ extension Array where Element: Vector3 {
     public func valuesArray() -> [Float] {
         var values: [Float] = []
         values.reserveCapacity(self.count * 3)
-        for value: some Vector3 in self {
+        for value in self {
             values.append(value.x)
             values.append(value.y)
             values.append(value.z)

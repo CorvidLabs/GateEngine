@@ -16,32 +16,72 @@ public struct Size3n<Scalar: Vector3n.ScalarType>: Vector3n {
     public var x: Scalar
     public var y: Scalar
     public var z: Scalar
-    private let _pad: Scalar // Foce power of 2 size
+    /**
+     This value is padding to force power of 2 memory alignment.
+     Some low level functions may manipulate this value, so it's readable.
+     - note: This value is not encoded or decoded.
+     */
+    public let w: Scalar
     
     public init(x: Scalar, y: Scalar, z: Scalar) {
         self.x = x
         self.y = y
         self.z = z
-        self._pad = 0
+        self.w = 0
+    }
+}
+
+public extension Size3n {
+    @inlinable
+    var xy: Size2n<Scalar> {
+        nonmutating get {
+            return Size2n(x: x, y: y)
+        }
+        mutating set {
+            self.x = newValue.x
+            self.y = newValue.y
+        }
+    }
+    
+    @inlinable
+    var xz: Size2n<Scalar> {
+        nonmutating get {
+            return Size2n(x: x, y: z)
+        }
+        mutating set {
+            self.x = newValue.x
+            self.z = newValue.y
+        }
+    }
+    
+    @inlinable
+    var yz: Size2n<Scalar> {
+        nonmutating get {
+            return Size2n(x: y, y: z)
+        }
+        mutating set {
+            self.y = newValue.x
+            self.z = newValue.y
+        }
     }
 }
 
 public extension Size3n {
     @inlinable
     var width: Scalar {
-        get { self.x }
+        nonmutating get { self.x }
         mutating set { self.x = newValue }
     }
     
     @inlinable
     var height: Scalar {
-        get { self.y }
+        nonmutating get { self.y }
         mutating set { self.y = newValue }
     }
     
     @inlinable
     var depth: Scalar {
-        get { self.z }
+        nonmutating get { self.z }
         mutating set { self.z = newValue }
     }
     
@@ -51,14 +91,13 @@ public extension Size3n {
     }
     
     @inlinable
+    @_transparent
     init(width: Scalar, height: Scalar, depth: Scalar) {
         self.init(x: width, y: height, z: depth)
     }
 }
 
 extension Size3n: AdditiveArithmetic where Scalar: AdditiveArithmetic { }
-extension Size3n: ExpressibleByIntegerLiteral where Scalar: FixedWidthInteger & _ExpressibleByBuiltinIntegerLiteral & ExpressibleByIntegerLiteral { }
-extension Size3n: ExpressibleByFloatLiteral where Scalar: FloatingPoint & _ExpressibleByBuiltinFloatLiteral & ExpressibleByFloatLiteral { }
 extension Size3n: Equatable where Scalar: Equatable { }
 extension Size3n: Hashable where Scalar: Hashable { }
 extension Size3n: Comparable where Scalar: Comparable { }
@@ -79,9 +118,10 @@ extension Size3n: Codable where Scalar: Codable {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.x, forKey: .x)
-        try container.encode(self.x, forKey: .y)
-        try container.encode(self.x, forKey: .z)
+        try container.encode(self.y, forKey: .y)
+        try container.encode(self.z, forKey: .z)
     }
 }
+extension Size3n: RandomAccessCollection, MutableCollection { }
 extension Size3n: BitwiseCopyable where Scalar: BitwiseCopyable { }
 extension Size3n: BinaryCodable where Self: BitwiseCopyable { }

@@ -52,6 +52,15 @@ extension GravityGetVarExtended {
     public func getVar<T: BinaryInteger>(_ key: String) -> T? {
         return getVar(key)?.getInt()
     }
+    
+    /**
+     Obtain a value from gravity.
+     - parameter key: The name of the `var` as written in the gravity script.
+     */
+    @inlinable
+    public func getVar<T: BinaryFloatingPoint>(_ key: String) -> T? {
+        return getVar(key)?.getFloat()
+    }
 
     /**
      Obtain a value from gravity.
@@ -142,6 +151,68 @@ extension GravitySetVarExtended {
     @inlinable
     public func setVar(_ key: String, to value: GravityInstance) {
         self.setVar(key, to: value.gravityValue)
+    }
+}
+
+extension GravitySetVarExtended {
+    /**
+     Assign a value to a `var` in the gravity script.
+     - parameter value: The swift value to assign
+     - parameter key: The name of the `extern var` as written in the gravity script.
+     */
+    @inlinable
+    public func setVar(_ key: String, to value: Optional<some BinaryInteger>) {
+        switch value {
+        case .none:
+            self.setVar(key, to: .null)
+        case .some(let value):
+            self.setVar(key, to: GravityValue(value))
+        }
+    }
+
+    /**
+     Assign a value to a `var` in the gravity script.
+     - parameter value: The swift value to assign
+     - parameter key: The name of the `extern var` as written in the gravity script.
+     */
+    @inlinable
+    public func setVar(_ key: String, to value: Optional<some BinaryFloatingPoint>) {
+        switch value {
+        case .none:
+            self.setVar(key, to: .null)
+        case .some(let value):
+            self.setVar(key, to: GravityValue(value))
+        }
+    }
+
+    /**
+     Assign a value to a `var` in the gravity script.
+     - parameter value: The swift value to assign
+     - parameter key: The name of the `extern var` as written in the gravity script.
+     */
+    @inlinable
+    public func setVar(_ key: String, to value: Optional<String>) {
+        switch value {
+        case .none:
+            self.setVar(key, to: .null)
+        case .some(let value):
+            self.setVar(key, to: GravityValue(value))
+        }
+    }
+
+    /**
+     Assign a value to a `var` in the gravity script.
+     - parameter value: The swift value to assign
+     - parameter key: The name of the `extern var` as written in the gravity script.
+     */
+    @inlinable
+    public func setVar(_ key: String, to value: Optional<GravityInstance>) {
+        switch value {
+        case .none:
+            self.setVar(key, to: .null)
+        case .some(let value):
+            self.setVar(key, to: value.gravityValue)
+        }
     }
 }
 

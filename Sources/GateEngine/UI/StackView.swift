@@ -5,6 +5,8 @@
  * http://stregasgate.com
  */
 
+import DequeModule
+
 extension StackView {
     public enum Axis {
         case horizontal

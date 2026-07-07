@@ -26,7 +26,7 @@ extension GLTF {
         case mat4 = "MAT4"
     }
 }
-private class GLTF: Decodable {
+private struct GLTF: Decodable, Sendable {
     var baseURL: URL? = nil
 
     let scene: Int
@@ -259,7 +259,7 @@ private class GLTF: Decodable {
     }
 
     lazy var cachedBuffers: [Data?] = Array(repeating: nil, count: buffers.count)
-    func buffer(at index: Int) -> Data? {
+    mutating func buffer(at index: Int) -> Data? {
         // Buffer 0 is pre-cached for glb files
         // So `existing` will always be present for index 0 of a glb file
         if let existing = cachedBuffers[index] {
@@ -289,7 +289,7 @@ private class GLTF: Decodable {
         return buffer
     }
 
-    func values<T: BinaryInteger>(forAccessor accessorIndex: Int) async -> [T]? {
+    mutating func values<T: BinaryInteger>(forAccessor accessorIndex: Int) async -> [T]? {
         let accessor = accessors[accessorIndex]
         let bufferView = bufferViews[accessor.bufferView]
         let count = accessor.count * accessor.primitiveCount
@@ -373,7 +373,7 @@ private class GLTF: Decodable {
         }
     }
 
-    func values<T: BinaryFloatingPoint>(forAccessor accessorIndex: Int) async -> [T]? {
+    mutating func values<T: BinaryFloatingPoint>(forAccessor accessorIndex: Int) async -> [T]? {
         let accessor = accessors[accessorIndex]
         let bufferView = bufferViews[accessor.bufferView]
         let count = accessor.count * accessor.primitiveCount
@@ -457,7 +457,7 @@ private class GLTF: Decodable {
         }
     }
     
-    func animationValues<T: BinaryFloatingPoint>(forAccessor accessorIndex: Int) async -> [T]? {
+    mutating func animationValues<T: BinaryFloatingPoint>(forAccessor accessorIndex: Int) async -> [T]? {
         let accessor = accessors[accessorIndex]
         let bufferView = bufferViews[accessor.bufferView]
         let count = accessor.count * accessor.primitiveCount
@@ -614,11 +614,38 @@ public extension GLTransmissionFormat {
             for primitive in mesh.primitives {
                 if primitive.material == materialIndex {
                     names.insert(mesh.name)
-                    continue
                 }
             }
         }
         return Array(names)
+    }
+    
+    func skinName(forMesh meshName: String) -> String? {
+        if let meshIndex = gltf.meshes?.firstIndex(where: {$0.name == meshName}) {
+            func findIn(_ parent: Int) -> Int? {
+                let node = gltf.nodes[parent]
+                for index in node.children ?? [] {
+                    let node = gltf.nodes[index]
+                    if let skinID = node.skin, node.mesh == meshIndex {
+                        return skinID
+                    }
+                }
+                for index in node.children ?? [] {
+                    if let value = findIn(index) {
+                        return value
+                    }
+                }
+                return nil
+            }
+            if let sceneNodes = gltf.scenes[gltf.scene].nodes {
+                for index in sceneNodes {
+                    if let value = findIn(index) {
+                        return gltf.skins?[value].name
+                    }
+                }
+            }
+        }
+        return nil
     }
     
     func meshNamesWithNoMaterial() -> [String] {
@@ -673,34 +700,34 @@ public extension GLTransmissionFormat {
     }
 }
 
-public final class GLTransmissionFormat: ResourceImporter {
+public struct GLTransmissionFormat: ResourceImporter {
     fileprivate var gltf: GLTF! = nil
-    required public init() {}
+    public init() {}
     
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
-    public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
+    public mutating func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         guard let path = Platform.current.synchronousLocateResource(from: path) else { throw .failedToLocate(resource: path, nil) }
         let baseURL = URL(fileURLWithPath: path).deletingLastPathComponent()
         do {
             let data = try Platform.current.synchronousLoadResource(from: path)
-            self.gltf = try gltf(from: data, baseURL: baseURL)
+            self.gltf = try Self.gltf(from: data, baseURL: baseURL)
         }catch{
             throw GateEngineError(error)
         }
     }
     #endif
-    public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
+    public mutating func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         guard let path = await Platform.current.locateResource(from: path) else { throw .failedToLocate(resource: path, nil) }
         let baseURL = URL(fileURLWithPath: path).deletingLastPathComponent()
         do {
             let data = try await Platform.current.loadResource(from: path)
-            self.gltf = try gltf(from: data, baseURL: baseURL)
+            self.gltf = try Self.gltf(from: data, baseURL: baseURL)
         }catch{
             throw GateEngineError(error)
         }
     }
     
-    fileprivate func gltf(from data: Data, baseURL: URL) throws -> GLTF {
+    fileprivate static func gltf(from data: Data, baseURL: URL) throws -> GLTF {
         var jsonData: Data = data
         var bufferData: Data? = nil
         if data[0 ..< 4] == Data("glTF".utf8) {
@@ -710,7 +737,7 @@ public final class GLTransmissionFormat: ResourceImporter {
             jsonData = data.advanced(by: 20)[..<byteCount]
             bufferData = data.advanced(by: (byteCount + 28))
         }
-        let gltf = try JSONDecoder().decode(GLTF.self, from: jsonData)
+        var gltf = try JSONDecoder().decode(GLTF.self, from: jsonData)
         gltf.baseURL = baseURL
         gltf.cachedBuffers[0] = bufferData
         return gltf
@@ -731,16 +758,21 @@ public final class GLTransmissionFormat: ResourceImporter {
 }
 
 extension GLTransmissionFormat: GeometryImporter {
-    public func loadGeometry(options: GeometryImporterOptions) async throws(GateEngineError) -> RawGeometry {
+    public mutating func loadGeometry(options: GeometryImporterOptions) async throws(GateEngineError) -> RawGeometry {
         guard gltf.meshes != nil else {throw GateEngineError.failedToDecode("File contains no geometry.")}
         
+        // TODO: Disambiguate desire for subObjectName
+        // Different software can output different names in different places.
+        // A mesh name could end up as a node.name, material.name, or mesh.name
+        // The end user needs a way to pick what they mean when they try to load geometry
+        // These changes need to be reflected in CollisionMesh importing as well
         var mesh: GLTF.Mesh? = nil
         if let name = options.subobjectName {
-            if let meshID = gltf.nodes.first(where: { $0.name == name })?.mesh {
-                mesh = gltf.meshes![meshID]
-            } else if let _mesh = gltf.meshes!.first(where: { $0.name == name }) {
+            if let _mesh = gltf.meshes!.first(where: { $0.name == name }) {
                 mesh = _mesh
-            } else {
+            }else if let meshID = gltf.nodes.first(where: { $0.name == name })?.mesh {
+                mesh = gltf.meshes![meshID]
+            }else{
                 let meshNames = gltf.meshes!.map({ $0.name })
                 let nodeNames = gltf.nodes.filter({ $0.mesh != nil }).map({ $0.name })
                 throw GateEngineError.failedToDecode(
@@ -848,29 +880,35 @@ extension GLTransmissionFormat: GeometryImporter {
             if geometries.count == 1 {
                 return geometries[0]
             }
-            return RawGeometry(byCombining: geometries, withOptimization: .dontOptimize)
+            return RawGeometry(combining: geometries)
         }()
 
         if options.applyRootTransform, let nodeIndex = gltf.scenes[gltf.scene].nodes?.first {
             let transform = gltf.nodes[nodeIndex].transform.createMatrix()
             return geometryBase * transform
-        }else if options.makeInstancesReal, let nodes = gltf.scenes[gltf.scene].nodes {
+        }else if options.makeInstancesReal, let sceneNodeIndicies = gltf.scenes[gltf.scene].nodes {
             var transformedGeometries: [RawGeometry] = []
-            let meshIndex = gltf.meshes!.firstIndex(where: {$0.name == mesh.name})
-            for index in nodes {
-                guard gltf.nodes[index].mesh == meshIndex else {continue}
-                var transform: Matrix4x4 = .identity
-                
-                func applyNode(_ nodeIndex: Int) {
-                    transform *= gltf.nodes[nodeIndex].transform.createMatrix()
-                    if let parent = nodes.first(where: {gltf.nodes[$0].children?.contains(nodeIndex) == true}) {
-                        applyNode(parent)
+            for meshIndex in gltf.meshes!.indices {
+                // mesh.name is not required to be unique
+                // Multiple meshes can have the same name for some reason but different content
+                // So we need to loop through every mesh and check every name
+                guard gltf.meshes![meshIndex].name == mesh.name else {continue}
+                for sceneNodeIndex in sceneNodeIndicies {
+                    guard gltf.nodes[sceneNodeIndex].mesh == meshIndex else {continue}
+                    var transform: Matrix4x4 = .identity
+                    
+                    func applyNode(_ sceneNodeIndex: Int) {
+                        transform *= gltf.nodes[sceneNodeIndex].transform.createMatrix()
+                        if let parent = sceneNodeIndicies.first(where: {gltf.nodes[$0].children?.contains(sceneNodeIndex) == true}) {
+                            applyNode(parent)
+                        }
                     }
+                    applyNode(sceneNodeIndex)
+                    transformedGeometries.append(geometryBase * transform)
                 }
-                applyNode(index)
-                transformedGeometries.append(geometryBase * transform)
             }
-            return RawGeometry(byCombining: transformedGeometries, withOptimization: .byEquality)
+            assert(transformedGeometries.isEmpty == false)
+            return RawGeometry(combining: transformedGeometries, optimizing: .byEquality)
         }else{
             return geometryBase
         }
@@ -903,7 +941,7 @@ extension GLTransmissionFormat: SkinImporter {
         }
         return nil
     }
-    private func inverseBindMatrices(
+    private mutating func inverseBindMatrices(
         from bufferView: GLTF.BufferView,
         expecting count: Int
     ) async -> [Matrix4x4]? {
@@ -927,24 +965,41 @@ extension GLTransmissionFormat: SkinImporter {
         })
     }
     
-    public func loadSkin(options: SkinImporterOptions) async throws(GateEngineError) -> RawSkin {
+    public mutating func loadSkin(options: SkinImporterOptions) async throws(GateEngineError) -> RawSkin {
         guard let skins = gltf.skins, skins.isEmpty == false else {
             throw GateEngineError.failedToDecode("File contains no skins.")
         }
         
-        guard gltf.meshes != nil else {throw GateEngineError.failedToDecode("File contains no geometry.")}
+        guard let meshes = gltf.meshes else {throw GateEngineError.failedToDecode("File contains no geometry.")}
 
         var skinIndex = 0
         if let name = options.subobjectName {
-            if let direct = gltf.skins?.firstIndex(where: {
-                $0.name.caseInsensitiveCompare(name) == .orderedSame
-            }) {
-                skinIndex = direct
-            } else if let nodeSkinIndex = gltf.nodes.first(where: {
-                $0.skin != nil && $0.name == name
-            })?.skin {
-                skinIndex = nodeSkinIndex
+            if let skinName = self.skinName(forMesh: name), let index = skins.firstIndex(where: {$0.name == skinName}) {
+                skinIndex = index
+            }else{
+                throw GateEngineError.failedToDecode(
+                    "Couldn't find skin named \(name)."
+                )
             }
+        }
+        
+        var meshIndex = 0
+        if let name = options.subobjectName {
+            if let meshID = gltf.nodes.first(where: { $0.name == name })?.mesh {
+                meshIndex = meshID
+            } else if let _mesh = meshes.firstIndex(where: { $0.name == name }) {
+                meshIndex = _mesh
+            } else {
+                let meshNames = meshes.map({ $0.name })
+                let nodeNames = gltf.nodes.filter({ $0.mesh != nil }).map({ $0.name })
+                throw GateEngineError.failedToDecode(
+                    "Couldn't find geometry named \(name).\nAvailable mesh names: \(meshNames)\nAvaliable node names: \(nodeNames)"
+                )
+            }
+        }else if let meshID = meshForSkin(skinID: skinIndex) {
+            meshIndex = meshID
+        }else{
+            throw GateEngineError.failedToDecode("Couldn't locate skin geometry.")
         }
 
         let skin = skins[skinIndex]
@@ -955,10 +1010,10 @@ extension GLTransmissionFormat: SkinImporter {
             throw GateEngineError.failedToDecode("Failed to parse skin.")
         }
 
-        guard let meshID = meshForSkin(skinID: skinIndex) else {
+        guard meshes.indices.contains(meshIndex) else {
             throw GateEngineError.failedToDecode("Couldn't locate skin geometry.")
         }
-        let mesh = gltf.meshes![meshID]
+        let mesh = meshes[meshIndex]
 
         guard let meshJoints: [UInt32] = await gltf.values(forAccessor: mesh.primitives[0][.joints]!) else {
             throw GateEngineError.failedToDecode("Failed to parse skin.")
@@ -1020,7 +1075,7 @@ extension GLTransmissionFormat: SkeletonImporter {
         return gltf.scenes[gltf.scene].nodes?.first
     }
 
-    public func loadSkeleton(options: SkeletonImporterOptions) async throws(GateEngineError) -> RawSkeleton {
+    public mutating func loadSkeleton(options: SkeletonImporterOptions) async throws(GateEngineError) -> RawSkeleton {
         guard let rootNode = skeletonNode(named: options.subobjectName) else {
             throw GateEngineError.failedToDecode("Couldn't find skeleton root.")
         }
@@ -1060,7 +1115,7 @@ extension GLTransmissionFormat: SkeletalAnimationImporter {
         return gltf.animations?.first
     }
     
-    public func loadSkeletalAnimation(options: SkeletalAnimationImporterOptions) async throws(GateEngineError) -> RawSkeletalAnimation {
+    public mutating func loadSkeletalAnimation(options: SkeletalAnimationImporterOptions) async throws(GateEngineError) -> RawSkeletalAnimation {
         guard let animation = animation(named: options.subobjectName) else {
             throw GateEngineError.failedToDecode(
                 "Couldn't find animation: \"\(options.subobjectName!)\".\nAvailable Animations: \((gltf.animations ?? []).map({$0.name}))"
@@ -1203,7 +1258,7 @@ extension GLTransmissionFormat: SkeletalAnimationImporter {
 }
 
 extension GLTransmissionFormat: ObjectAnimation3DImporter {
-    public func loadObjectAnimation(options: ObjectAnimation3DImporterOptions) async throws(GateEngineError) -> RawObjectAnimation3D {
+    public mutating func loadObjectAnimation(options: ObjectAnimation3DImporterOptions) async throws(GateEngineError) -> RawObjectAnimation3D {
         guard let animation = animation(named: options.subobjectName) else {
             throw GateEngineError.failedToDecode(
                 "Couldn't find animation: \"\(options.subobjectName!)\".\nAvailable Animations: \((gltf.animations ?? []).map({$0.name}))"
@@ -1305,7 +1360,7 @@ extension GLTransmissionFormat: ObjectAnimation3DImporter {
 extension GLTransmissionFormat: TextureImporter {
     // TODO: Supports only PNG. Add other formats (JPEG, WebP, ...)
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
-    public func synchronousLoadTexture(options: TextureImporterOptions) throws(GateEngineError) -> RawTexture {
+    public mutating func synchronousLoadTexture(options: TextureImporterOptions) throws(GateEngineError) -> RawTexture {
         let imageData: Data
         func loadImageData(image: GLTF.Image) throws(GateEngineError) -> Data {
             if let uri = image.uri {
@@ -1342,7 +1397,10 @@ extension GLTransmissionFormat: TextureImporter {
     }
     #endif
 
-    public func loadTexture(options: TextureImporterOptions) async throws(GateEngineError) -> RawTexture {
+    public mutating func loadTexture(options: TextureImporterOptions) async throws(GateEngineError) -> RawTexture {
+        #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
+        return try synchronousLoadTexture(options: options)
+        #else
         // Capture necessary properties before async work to avoid data races
         let gltfRef = self.gltf!
         let imageData: Data
@@ -1360,14 +1418,17 @@ extension GLTransmissionFormat: TextureImporter {
         }
 
         return try PNGDecoder().decode(imageData)
+        #endif
     }
 
+    #if !GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     private func loadImageDataAsync(image: GLTF.Image, gltf: GLTF) async throws(GateEngineError) -> Data {
         if let uri = image.uri {
             return try await Platform.current.loadResource(
                 from: gltf.baseURL!.appendingPathComponent(uri).path
             )
         } else if let bufferIndex = image.bufferView {
+            var gltf = gltf
             let view = gltf.bufferViews[bufferIndex]
 
             if let buffer = gltf.buffer(at: view.buffer) {
@@ -1379,19 +1440,20 @@ extension GLTransmissionFormat: TextureImporter {
             throw .failedToDecode("The gltf file is using an unsupported feature or may be corrupt.")
         }
     }
+    #endif
 }
 
 extension GLTransmissionFormat: CollisionMeshImporter {
-    public func loadCollisionMesh(options: CollisionMeshImporterOptions) async throws(GateEngineError) -> RawCollisionMesh {
+    public mutating func loadCollisionMesh(options: CollisionMeshImporterOptions) async throws(GateEngineError) -> RawCollisionMesh {
         guard gltf.meshes != nil else {throw GateEngineError.failedToDecode("File contains no geometry.")}
         
         var mesh: GLTF.Mesh? = nil
         if let name = options.subobjectName {
-            if let meshID = gltf.nodes.first(where: { $0.name == name })?.mesh {
-                mesh = gltf.meshes![meshID]
-            } else if let _mesh = gltf.meshes!.first(where: { $0.name == name }) {
+            if let _mesh = gltf.meshes!.first(where: { $0.name == name }) {
                 mesh = _mesh
-            } else {
+            }else if let meshID = gltf.nodes.first(where: { $0.name == name })?.mesh {
+                mesh = gltf.meshes![meshID]
+            }else{
                 let meshNames = gltf.meshes!.map({ $0.name })
                 let nodeNames = gltf.nodes.filter({ $0.mesh != nil }).map({ $0.name })
                 throw GateEngineError.failedToDecode(
@@ -1495,30 +1557,36 @@ extension GLTransmissionFormat: CollisionMeshImporter {
             throw GateEngineError.failedToDecode("Failed to decode geometry.")
         }
         
-        let geometryBase = RawGeometry(byCombining: geometries, withOptimization: .dontOptimize)
+        let geometryBase = RawGeometry(combining: geometries)
         
         if options.applyRootTransform, let nodeIndex = gltf.scenes[gltf.scene].nodes?.first {
             let transform = gltf.nodes[nodeIndex].transform.createMatrix()
             let geometryBase = geometryBase * transform
             let triangles = geometryBase.generateCollisionTriangles(using: options.collisionAttributes)
             return RawCollisionMesh(collisionTriangles: triangles) 
-        }else if options.makeInstancesReal, let nodes = gltf.scenes[gltf.scene].nodes {
+        }else if options.makeInstancesReal, let sceneNodeIndicies = gltf.scenes[gltf.scene].nodes {
             var transformedGeometries: [RawGeometry] = []
-            let meshIndex = gltf.meshes!.firstIndex(where: {$0.name == mesh.name})
-            for index in nodes {
-                guard gltf.nodes[index].mesh == meshIndex else {continue}
-                var transform: Matrix4x4 = .identity
-                
-                func applyNode(_ nodeIndex: Int) {
-                    transform *= gltf.nodes[nodeIndex].transform.createMatrix()
-                    if let parent = nodes.first(where: {gltf.nodes[$0].children?.contains(nodeIndex) == true}) {
-                        applyNode(parent)
+            for meshIndex in gltf.meshes!.indices {
+                // mesh.name is not required to be unique
+                // Multiple meshes can have the same name for some reason but different content
+                // So we need to loop through every mesh and check every name
+                guard gltf.meshes![meshIndex].name == mesh.name else {continue}
+                for sceneNodeIndex in sceneNodeIndicies {
+                    guard gltf.nodes[sceneNodeIndex].mesh == meshIndex else {continue}
+                    var transform: Matrix4x4 = .identity
+                    
+                    func applyNode(_ sceneNodeIndex: Int) {
+                        transform *= gltf.nodes[sceneNodeIndex].transform.createMatrix()
+                        if let parent = sceneNodeIndicies.first(where: {gltf.nodes[$0].children?.contains(sceneNodeIndex) == true}) {
+                            applyNode(parent)
+                        }
                     }
+                    applyNode(sceneNodeIndex)
+                    transformedGeometries.append(geometryBase * transform)
                 }
-                applyNode(index)
-                transformedGeometries.append(geometryBase * transform)
             }
-            let geometryBase = RawGeometry(byCombining: transformedGeometries, withOptimization: .byEquality)
+            assert(transformedGeometries.isEmpty == false)
+            let geometryBase = RawGeometry(combining: transformedGeometries, optimizing: .byEquality)
             let triangles = geometryBase.generateCollisionTriangles(using: options.collisionAttributes)
             return RawCollisionMesh(collisionTriangles: triangles) 
         }else{

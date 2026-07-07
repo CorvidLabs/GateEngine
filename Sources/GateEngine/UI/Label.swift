@@ -169,13 +169,18 @@ public final class Label: View {
         }
         yOffset = (rect.height / 2) - ((size.height / 2) * self.interfaceScale)
         
+        var material = Material(texture: texture, sampleFilter: sampleFilter, tintColor: textColor)
+        material.setCustomUniformValue(rect.position, forUniform: "ViewOrigin")
+        material.setCustomUniformValue(rect.size, forUniform: "ViewSize")
+        material.setCustomUniformValue(self.opacity, forUniform: "opacity")
+        
         canvas.insert(
             DrawCommand(
                 resource: .geometry(geometry),
                 transforms: [Transform3(position: Position3(rect.x + xOffset, rect.y + yOffset, 0))],
-                material: Material(texture: texture, sampleFilter: sampleFilter, tintColor: textColor),
-                vsh: .standard,
-                fsh: .textureSampleTintColor,
+                material: material,
+                vsh: .userInterface,
+                fsh: .userInterfaceClipRectTextureTemplateTintColor,
                 flags: .userInterface
             )
         )
@@ -196,8 +201,8 @@ public final class Label: View {
             case wordComponent
         }
 
-        var triangles: [Triangle] = []
-        triangles.reserveCapacity(string.count)
+        var rawGeometry: RawGeometry = []
+        rawGeometry.reserveCapacity(string.count * 2)
 
         var lineCount = 1
         var xPosition: Float = 0
@@ -214,7 +219,7 @@ public final class Label: View {
         }
 
         func processWord() {
-            triangles.append(contentsOf: currentWord)
+            rawGeometry.append(contentsOf: currentWord)
             currentWord.removeAll(keepingCapacity: true)
         }
 
@@ -365,7 +370,7 @@ public final class Label: View {
         processWord()
 
         let height = heightMax - heightMin
-        return (RawGeometry(triangles: triangles), Size2(width: width, height: height))
+        return (rawGeometry, Size2(width: width, height: height))
     }
 }
 

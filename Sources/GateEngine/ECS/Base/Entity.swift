@@ -180,6 +180,7 @@ extension Entity {
     }
     
     /// Allows changing an existing component
+    /// - note: Requires the component is already inserted into the Entity
     @inlinable
     @discardableResult
     public func modify<T: Component, ResultType>(
@@ -187,6 +188,17 @@ extension Entity {
         _ config: @escaping (_ component: inout T) -> ResultType
     ) -> ResultType {
         return config(&self[T.self])
+    }
+    
+    /// Allows changing an existing component.
+    /// - note: Requires the component is already inserted into the Entity
+    @inlinable
+    @discardableResult
+    public func modify<T: Component, ResultType>(
+        _ type: T.Type,
+        _ config: @escaping (_ component: inout T) async throws -> ResultType
+    ) async rethrows -> ResultType {
+        return try await config(&self[T.self])
     }
 
     /// Allows changing a component, addind it first if needed.

@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import DequeModule
 
 final class SplitViewDividerControl: Control {
     var isEnabled: Bool = true

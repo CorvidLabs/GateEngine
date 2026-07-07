@@ -502,7 +502,7 @@ extension Skeleton.Pose.Joint: Hashable {
 // MARK: - Resource Manager
 
 public protocol SkeletonImporter: ResourceImporter {
-    func loadSkeleton(options: SkeletonImporterOptions) async throws(GateEngineError) -> RawSkeleton
+    mutating func loadSkeleton(options: SkeletonImporterOptions) async throws(GateEngineError) -> RawSkeleton
 }
 
 public struct SkeletonImporterOptions: Equatable, Hashable, Sendable {
@@ -525,7 +525,7 @@ extension ResourceManager {
     
     func skeletonImporterForPath(_ path: String) async throws(GateEngineError) -> any SkeletonImporter {
         for type in self.importers.skeletonImporters {
-            if type.canProcessFile(path) {
+            if type.canProcessFile(at: path) {
                 return try await self.importers.getImporter(path: path, type: type)
             }
         }
@@ -586,7 +586,7 @@ extension ResourceManager.Cache {
 
 extension RawSkeleton {
     public init(path: String, options: SkeletonImporterOptions = .none) async throws {
-        let importer: any SkeletonImporter = try await Game.unsafeShared.resourceManager.skeletonImporterForPath(path)
+        var importer: any SkeletonImporter = try await Game.unsafeShared.resourceManager.skeletonImporterForPath(path)
         self = try await importer.loadSkeleton(options: options)
     }
 }
@@ -657,7 +657,7 @@ extension ResourceManager {
     func _reloadSkeleton(for key: Cache.SkeletonKey, isFirstLoad: Bool) {
         Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
         let cache = self.cache
-        Task.detached {
+        Task {
             let path = key.requestedPath
             
             do {

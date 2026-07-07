@@ -1,4 +1,4 @@
-// swift-tools-version:6.1
+// swift-tools-version:6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -13,7 +13,7 @@ let package = Package(
         .library(name: "GateUtilities", targets: ["GateUtilities"]),
     ],
     traits: [
-        .default(enabledTraits: ["SIMD"]),
+        .default(enabledTraits: []),
         
         .trait(
             name: "DISTRIBUTE",
@@ -34,14 +34,14 @@ let package = Package(
 
         // Official
         packageDependencies.append(contentsOf: [
-            .package(url: "https://github.com/apple/swift-atomics.git", .upToNextMajor(from: "1.2.0")),
-            .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.2.0")),
-            .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMajor(from: "601.0.0")),
+            .package(url: "https://github.com/apple/swift-atomics.git", from: "1.3.0"),
+            .package(url: "https://github.com/apple/swift-collections.git", from: "1.3.0"),
+            .package(url: "https://github.com/apple/swift-syntax.git", from: .currentGitTag),
         ])
         
         #if false // Linting / Formating
         packageDependencies.append(contentsOf: [
-            .package(url: "https://github.com/apple/swift-format.git", .upToNextMajor(from: "601.0.0")),
+            .package(url: "https://github.com/apple/swift-format.git", from: .currentGitTag),
         ])
         #endif
         
@@ -240,23 +240,23 @@ let package = Package(
                 })
             ),
             
-                .target(
-                    name: "GameMath", 
-                    dependencies: [
-                        "GateUtilities"
-                    ], 
-                    swiftSettings: .default(withCustomization: { settings in
-                        #if false
-                        // Possibly faster on old hardware, but less accurate.
-                        // There is no reason to use this on modern hardware.
-                        settings.append(.define("GameMathUseFastInverseSquareRoot"))
-                        #endif
-                        
-                        // These settings are faster only with optimization.
-                        settings.append(.define("GameMathUseSIMD", .when(traits: ["SIMD"])))
-                        settings.append(.define("GameMathUseLoopVectorization", .when(traits: ["SIMD"])))
-                    })
-                ),
+            .target(
+                name: "GameMath",
+                dependencies: [
+                    "GateUtilities"
+                ],
+                swiftSettings: .default(withCustomization: { settings in
+                    #if false
+                    // Possibly faster on old hardware, but less accurate.
+                    // There is no reason to use this on modern hardware.
+                    settings.append(.define("GameMathUseFastInverseSquareRoot", .when(configuration: .release, traits: ["SIMD"])))
+                    #endif
+                    
+                    // These settings are faster only with optimization.
+                    settings.append(.define("GameMathUseSIMD"/*, .when(configuration: .release, traits: ["SIMD"])*/))
+                    settings.append(.define("GameMathUseLoopVectorization", .when(configuration: .release, traits: ["SIMD"])))
+                })
+            ),
             
             .target(
                 name: "GateUtilities",
@@ -444,11 +444,14 @@ let package = Package(
                             settings.append(.define("DISABLE_GRAVITY_TESTS", .when(platforms: [.wasi])))
                         })),
             .testTarget(name: "GateUtilitiesTests",
-                        dependencies: ["GateUtilities"]),
+                        dependencies: ["GateUtilities"],
+                        swiftSettings: .default),
             .testTarget(name: "GameMathTests",
-                        dependencies: ["GameMath"]),
+                        dependencies: ["GameMath"],
+                        swiftSettings: .default),
             .testTarget(name: "GameMathNewTests",
-                        dependencies: ["GameMath"]),
+                        dependencies: ["GameMath"],
+                        swiftSettings: .default),
             .testTarget(name: "GravityTests",
                         dependencies: ["Gravity", "GateEngine"],
                         resources: [
@@ -462,7 +465,6 @@ let package = Package(
                             settings.append(.define("DISABLE_GRAVITY_TESTS", .when(platforms: [.wasi])))
                         })),
         ])
-        #if !os(Windows)
         targets.append(contentsOf: [
             .testTarget(name: "GameMathSIMDTests",
                         dependencies: ["GameMath"],
@@ -477,7 +479,6 @@ let package = Package(
                             settings.append(.define("GameMathUseLoopVectorization"))
                         })),
         ])
-        #endif
         
         return targets
     }(),
@@ -734,6 +735,9 @@ extension Array where Element == SwiftSetting {
         var settings: Self = []
         
 #if compiler(>=6.2)
+    #if !hasFeature(ImmutableWeakCaptures)
+        enableFeature("ImmutableWeakCaptures")
+    #endif
     #if !hasFeature(InferIsolatedConformances)
         enableFeature("InferIsolatedConformances")
     #endif
@@ -861,4 +865,22 @@ extension Array where Element == SwiftSetting {
 
 extension PackageDescription.TargetDependencyCondition {
     static var whenHTML5: Self? {.when(platforms: [.wasi], traits: ["HTML5"])}
+}
+
+extension Version {
+    static var currentGitTag: Self {
+        #if swift(>=6.4)
+        return "604.0.0"
+        #elseif swift(>=6.3)
+        return "603.0.0"
+        #elseif swift(>=6.2)
+        return "602.0.0"
+        #elseif swift(>=6.1)
+        return "601.0.0"
+        #elseif swift(>=6.0)
+        return "600.0.0"
+        #else
+        #error("Unhandled Swift Version")
+        #endif
+    }
 }

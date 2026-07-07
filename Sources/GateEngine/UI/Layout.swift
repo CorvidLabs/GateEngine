@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import DequeModule
 
 @MainActor
 public struct Layout {
@@ -685,7 +686,7 @@ extension Layout {
     
     public final class Anchor<D: LayoutDimension, A: LayoutAttribute>: Equatable {
         @usableFromInline
-        internal unowned var view: View
+        internal weak var view: View!
         internal init(view: View) {
             self.view = view
         }

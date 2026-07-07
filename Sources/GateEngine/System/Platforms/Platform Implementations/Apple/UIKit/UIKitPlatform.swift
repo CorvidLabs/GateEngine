@@ -29,12 +29,17 @@ public struct UIKitPlatform: PlatformProtocol, InternalPlatformProtocol {
     weak internal var windowPreparingForSceneConnection: UIKitWindow? = nil
 
     internal var overrideSupportsMultipleWindows: Bool? = nil
-    @MainActor
-    public var supportsMultipleWindows: Bool {
+    public nonisolated var supportsMultipleWindows: Bool {
         if let overrideSupportsMultipleWindows {
             return overrideSupportsMultipleWindows
         }
-        return UIApplication.shared.supportsMultipleScenes
+        // `UIApplication.shared` is main actor isolated, but `PlatformProtocol`
+        // requires this accessor to be nonisolated. The only caller is
+        // `WindowManager.createWindow`, which is itself `@MainActor`, so it is
+        // safe to assume main actor isolation when reading the scene support flag.
+        return MainActor.assumeIsolated {
+            UIApplication.shared.supportsMultipleScenes
+        }
     }
     
     func setCursorStyle(_ style: Mouse.Style) {
@@ -98,11 +103,11 @@ public struct UIKitPlatform: PlatformProtocol, InternalPlatformProtocol {
                 return try synchronousFileSystem.read(from: resolvedPath)
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
     #endif
 }

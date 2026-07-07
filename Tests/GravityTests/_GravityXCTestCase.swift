@@ -25,7 +25,7 @@ open class GravityXCTestCase: XCTestCase {
             try await gravity.compile(file: path)
             let result = try gravity.runMain().gValue
             XCTAssertTrue(gravity_value_equals(Gravity.unitTestExpected!.value, result))
-        } catch GateEngineError.scriptCompileError(_) {
+        } catch GateEngineError.scriptCompileOutputError(_) {
             let error = gravity.unitTestError!
             let expected = Gravity.unitTestExpected!
             if expected.row > -1 {  // -1 means don't compare value

@@ -19,8 +19,16 @@ extension VertexShader {
         let vsh = VertexShader()
         vsh.output.position =
             vsh.modelViewProjectionMatrix * Vec4(vsh.input.geometry(0).position, 1)
-        vsh.output["texCoord0"] =
-            vsh.input.geometry(0).textureCoordinate0 * vsh.channel(0).scale + vsh.channel(0).offset
+        vsh.output["texCoord0"] = vsh.input.geometry(0).textureCoordinate0 * vsh.channel(0).scale + vsh.channel(0).offset
+        vsh.output["color"] = vsh.input.geometry(0).color
+        return vsh
+    }()
+    
+    public static let lightMap: VertexShader = {
+        let vsh = VertexShader()
+        vsh.output.position = vsh.modelViewProjectionMatrix * Vec4(vsh.input.geometry(0).position, 1)
+        vsh.output["texCoord0"] = vsh.input.geometry(0).textureCoordinate0 * vsh.channel(0).scale + vsh.channel(0).offset
+        vsh.output["texCoord1"] = vsh.input.geometry(0).textureCoordinate1 * vsh.channel(1).scale + vsh.channel(1).offset
         vsh.output["color"] = vsh.input.geometry(0).color
         return vsh
     }()
@@ -148,6 +156,14 @@ extension FragmentShader {
         fsh.output.color = fsh.input["color"]
         return fsh
     }()
+    /// Uses material.channel(0).color to shade objects
+    public static let vertexColorTint: FragmentShader = {
+        let fsh = FragmentShader()
+        let tintColor: Vec4 = fsh.channel(0).color
+        let vertexColor: Vec4 = fsh.input["color"]
+        fsh.output.color = vertexColor * tintColor
+        return fsh
+    }()
     /// Uses material.channel(0).texture to shade objects
     public static let textureSampleTintColor: FragmentShader = {
         let fsh = FragmentShader()
@@ -167,6 +183,28 @@ extension FragmentShader {
         return fsh
     }()
     
+    public static let textureSampleLightMap: FragmentShader = {
+        let fsh = FragmentShader()
+        let diffuseColor = fsh.channel(0).texture.sample(
+            at: fsh.input["texCoord0"]
+        )
+        let lightColor = fsh.channel(1).texture.sample(
+            at: fsh.input["texCoord1"]
+        )
+        fsh.output.color = Vec4(diffuseColor.rgb * lightColor.rgb, diffuseColor.a)
+        return fsh
+    }()
+    
+    public static let materialColorLightMap: FragmentShader = {
+        let fsh = FragmentShader()
+        let diffuseColor = fsh.channel(0).color
+        let lightColor = fsh.channel(1).texture.sample(
+            at: fsh.input["texCoord1"]
+        )
+        fsh.output.color = Vec4(diffuseColor.rgb * lightColor.rgb, diffuseColor.a)
+        return fsh
+    }()
+    
     /// The same as `textureSample` but with an additional channel for a second geometry
     /// Intended to be used with `VertexShader.morph`
     @usableFromInline
@@ -183,8 +221,9 @@ extension FragmentShader {
 
 // MARK: - GateEngine Internal
 
+@MainActor
 internal extension VertexShader {
-    @MainActor static let renderTarget: VertexShader = {
+    static let renderTarget: VertexShader = {
         let vsh = VertexShader(name: "renderTarget")
         vsh.output.position =
         vsh.modelViewProjectionMatrix * Vec4(vsh.input.geometry(0).position, 1)
@@ -192,8 +231,64 @@ internal extension VertexShader {
         vsh.output["texCoord0"] = texCoord * vsh.channel(0).scale + vsh.channel(0).offset
         return vsh
     }()
+    
+    static let userInterface: VertexShader = {
+        let vsh = VertexShader()
+        vsh.output.position =
+            vsh.modelViewProjectionMatrix * Vec4(vsh.input.geometry(0).position, 1)
+        vsh.output["texCoord0"] = vsh.input.geometry(0).textureCoordinate0 * vsh.channel(0).scale + vsh.channel(0).offset
+        vsh.output["color"] = vsh.input.geometry(0).color
+        return vsh
+    }()
 }
 
+@MainActor
 internal extension FragmentShader {
-
+    static let userInterfaceClipRectTextureSample: FragmentShader = {
+        let fsh = FragmentShader()
+        let viewOrigin: Vec2 = fsh.uniforms["ViewOrigin"]
+        let viewSize: Vec2 = fsh.uniforms["ViewSize"]
+        let minX: Scalar = viewOrigin.x
+        let maxX: Scalar = minX + viewSize.width
+        let minY: Scalar = viewOrigin.y
+        let maxY: Scalar = minY + viewSize.height
+        let inBounds: Scalar = (fsh.input.position.x >= minX && fsh.input.position.x < maxX && fsh.input.position.y >= minY && fsh.input.position.y < maxY)
+        let opacity: Scalar = fsh.uniforms["opacity"]
+        let sample = fsh.channel(0).texture.sample(
+            at: fsh.input["texCoord0"]
+        )
+        fsh.output.color = Vec4(sample.rgb, sample.a * opacity).discard(if: inBounds == false)
+        return fsh
+    }()
+    static let userInterfaceClipRectTintColor: FragmentShader = {
+        let fsh = FragmentShader()
+        let viewOrigin: Vec2 = fsh.uniforms["ViewOrigin"]
+        let viewSize: Vec2 = fsh.uniforms["ViewSize"]
+        let minX: Scalar = viewOrigin.x
+        let maxX: Scalar = minX + viewSize.width
+        let minY: Scalar = viewOrigin.y
+        let maxY: Scalar = minY + viewSize.height
+        let inBounds: Scalar = (fsh.input.position.x >= minX && fsh.input.position.x < maxX && fsh.input.position.y >= minY && fsh.input.position.y < maxY)
+        let opacity: Scalar = fsh.uniforms["opacity"]
+        let tintColor: Vec4 = fsh.channel(0).color
+        fsh.output.color = Vec4(tintColor.rgb, tintColor.a * opacity).discard(if: inBounds == false)
+        return fsh
+    }()
+    static let userInterfaceClipRectTextureTemplateTintColor: FragmentShader = {
+        let fsh = FragmentShader()
+        let viewOrigin: Vec2 = fsh.uniforms["ViewOrigin"]
+        let viewSize: Vec2 = fsh.uniforms["ViewSize"]
+        let minX: Scalar = viewOrigin.x
+        let maxX: Scalar = minX + viewSize.width
+        let minY: Scalar = viewOrigin.y
+        let maxY: Scalar = minY + viewSize.height
+        let inBounds: Scalar = (fsh.input.position.x >= minX && fsh.input.position.x < maxX && fsh.input.position.y >= minY && fsh.input.position.y < maxY)
+        let opacity: Scalar = fsh.uniforms["opacity"]
+        let tintColor: Vec4 = fsh.channel(0).color
+        let sample = fsh.channel(0).texture.sample(
+            at: fsh.input["texCoord0"]
+        )
+        fsh.output.color = Vec4(tintColor.rgb, opacity * tintColor.a * sample.a).discard(if: inBounds == false)
+        return fsh
+    }()
 }

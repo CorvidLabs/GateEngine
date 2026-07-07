@@ -22,7 +22,7 @@
     }
 
     @inlinable @_disfavoredOverload
-    public convenience init(as path: GeoemetryPath, options: GeometryImporterOptions = .none) {
+    public convenience init(as path: GeometryPath, options: GeometryImporterOptions = .none) {
         self.init(path: path.value, options: options)
     }
 
@@ -64,11 +64,11 @@ extension Points: Equatable, Hashable {
 
 extension RawPoints {
     @inlinable @_disfavoredOverload
-    public init(_ path: GeoemetryPath, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
+    public init(_ path: GeometryPath, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
         try await self.init(path: path.value, options: options)
     }
     public init(path: String, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
-        let importer = try await Game.unsafeShared.resourceManager.geometryImporterForPath(path)
+        var importer = try await Game.unsafeShared.resourceManager.geometryImporterForPath(path)
         let rawGeometry = try await importer.loadGeometry(options: options)
         self.init(pointCloudFrom: rawGeometry)
     }
@@ -84,7 +84,7 @@ extension ResourceManager {
         if cache.geometries[key] == nil {
             cache.geometries[key] = Cache.GeometryCache()
             Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
-            Task.detached {
+            Task {
                 do {
                     let geometry = try await RawGeometry(path: path, options: options)
                     let points = RawPoints(pointCloudFrom: geometry)

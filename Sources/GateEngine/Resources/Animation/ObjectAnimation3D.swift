@@ -189,7 +189,7 @@ extension RawObjectAnimation3D: BinaryCodable {
 // MARK: - Resource Manager
 
 public protocol ObjectAnimation3DImporter: ResourceImporter {
-    func loadObjectAnimation(options: ObjectAnimation3DImporterOptions) async throws(GateEngineError) -> RawObjectAnimation3D
+    mutating func loadObjectAnimation(options: ObjectAnimation3DImporterOptions) async throws(GateEngineError) -> RawObjectAnimation3D
 }
 
 public struct ObjectAnimation3DImporterOptions: Equatable, Hashable, Sendable {
@@ -214,7 +214,7 @@ extension ResourceManager {
     
     func objectAnimation3DImporterForPath(_ path: String) async throws(GateEngineError) -> any ObjectAnimation3DImporter {
         for type in self.importers.objectAnimation3DImporters {
-            if type.canProcessFile(path) {
+            if type.canProcessFile(at: path) {
                 return try await self.importers.getImporter(path: path, type: type)
             }
         }
@@ -224,7 +224,7 @@ extension ResourceManager {
 
 extension RawObjectAnimation3D {
     public init(path: String, options: ObjectAnimation3DImporterOptions = .none) async throws {
-        let importer: any ObjectAnimation3DImporter = try await Game.unsafeShared.resourceManager.objectAnimation3DImporterForPath(path)
+        var importer: any ObjectAnimation3DImporter = try await Game.unsafeShared.resourceManager.objectAnimation3DImporterForPath(path)
         self = try await importer.loadObjectAnimation(options: options)
     }
 }
@@ -337,7 +337,7 @@ extension ResourceManager {
     func _reloadObjectAnimation3D(for key: Cache.ObjectAnimation3DKey, isFirstLoad: Bool) {
         Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
         let cache = self.cache
-        Task.detached {
+        Task {
             let path = key.requestedPath
             
             do {

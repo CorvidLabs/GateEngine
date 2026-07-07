@@ -66,17 +66,29 @@ public final class Collision3DComponent: Component {
         let rhs = comparing.collider
         return lhs.interpenetration(comparing: rhs)
     }
-
+    
+    @MainActor
     @inlinable
-    public func updateColliders(_ transform: Transform3) {
-        self.collider.update(transform: transform)
-        self.rayCastCollider?.update(transform: transform)
-    }
-
-    @inlinable
-    public func update(sizeAndOffsetUsingTransform transform: Transform3) {
-        self.collider.update(sizeAndOffsetUsingTransform: transform)
-        self.rayCastCollider?.update(sizeAndOffsetUsingTransform: transform)
+    public func updateColliders(_ entity: Entity) {
+        guard let transformComponent = entity.component(ofType: Transform3Component.self) else {return}
+        
+        if let rig3DComponent = entity.rig3DComponent {
+            if let colliderJointName = rig3DComponent.updateColliderFromBoneNamed {
+                if let joint = rig3DComponent.skeleton?.jointNamed(colliderJointName) {
+                    // Move the joint into world space
+                    var transform = (transformComponent.transform.matrix() * joint.modelSpace).transform
+                    // Subtract the entity poistion so the joint is relative to zero, to make the transform represent only size and offset
+                    transform.position -= transformComponent.position
+                    // Update the collider size and offset
+                    self.collider.update(withLocalTransform: transform)
+                    self.rayCastCollider?.update(withLocalTransform: transform)
+                }
+            }
+        }
+        
+        // Update the collider world transform
+        self.collider.update(withWorldTransform: transformComponent.transform)
+        self.rayCastCollider?.update(withWorldTransform: transformComponent.transform)
     }
 
     public required init() {}
