@@ -11,7 +11,10 @@ import Direct3D12
 
 final class Win32Window: WindowBacking {
     unowned let window: Window
-    internal let hWnd: WinSDK.HWND
+    /// `HWND` is a raw Win32 handle (a pointer), so it isn't `Sendable`. Win32Window owns
+    /// this handle exclusively and destroys it exactly once, from `deinit`; there is no
+    /// concurrent access to justify actor isolation here.
+    nonisolated(unsafe) internal let hWnd: WinSDK.HWND
     private let hwndStyle: Win32WindowStyle
     @MainActor internal private(set) lazy var swapChain: DX12SwapChain = DX12SwapChain(hWnd: hWnd)
     private lazy var mouseState: MouseState = MouseState(hWnd)
