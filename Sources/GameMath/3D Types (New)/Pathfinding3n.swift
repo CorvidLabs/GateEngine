@@ -5,7 +5,8 @@
  * http://stregasgate.com
  */
 
-public import Collections
+public import OrderedCollections
+public import DequeModule
 
 public typealias PathFinding3f = PathFinding3n<Float32>
 public typealias PathFinding3d = PathFinding3n<Float64>

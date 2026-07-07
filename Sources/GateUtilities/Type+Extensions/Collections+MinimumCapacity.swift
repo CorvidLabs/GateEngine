@@ -29,8 +29,8 @@ public extension Set {
     }
 }
 
-#if canImport(Collections)
-public import Collections
+#if canImport(OrderedCollections)
+public import OrderedCollections
 
 public extension OrderedSet {
     @_transparent

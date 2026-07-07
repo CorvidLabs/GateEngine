@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import Collections
+import DequeModule
 import DequeModule
 
 public typealias DeferredClosure = () -> Void

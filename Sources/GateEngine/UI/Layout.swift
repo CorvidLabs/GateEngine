@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import DequeModule
 
 @MainActor
 public struct Layout {

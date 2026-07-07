@@ -6,6 +6,7 @@
  */
 
 import GameMath
+import DequeModule
 
 public extension ScrollView {
     struct ScrollDirection: OptionSet, Sendable {

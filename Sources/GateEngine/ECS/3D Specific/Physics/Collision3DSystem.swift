@@ -5,7 +5,7 @@
  * http://stregasgate.com
  */
 
-import Collections
+import DequeModule
 import GateUtilities
 
 public final class Collision3DSystem: System {

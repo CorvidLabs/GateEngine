@@ -6,7 +6,7 @@
  */
 #if HTML5
 import Foundation
-import Collections
+import OrderedCollections
 import OrderedCollections
 import DOM
 @preconcurrency import JavaScriptKit

@@ -6,6 +6,7 @@
  */
 #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
 import Foundation
+import DequeModule
 
 public struct TextureAtlas: Sendable {
     public let rawTexture: RawTexture

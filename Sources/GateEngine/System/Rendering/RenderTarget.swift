@@ -6,6 +6,7 @@
  */
 
 import GameMath
+import DequeModule
 
 @MainActor public protocol RenderTargetProtocol: AnyObject, Equatable, Hashable {
     var size: Size2i { get }

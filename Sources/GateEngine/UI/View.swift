@@ -5,6 +5,8 @@
  * http://stregasgate.com
  */
 
+public import DequeModule
+
 @MainActor
 open class View {
     public final var opacity: Float = 1 {
