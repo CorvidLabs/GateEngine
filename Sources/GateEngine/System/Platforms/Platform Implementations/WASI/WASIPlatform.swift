@@ -7,6 +7,7 @@
 #if HTML5
 import Foundation
 import Collections
+import OrderedCollections
 import DOM
 import JavaScriptKit
 import JavaScriptEventLoop

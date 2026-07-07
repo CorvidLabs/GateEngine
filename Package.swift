@@ -119,6 +119,10 @@ let package = Package(
                             .product(name: "Atomics",
                                      package: "swift-atomics"),
                             .product(name: "Collections",
+                                     package: "swift-collections"),
+                            .product(name: "DequeModule",
+                                     package: "swift-collections"),
+                            .product(name: "OrderedCollections",
                                      package: "swift-collections")
                         ])
 
