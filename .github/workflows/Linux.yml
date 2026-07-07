@@ -5,17 +5,38 @@ on:
   push:
     branches:
     - 'main'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/Linux.yml'
   pull_request:
     branches:
     - '**'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/Linux.yml'
+
+concurrency:
+  group: linux-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Build_Test-Linux-Linux:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
 
     - name: Install Swift 6.2
       uses: swift-actions/setup-swift@v2
@@ -27,7 +48,7 @@ jobs:
 
     - name: Swift Version
       run: swift --version
-      
+
     - name: Build
       run: swift build
     - name: Test

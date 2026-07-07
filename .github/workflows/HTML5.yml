@@ -4,17 +4,38 @@ on:
   push:
     branches:
     - 'main'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/HTML5.yml'
   pull_request:
     branches:
     - '**'
+    paths:
+    - 'Sources/**'
+    - 'Tests/**'
+    - 'Macros/**'
+    - 'Dependencies/**'
+    - 'Package.swift'
+    - 'Package.resolved'
+    - '.github/workflows/HTML5.yml'
+
+concurrency:
+  group: html5-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Build_Test-macOS-WASI:
     runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v5
+
     - name: Install Swift
       uses: swift-actions/setup-swift@v2
       with:
@@ -34,7 +55,7 @@ jobs:
     - name: Build for WASI
       # Use the standard SDK, not the embedded one (embedded lacks Codable/Foundation)
       run: swift build --swift-sdk 6.2-RELEASE-wasm32-unknown-wasip1 --traits HTML5
-    
+
 #    - name: Archive
 #      uses: actions/upload-artifact@v3
 #      if: always()
@@ -45,6 +66,6 @@ jobs:
 #    TODO: Figure out how to make chrome default without a confirmation
 #    - name: Make Chrome Default
 #        run: open -a "Google Chrome" --args --make-default-browser
-#    
+#
 #    - name: Test Secure Context
 #        run: carton test --environment defaultBrowser --host localhost
