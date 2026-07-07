@@ -246,7 +246,7 @@ class DX12RenderTarget: RenderTargetBackend {
         renderer.cachedContent.removeAll(keepingCapacity: true)
     }
 
-    func willBeginContent(matrices: Matrices?, viewport: GameMath.Rect?, scissorRect: GameMath.Rect?) {
+    func willBeginContent(matrices: Matrices?, viewport: GameMath.Rect?, scissorRect: GameMath.Rect?, stencil: UInt8?) {
         do {
             try self.commandList.reset(
                 usingOriginalAllocator: commandAllocator,
@@ -284,6 +284,10 @@ class DX12RenderTarget: RenderTargetBackend {
                 self.commandList.setScissorRects([
                     D3DRect(x: 0, y: 0, width: Int(size.width), height: Int(size.height))
                 ])
+            }
+
+            if let stencil {
+                self.commandList.setStencilReference(UInt32(stencil))
             }
         } catch {
             DX12Renderer.checkError(error)

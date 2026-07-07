@@ -17,11 +17,11 @@ final class DX12Texture: TextureBackend {
         if let renderTarget {
             return renderTarget.size
         }
-        if let size: Size2 = _size {
+        if let size: Size2i = _size {
             return size
         }
         if let desc: D3DResourceDescription = _dxTexture?.resourceDescription {
-            return Size2(Float(desc.width), Float(desc.height))
+            return Size2i(width: Int(desc.width), height: Int(desc.height))
         }
         fatalError()
     }

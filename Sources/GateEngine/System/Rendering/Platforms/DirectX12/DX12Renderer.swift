@@ -10,9 +10,9 @@ import Direct3D12
 import GameMath
 import Shaders
 
-final class DX12Renderer: RendererBackend {
+final class DX12Renderer: Renderer {
     @inlinable
-    var renderingAPI: RenderingAPI { .d3d12 }
+    nonisolated static var api: RenderingAPI { .d3d12 }
     let factory: DGIFactory
     let device: D3DDevice
 
@@ -58,7 +58,7 @@ final class DX12Renderer: RendererBackend {
         renderTarget: some _RenderTargetProtocol
     ) {
         let renderTarget: DX12RenderTarget = renderTarget.renderTargetBackend as! DX12RenderTarget
-        guard let geometries = drawCommand.geometries?.map({ unsafeDowncast(_geometries, to: DX12Geometry.self) }) else {return}
+        guard let geometries = drawCommand.geometries?.map({ unsafeDowncast($0, to: DX12Geometry.self) }) else {return}
         let commandList: D3DGraphicsCommandList = renderTarget.commandList
         let data = createUniforms(drawCommand, camera, matrices)
         let shader: DX12Renderer.DXShader = getShader(
