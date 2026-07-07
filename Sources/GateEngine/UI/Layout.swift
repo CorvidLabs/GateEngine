@@ -686,7 +686,7 @@ extension Layout {
     
     public final class Anchor<D: LayoutDimension, A: LayoutAttribute>: Equatable {
         @usableFromInline
-        internal weak let view: View!
+        internal weak var view: View!
         internal init(view: View) {
             self.view = view
         }

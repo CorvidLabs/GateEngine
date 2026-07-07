@@ -1428,6 +1428,7 @@ extension GLTransmissionFormat: TextureImporter {
                 from: gltf.baseURL!.appendingPathComponent(uri).path
             )
         } else if let bufferIndex = image.bufferView {
+            var gltf = gltf
             let view = gltf.bufferViews[bufferIndex]
 
             if let buffer = gltf.buffer(at: view.buffer) {

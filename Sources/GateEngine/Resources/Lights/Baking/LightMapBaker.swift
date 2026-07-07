@@ -40,6 +40,7 @@ public struct LightMapBaker: Sendable {
         }
     }
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func bake(_ sources: [Source]) async throws -> [LightMapBaker.Result] {
         Log.info("\(LightMapBaker.self): Baking...")
         Log.info("\(LightMapBaker.self): Building ray trace structure")
@@ -163,6 +164,7 @@ public struct LightMapBaker: Sendable {
             return results
         }
     }
+    #endif
 }
 
 public extension LightMapBaker {

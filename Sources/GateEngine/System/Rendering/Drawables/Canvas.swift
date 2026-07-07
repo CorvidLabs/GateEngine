@@ -318,7 +318,7 @@
         text.interfaceScale = self.interfaceScale
         guard text.isReady else { return }
 
-        let position = Position3(position.x, position.y, depth ?? 0 * -1)
+        let position = Position3(position.x, position.y, (depth ?? 0) * -1)
         let scale = Size3(scale.x, scale.y, 1)
         let rotation = Quaternion(rotation, axis: .forward)
         let transform = Transform3(position: position, rotation: rotation, scale: scale)
