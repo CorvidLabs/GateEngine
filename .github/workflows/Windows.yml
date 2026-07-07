@@ -22,6 +22,6 @@ jobs:
         run: swift --version
       
       - name: Build
-        run: swift build
+        run: swift build -v -Xlinker /VERBOSE
       - name: Test
-        run: swift test
+        run: swift test -v -Xlinker /VERBOSE
