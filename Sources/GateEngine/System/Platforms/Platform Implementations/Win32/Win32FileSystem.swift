@@ -10,7 +10,7 @@ import Foundation
 
 internal enum Win32FileSystem {
     @inlinable
-    func urlForFolderID(_ folderID: KNOWNFOLDERID) -> URL {
+    static func urlForFolderID(_ folderID: KNOWNFOLDERID) -> URL {
         var folderID: KNOWNFOLDERID = folderID
         var pwString: PWSTR! = nil
         _ = SHGetKnownFolderPath(&folderID, DWORD(KF_FLAG_DEFAULT.rawValue), nil, &pwString)
