@@ -256,7 +256,9 @@ let package = Package(
             .target(
                 name: "GateUtilities",
                 dependencies: [
-                    .product(name: "Collections", package: "swift-collections")
+                    .product(name: "Collections", package: "swift-collections"),
+                    .product(name: "DequeModule", package: "swift-collections"),
+                    .product(name: "OrderedCollections", package: "swift-collections")
                 ],
                 swiftSettings: .default
             ),
