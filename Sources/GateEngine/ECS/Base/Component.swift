@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-public protocol Component {
+@preconcurrency public protocol Component {
     init()
     nonisolated static var componentID: ComponentID { get }
-    
+
     nonisolated static func systemThatProcessesThisComponent() -> System.Type?
 }
 

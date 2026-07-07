@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies the type of query.
-public enum D3DQueryType {
+public enum D3DQueryType: Sendable {
     public typealias RawValue = WinSDK.D3D12_QUERY_TYPE
     ///	Indicates the query is for depth/stencil occlusion counts.
     case occlusion

@@ -6,12 +6,15 @@
  */
 #if canImport(WinSDK)
 import Foundation
-import WinSDK
+public import WinSDK
 import Direct3D12
 
 final class Win32Window: WindowBacking {
     unowned let window: Window
-    internal let hWnd: WinSDK.HWND
+    /// `HWND` is a raw Win32 handle (a pointer), so it isn't `Sendable`. Win32Window owns
+    /// this handle exclusively and destroys it exactly once, from `deinit`; there is no
+    /// concurrent access to justify actor isolation here.
+    nonisolated(unsafe) internal let hWnd: WinSDK.HWND
     private let hwndStyle: Win32WindowStyle
     @MainActor internal private(set) lazy var swapChain: DX12SwapChain = DX12SwapChain(hWnd: hWnd)
     private lazy var mouseState: MouseState = MouseState(hWnd)
@@ -46,7 +49,7 @@ final class Win32Window: WindowBacking {
         case .system:
             hWnd = Self.makeHWND(withSize: pixelSize, style: .standard)
             self.hwndStyle = .standard
-        case .bestForGames:
+        case .minimalSystemDecorations:
             hWnd = Self.makeHWND(withSize: pixelSize, style: .modern)
             self.hwndStyle = .modern
         }
@@ -303,14 +306,14 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgPaint() {
+    internal func _msgPaint() {
         self.render()
     }
 
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgResized(_ wParam: WPARAM, _ lParam: LPARAM) {
+    internal func _msgResized(_ wParam: WPARAM, _ lParam: LPARAM) {
         self.updateStoredMetaData(newSize: SIZE(cx: LONG(LOWORD(lParam)), cy: LONG(HIWORD(lParam))))
         self.window.newPixelSize = self.pixelSize
     }
@@ -318,7 +321,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgResizing(_ wParam: WPARAM, _ lParam: LPARAM) {
+    internal func _msgResizing(_ wParam: WPARAM, _ lParam: LPARAM) {
         let rect: RECT = PRECT(bitPattern: Int(lParam))!.pointee
         self.updateStoredMetaData(newSize: SIZE(cx: rect.width, cy: rect.height))
         self.window.newPixelSize = self.pixelSize
@@ -327,7 +330,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgShow() {
+    internal func _msgShow() {
         self.show()
         self.updateStoredMetaData(newSize: nil)
     }
@@ -335,7 +338,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgRestore() {
+    internal func _msgRestore() {
         self.state = .shown
         self.updateStoredMetaData(newSize: nil)
     }
@@ -343,28 +346,28 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgHide() {
+    internal func _msgHide() {
         self.hide()
     }
 
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgClose() {
+    internal func _msgClose() {
         self.close()
     }
 
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgDestroy() {
+    internal func _msgDestroy() {
         self.state = .destroyed
     }
 
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgMouseMoved(_ lparam: LPARAM) {
+    internal func _msgMouseMoved(_ lparam: LPARAM) {
         var event: Mouse.ChangeEvent = .moved
         if mouseState.state == .outside {
             event = .entered
@@ -381,7 +384,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgMouseExited() {
+    internal func _msgMouseExited() {
         mouseState.mouseExited()
         Game.shared.hid.mouseChange(
             event: .exited,
@@ -394,7 +397,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgMouseScrolledVertical(_ wParam: WPARAM, _ lParam: LPARAM) {
+    internal func _msgMouseScrolledVertical(_ wParam: WPARAM, _ lParam: LPARAM) {
         mouseState.mouseMoved(lParam)
         let yUIDelta: Float = Float(GET_WHEEL_DELTA_WPARAM(wParam))
         var yDelta: Float = yUIDelta
@@ -423,7 +426,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgMouseScrolledHorizontal(_ wParam: WPARAM, _ lParam: LPARAM) {
+    internal func _msgMouseScrolledHorizontal(_ wParam: WPARAM, _ lParam: LPARAM) {
         mouseState.mouseMoved(lParam)
         let xUIDelta: Float = Float(GET_WHEEL_DELTA_WPARAM(wParam))
         var xDelta: Float = xUIDelta
@@ -453,7 +456,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgKeyDown(_ wparam: WPARAM, _ lparam: LPARAM) -> Bool {
+    internal func _msgKeyDown(_ wparam: WPARAM, _ lparam: LPARAM) -> Bool {
         return Game.shared.hid.keyboardDidHandle(
             key: keyFromWPARAM(wparam, lparam),
             character: character(from: wparam),
@@ -467,7 +470,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _msgKeyUp(_ wparam: WPARAM, _ lparam: LPARAM) -> Bool {
+    internal func _msgKeyUp(_ wparam: WPARAM, _ lparam: LPARAM) -> Bool {
         return Game.shared.hid.keyboardDidHandle(
             key: keyFromWPARAM(wparam, lparam),
             character: character(from: wparam),
@@ -480,7 +483,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseDownLeft(_ lparam: LPARAM) {
+    internal func _mouseDownLeft(_ lparam: LPARAM) {
         mouseState.mouseMoved(lparam)
         Game.shared.hid.mouseClick(
             event: .buttonDown,
@@ -495,7 +498,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseUpLeft(_ lparam: LPARAM) {
+    internal func _mouseUpLeft(_ lparam: LPARAM) {
         mouseState.mouseMoved(lparam)
         Game.shared.hid.mouseClick(
             event: .buttonUp,
@@ -510,7 +513,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseDownRight(_ lparam: LPARAM) {
+    internal func _mouseDownRight(_ lparam: LPARAM) {
         mouseState.mouseMoved(lparam)
         Game.shared.hid.mouseClick(
             event: .buttonDown,
@@ -525,7 +528,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseUpRight(_ lparam: LPARAM) {
+    internal func _mouseUpRight(_ lparam: LPARAM) {
         mouseState.mouseMoved(lparam)
         Game.shared.hid.mouseClick(
             event: .buttonUp,
@@ -540,7 +543,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseDownMiddle(_ lparam: LPARAM) {
+    internal func _mouseDownMiddle(_ lparam: LPARAM) {
         mouseState.mouseMoved(lparam)
         Game.shared.hid.mouseClick(
             event: .buttonDown,
@@ -555,7 +558,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseUpMiddle(_ lparam: LPARAM) {
+    internal func _mouseUpMiddle(_ lparam: LPARAM) {
         mouseState.mouseMoved(lparam)
         Game.shared.hid.mouseClick(
             event: .buttonUp,
@@ -570,7 +573,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseDownX(_ lparam: LPARAM, _ wparam: WPARAM) {
+    internal func _mouseDownX(_ lparam: LPARAM, _ wparam: WPARAM) {
         mouseState.mouseMoved(lparam)
         let xButton: INT = GET_XBUTTON_WPARAM(wparam)
         let button: MouseButton
@@ -596,7 +599,7 @@ extension Win32Window {
     @inlinable
     @preconcurrency
     @MainActor
-    fileprivate func _mouseUpX(_ lparam: LPARAM, _ wparam: WPARAM) {
+    internal func _mouseUpX(_ lparam: LPARAM, _ wparam: WPARAM) {
         mouseState.mouseMoved(lparam)
         let xButton: INT = GET_XBUTTON_WPARAM(wparam)
         let button: MouseButton

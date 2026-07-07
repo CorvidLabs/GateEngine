@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a static sampler.
-public struct D3DStaticSamplerDescription {
+public struct D3DStaticSamplerDescription: @unchecked Sendable {
     public typealias RawValue =  WinSDK.D3D12_STATIC_SAMPLER_DESC
     @usableFromInline
     internal var rawValue: RawValue

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes multi-sampling parameters for a resource.
-public struct DGISampleDescription {
+public struct DGISampleDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.DXGI_SAMPLE_DESC
     @usableFromInline
     internal var rawValue: RawValue

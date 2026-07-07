@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresource from a 2D texture that is accessible to a depth-stencil view.
-public struct D3DTexture2DDepthStencilView {
+public struct D3DTexture2DDepthStencilView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2D_DSV
     @usableFromInline
     internal var rawValue: RawValue

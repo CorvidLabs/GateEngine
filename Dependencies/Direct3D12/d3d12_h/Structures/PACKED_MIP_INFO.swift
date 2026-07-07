@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the tile structure of a tiled resource with mipmaps.
-public struct D3DPackedMipInfo {
+public struct D3DPackedMipInfo: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_PACKED_MIP_INFO
     @usableFromInline
     internal var rawValue: RawValue

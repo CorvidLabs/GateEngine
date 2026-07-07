@@ -5,9 +5,9 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
-public struct D3DConstantBufferViewDescription {
+public struct D3DConstantBufferViewDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_CONSTANT_BUFFER_VIEW_DESC
     @usableFromInline
     internal var rawValue: RawValue

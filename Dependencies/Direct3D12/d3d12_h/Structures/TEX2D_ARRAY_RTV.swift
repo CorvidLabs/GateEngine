@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the subresources from an array of 2D textures to use in a render-target view.
-public struct D3DTexture2DArrayRenderTargetView {
+public struct D3DTexture2DArrayRenderTargetView: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TEX2D_ARRAY_RTV
     @usableFromInline
     internal var rawValue: RawValue

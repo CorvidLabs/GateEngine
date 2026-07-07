@@ -64,11 +64,12 @@ public final class TiledTSJImporter: TileSetImporter {
     var basePath: String = ""
     public required init() {}
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         do {
             let data = try Platform.current.synchronousLoadResource(from: path)
             self.file = try JSONDecoder().decode(TSJFile.self, from: data)
-            
+
             var comps = path.components(separatedBy: "/")
             comps.removeLast()
             if path.hasPrefix("/") {
@@ -79,6 +80,7 @@ public final class TiledTSJImporter: TileSetImporter {
             throw GateEngineError(error)
         }
     }
+    #endif
     public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         do {
             let data = try await Platform.current.loadResource(from: path)

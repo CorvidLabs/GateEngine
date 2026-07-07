@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes depth-stencil state.
-public struct D3DDepthStencilDescription {
+public struct D3DDepthStencilDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_DEPTH_STENCIL_DESC
     @usableFromInline
     internal var rawValue: RawValue

@@ -9,11 +9,12 @@ import Foundation
 import DOM
 import WebAPIBase
 import FileSystem
+import JavaScriptKit
 
-public struct WASIFileSystem: FileSystem {
+public struct WASIFileSystem: AsynchronousFileSystem {
     let supportsWebFileSystem: Bool = {
         guard globalThis.isSecureContext else { return false }
-        switch CurrentPlatform.browser {
+        switch Platform.current.browser {
         case .safari(version: _):
             return false
         case .chrome(let version):
@@ -162,7 +163,7 @@ public struct WASIFileSystem: FileSystem {
                 window.localStorage[destinationPath] = value
                 window.localStorage.removeValue(forKey: originPath)
             } else {
-                throw GateEngineError.failedToLocate
+                throw GateEngineError.failedToLocate(resource: originPath, nil)
             }
         }
     }
@@ -221,7 +222,7 @@ public struct WASIFileSystem: FileSystem {
                 )
                 try await stream.close()
             }
-            throw GateEngineError.failedToLocate
+            throw GateEngineError.failedToLocate(resource: path, nil)
         } else {
             let window: DOM.Window = globalThis
             window.localStorage[url.path] = data.base64EncodedString()
@@ -242,17 +243,17 @@ public struct WASIFileSystem: FileSystem {
                 let buffer = try await file.arrayBuffer()
                 return Data(buffer)
             }
-            throw GateEngineError.failedToLocate
+            throw GateEngineError.failedToLocate(resource: path, nil)
         } else {
             let window: DOM.Window = globalThis
             if let base64 = window.localStorage[url.path] {
                 if let data = Data(base64Encoded: base64) {
                     return data
                 } else {
-                    throw GateEngineError.failedToLoad("Data is corrupted and cannot be read.")
+                    throw GateEngineError.failedToLoad(resource: path, "Data is corrupted and cannot be read.")
                 }
             } else {
-                throw GateEngineError.failedToLocate
+                throw GateEngineError.failedToLocate(resource: path, nil)
             }
         }
     }

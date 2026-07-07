@@ -5,6 +5,20 @@
  * http://stregasgate.com
  */
 
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Bionic)
+import Bionic
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(WASILibc)
+import WASILibc
+#elseif os(Windows)
+import ucrt
+#endif
+
 // MARK: - Integers
 
 @inlinable
@@ -65,18 +79,39 @@ public func pow<T: FloatingPoint, E: FixedWidthInteger & UnsignedInteger>(_ base
 
 // MARK: - Native
 
-#if canImport(Foundation)
-public import func Foundation.pow
-
-@_transparent
-@inlinable
 public func pow(_ base: Float32, _ exponent: Float32) -> Float32 {
-    return Foundation.pow(base, exponent)
+    #if canImport(Darwin)
+    return Darwin.powf(base, exponent)
+    #elseif canImport(Glibc)
+    return Glibc.powf(base, exponent)
+    #elseif canImport(Bionic)
+    return Bionic.powf(base, exponent)
+    #elseif canImport(Musl)
+    return Musl.powf(base, exponent)
+    #elseif canImport(WASILibc)
+    return WASILibc.powf(base, exponent)
+    #elseif os(Windows)
+    return ucrt.powf(base, exponent)
+    #else
+    // Fallback using integer exponent if available
+    fatalError("Unsupported platform.")
+    #endif
 }
 
-@_transparent
-@inlinable
 public func pow(_ base: Float64, _ exponent: Float64) -> Float64 {
-    return Foundation.pow(base, exponent)
+    #if canImport(Darwin)
+    return Darwin.pow(base, exponent)
+    #elseif canImport(Glibc)
+    return Glibc.pow(base, exponent)
+    #elseif canImport(Bionic)
+    return Bionic.pow(base, exponent)
+    #elseif canImport(Musl)
+    return Musl.pow(base, exponent)
+    #elseif canImport(WASILibc)
+    return WASILibc.pow(base, exponent)
+    #elseif os(Windows)
+    return ucrt.pow(base, exponent)
+    #else
+    fatalError("Unsupported platform.")
+    #endif
 }
-#endif

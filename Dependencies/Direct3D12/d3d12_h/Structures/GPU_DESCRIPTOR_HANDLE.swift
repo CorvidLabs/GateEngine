@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a GPU descriptor handle.
-public struct D3DGPUDescriptorHandle {
+public struct D3DGPUDescriptorHandle: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_GPU_DESCRIPTOR_HANDLE
     @usableFromInline
     internal var rawValue: RawValue

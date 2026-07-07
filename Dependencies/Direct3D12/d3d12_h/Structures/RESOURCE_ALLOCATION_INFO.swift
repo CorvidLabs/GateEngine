@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes parameters needed to allocate resources.
-public struct D3DResourceAllocationInfo {
+public struct D3DResourceAllocationInfo: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_ALLOCATION_INFO
     @usableFromInline
     internal var rawValue: RawValue

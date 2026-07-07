@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// The DXGI_PRESENT constants specify options for presenting frames to the output.
-public struct DGIPresentFlags: OptionSet {
+public struct DGIPresentFlags: OptionSet, Sendable {
     public typealias RawValue = UInt32
     public let rawValue: RawValue
 

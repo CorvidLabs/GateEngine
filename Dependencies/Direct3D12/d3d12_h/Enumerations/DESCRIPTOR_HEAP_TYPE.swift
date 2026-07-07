@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies a type of descriptor heap.
-public enum D3DDescriptorHeapType {
+public enum D3DDescriptorHeapType: Sendable {
     public typealias RawValue = WinSDK.D3D12_DESCRIPTOR_HEAP_TYPE
     ///	The descriptor heap for the combination of constant-buffer, shader-resource, and unordered-access views.
     case constantBufferShaderResourceAndUnordererAccess

@@ -5,6 +5,7 @@
  * http://stregasgate.com
  */
 #if HTML5
+import JavaScriptKit
 import WebAPIBase
 import DOM
 import WebGL1
@@ -12,13 +13,13 @@ import WebGL2
 import GameMath
 import Shaders
 
-public typealias GL = WebGL2RenderingContext
+typealias GL = WebGL2RenderingContext
 
-class WebGL2Renderer: RendererBackend {
+class WebGL2Renderer: Renderer {
     @inlinable
-    var renderingAPI: RenderingAPI { .webGL2 }
+    nonisolated static var api: RenderingAPI { .webGL2 }
 
-    lazy private var instanceMatriciesVBO: WebGLBuffer = WebGL2Renderer.context.createBuffer()!
+    lazy private var instanceMatriciesVBO: WebGLBuffer = WebGL2Renderer.context.createBuffer()
     let generator = GLSLCodeGenerator(version: .v300es)
 
     var _shaders: [ShaderKey: WebGLShader] = [:]
@@ -97,7 +98,7 @@ class WebGL2Renderer: RendererBackend {
             }
             #endif
 
-            let program = gl.createProgram()!
+            let program = gl.createProgram()
             gl.attachShader(program: program, shader: _vsh)
             gl.attachShader(program: program, shader: _fsh)
             gl.linkProgram(program: program)
@@ -126,7 +127,7 @@ class WebGL2Renderer: RendererBackend {
         renderTarget: some _RenderTargetProtocol
     ) {
         let gl = WebGL2Renderer.context
-        let geometries = drawCommand.geometries.map({ $0 as! WebGL2Geometry })
+        guard let geometries = drawCommand.geometries?.map({ $0 as! WebGL2Geometry }) else { return }
 
         #if GATEENGINE_DEBUG_RENDERING
         for geometry in geometries {
@@ -188,7 +189,6 @@ class WebGL2Renderer: RendererBackend {
 }
 
 extension WebGL2Renderer {
-    @inlinable
     private func setFlags(_ flags: DrawCommand.Flags, in gl: WebGL2RenderingContext) {
         switch flags.cull {
         case .disabled:
@@ -213,6 +213,8 @@ extension WebGL2Renderer {
             gl.depthFunc(func: GL.LESS)
         case .lessEqual:
             gl.depthFunc(func: GL.LEQUAL)
+        case .equal:
+            gl.depthFunc(func: GL.EQUAL)
         case .never:
             gl.depthFunc(func: GL.NEVER)
         }
@@ -257,7 +259,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func setWinding(_ winding: DrawCommand.Flags.Winding, in gl: WebGL2RenderingContext) {
         switch winding {
         case .clockwise:
@@ -267,7 +268,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func setUniforms(
         _ matrices: Matrices,
         program: WebGLProgram,
@@ -297,7 +297,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func primitive(from primitive: DrawCommand.Flags.Primitive) -> GLenum {
         switch primitive {
         case .point:
@@ -313,7 +312,6 @@ extension WebGL2Renderer {
         }
     }
 
-    @inlinable
     private func setTransforms(
         _ transforms: [Transform3],
         at index: inout Int,
@@ -350,7 +348,6 @@ extension WebGL2Renderer {
         #endif
     }
 
-    @inlinable
     private func setMaterial(
         _ drawCommand: DrawCommand,
         generator: GLSLCodeGenerator,
@@ -371,6 +368,9 @@ extension WebGL2Renderer {
                         gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MAG_FILTER, param: GLint(GL.LINEAR))
                     case .nearest:
                         gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MIN_FILTER, param: GLint(GL.NEAREST))
+                        gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MAG_FILTER, param: GLint(GL.NEAREST))
+                    case .minLinearMaxNearest:
+                        gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MIN_FILTER, param: GLint(GL.LINEAR))
                         gl.texParameteri(target: GL.TEXTURE_2D, pname: GL.TEXTURE_MAG_FILTER, param: GLint(GL.NEAREST))
                     }
                     
@@ -511,7 +511,6 @@ extension WebGL2Renderer {
         #endif
     }
 
-    @inlinable
     private func setGeometries(
         _ geometries: [WebGL2Geometry],
         at index: inout Int,
@@ -566,18 +565,20 @@ extension WebGL2Renderer {
     var context: WebGL2RenderingContext {
         return Self.context
     }
-    static let context: WebGL2RenderingContext = {
+    // Marked nonisolated(unsafe) to allow access from deinit in WebGL2Geometry/WebGL2RenderTarget
+    // This is safe because WASI runs single-threaded
+    nonisolated(unsafe) static let context: WebGL2RenderingContext = {
         let element = globalThis.document.getElementById(elementId: "mainCanvas")!
-        let canvas = HTMLCanvasElement(from: element)!
-        let options = [
+        let canvas = HTMLCanvasElement(unsafelyWrapping: element.jsObject)
+        let options: [String: ConvertibleToJSValue] = [
             "powerPreference": "high-performance",
             "preserveDrawingBuffer": true,
             "desynchronized": true,
             "antialias": false,
             "failIfMajorPerformanceCaveat": false,
             "premultipliedAlpha": false,
-        ].jsValue
-        let context = canvas.getContext(WebGL2RenderingContext.self, options: options)!
+        ]
+        let context = canvas.getContext(WebGL2RenderingContext.self, options: options.jsValue)!
         return context
     }()
 

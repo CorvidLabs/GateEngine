@@ -35,17 +35,17 @@ jobs:
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:
-          # GateEngine's swift-tools-version is 6.1; installing 5.10 caused SwiftPM to refuse to
-          # resolve the manifest ("using Swift tools version 6.1.0 but the installed version is
-          # 5.10.0"). Use the non-deprecated swift-version/swift-build inputs at 6.1.
-          swift-version: swift-6.1-release
-          swift-build: 6.1-RELEASE
+          # GateEngine's swift-tools-version requires a matching toolchain; the 5.10 install
+          # previously caused SwiftPM to refuse the manifest. Use the non-deprecated
+          # swift-version/swift-build inputs at 6.2 (matching the toolchain validated on main).
+          swift-version: swift-6.2-release
+          swift-build: 6.2-RELEASE
       - uses: actions/checkout@v5
 
       - name: Swift Version
         run: swift --version
 
       - name: Build
-        run: swift build
+        run: swift build -v -j 1 -Xlinker /VERBOSE
       - name: Test
-        run: swift test
+        run: swift test -v -j 1 -Xlinker /VERBOSE

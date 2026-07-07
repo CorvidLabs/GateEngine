@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the size of a tiled region.
-public struct D3DTileRegionSize {
+public struct D3DTileRegionSize: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_TILE_REGION_SIZE
     @usableFromInline
     var rawValue: RawValue

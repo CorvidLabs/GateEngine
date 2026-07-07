@@ -13,7 +13,7 @@ internal protocol AudioContextBackend: AnyObject {
     func supportsBitRate(_ bitRate: AudioBuffer.Format.BitRate) -> Bool
 }
 
-public class AudioContext {
+public class AudioContext: @unchecked Sendable {
     internal let reference: any AudioContextBackend
 
     internal init() {

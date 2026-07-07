@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Represents a rational number.
-public struct DGIRational {
+public struct DGIRational: @unchecked Sendable {
     public typealias RawValue = WinSDK.DXGI_RATIONAL 
     @usableFromInline
     internal var rawValue: RawValue

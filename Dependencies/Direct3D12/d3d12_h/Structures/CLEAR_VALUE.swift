@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a value used to optimize clear operations for a particular resource.
-public struct D3DClearValue {
+public struct D3DClearValue: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_CLEAR_VALUE
     @usableFromInline
     internal var rawValue: RawValue

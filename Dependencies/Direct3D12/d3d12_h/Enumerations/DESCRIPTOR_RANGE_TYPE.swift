@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies a type of descriptor heap.
-public enum D3DDescriptorRangeType {
+public enum D3DDescriptorRangeType: Sendable {
     public typealias RawValue = WinSDK.D3D12_DESCRIPTOR_RANGE_TYPE
 
     ///	Specifies a range of SRVs.

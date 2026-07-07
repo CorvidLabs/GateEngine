@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Resource data formats, including fully-typed and typeless formats. A list of modifiers at the bottom of the page more fully describes each format type.
-public enum DGIFormat {
+public enum DGIFormat: Sendable {
     public typealias RawValue = WinSDK.DXGI_FORMAT
 
     ///	The format is not known.

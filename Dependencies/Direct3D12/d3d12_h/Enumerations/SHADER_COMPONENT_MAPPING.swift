@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Implements the D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING, D3D12_DECODE_SHADER_4_COMPONENT_MAPPING, and D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING macros.
-public struct D3DShaderComponentMap {
+public struct D3DShaderComponentMap: @unchecked Sendable {
     public typealias RawValue = Int32
     public let rawValue: RawValue
 
@@ -44,7 +44,7 @@ public struct D3DShaderComponentMap {
 }
 
 /// Specifies how memory gets routed by a shader resource view (SRV).
-public enum D3DShaderComponentMapping {
+public enum D3DShaderComponentMapping: Sendable {
     public typealias RawValue = WinSDK.D3D12_SHADER_COMPONENT_MAPPING
 
     ///	Indicates return component 0 (red).

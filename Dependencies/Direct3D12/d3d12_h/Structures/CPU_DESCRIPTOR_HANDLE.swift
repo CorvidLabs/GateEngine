@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a CPU descriptor handle.
-public struct D3DCPUDescriptorHandle {
+public struct D3DCPUDescriptorHandle: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_CPU_DESCRIPTOR_HANDLE
     @usableFromInline
     internal var rawValue: RawValue

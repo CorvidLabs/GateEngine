@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a command queue.
-public struct D3DCommandQueueDescription {
+public struct D3DCommandQueueDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_COMMAND_QUEUE_DESC
     @usableFromInline
     internal var rawValue: RawValue

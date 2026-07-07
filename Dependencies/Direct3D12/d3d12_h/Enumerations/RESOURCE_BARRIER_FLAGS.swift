@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Flags for setting split resource barriers
-public struct D3DResourceBarrierFlags: OptionSet {
+public struct D3DResourceBarrierFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_RESOURCE_BARRIER_FLAGS
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_RESOURCE_BARRIER_FLAGS.RawValue

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Defines constants that specify the state of a resource regarding how the resource is being used.
-public struct D3DResourceStates: OptionSet {
+public struct D3DResourceStates: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_RESOURCE_STATES
     public var rawType: RawType {RawType(rawValue)}
     public typealias RawValue = WinSDK.D3D12_RESOURCE_STATES.RawValue

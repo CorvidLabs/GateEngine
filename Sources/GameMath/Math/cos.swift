@@ -5,44 +5,80 @@
  * http://stregasgate.com
  */
 
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Bionic)
+import Bionic
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(WASILibc)
+import WASILibc
+#elseif os(Windows)
+import ucrt
+#endif
+
 // MARK: - Floats
 
 @_disfavoredOverload // <- prefer native overloads
-@inlinable
 public func cos<T: BinaryFloatingPoint>(_ x: T) -> T {
-    #if canImport(Foundation)
     switch x {
     #if !((os(macOS) || targetEnvironment(macCatalyst)) && arch(x86_64))
     case let x as Float16:
-        return T(Foundation.cos(Float32(x)))
+        return T(_cos(Float32(x)))
     #endif
     case let x as Float32:
-        return T(Foundation.cos(x))
+        return T(_cos(x))
     case let x as Float64:
-        return T(Foundation.cos(x))
+        return T(_cos(x))
     default:
-        return T(Foundation.cos(Float64(x)))
+        return T(_cos(Float64(x)))
     }
+}
+
+// MARK: - Native
+
+internal func _cos(_ x: Float32) -> Float32 {
+    #if canImport(Darwin)
+    return Darwin.cosf(x)
+    #elseif canImport(Glibc)
+    return Glibc.cosf(x)
+    #elseif canImport(Bionic)
+    return Bionic.cosf(x)
+    #elseif canImport(Musl)
+    return Musl.cosf(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.cosf(x)
+    #elseif os(Windows)
+    return ucrt.cosf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
 }
 
-// MARK: - Native
+internal func _cos(_ x: Float64) -> Float64 {
+    #if canImport(Darwin)
+    return Darwin.cos(x)
+    #elseif canImport(Glibc)
+    return Glibc.cos(x)
+    #elseif canImport(Bionic)
+    return Bionic.cos(x)
+    #elseif canImport(Musl)
+    return Musl.cos(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.cos(x)
+    #elseif os(Windows)
+    return ucrt.cos(x)
+    #else
+    fatalError("Unsupported platform.")
+    #endif
+}
 
-#if canImport(Foundation)
-public import func Foundation.cos
-
-@_transparent
-@inlinable
 public func cos(_ x: Float32) -> Float32 {
-    return Foundation.cos(x)
+    return _cos(x)
 }
 
-@_transparent
-@inlinable
 public func cos(_ x: Float64) -> Float64 {
-    return Foundation.cos(x)
+    return _cos(x)
 }
-
-#endif

@@ -4,13 +4,12 @@
  *
  * http://stregasgate.com
  */
-#if os(Linux)
+#if os(Linux) && GATEENGINE_PLATFORM_HAS_FILESYSTEM && GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
 import Foundation
 
-public struct LinuxFileSystem: FileSystem {
+public struct LinuxFileSystem: AsynchronousFileSystem {
     let homeDir: String = String(cString: getenv("HOME") ?? getpwuid(getuid()).pointee.pw_dir)
 
-    @MainActor
     public func pathForSearchPath(
         _ searchPath: FileSystemSearchPath,
         in domain: FileSystemSearchPathDomain
@@ -21,11 +20,11 @@ public struct LinuxFileSystem: FileSystem {
             case .currentUser:
                 return URL(fileURLWithPath: homeDir)
                     .appendingPathComponent(".config")
-                    .appendingPathComponent("." + Game.shared.identifier)
+                    .appendingPathComponent("." + Game.unsafeShared.info.identifier)
                     .path
             case .shared:
                 return URL(fileURLWithPath: "/var/lib")
-                    .appendingPathComponent(Game.shared.identifier)
+                    .appendingPathComponent(Game.unsafeShared.info.identifier)
                     .path
             }
         case .cache:
@@ -33,16 +32,16 @@ public struct LinuxFileSystem: FileSystem {
             case .currentUser:
                 return URL(fileURLWithPath: homeDir)
                     .appendingPathComponent(".cache")
-                    .appendingPathComponent(Game.shared.identifier)
+                    .appendingPathComponent(Game.unsafeShared.info.identifier)
                     .path
             case .shared:
                 return URL(fileURLWithPath: "/var/cache")
-                    .appendingPathComponent(Game.shared.identifier)
+                    .appendingPathComponent(Game.unsafeShared.info.identifier)
                     .path
             }
         case .temporary:
             return URL(fileURLWithPath: "/tmp")
-                .appendingPathComponent(Game.shared.identifier)
+                .appendingPathComponent(Game.unsafeShared.info.identifier)
                 .path
         }
     }

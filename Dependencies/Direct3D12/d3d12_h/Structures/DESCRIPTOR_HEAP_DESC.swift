@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the descriptor heap.
-public struct D3DDescriptorHeapDescription {
+public struct D3DDescriptorHeapDescription: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_DESCRIPTOR_HEAP_DESC
     @usableFromInline
     internal var rawValue: RawValue

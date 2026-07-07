@@ -5,44 +5,80 @@
  * http://stregasgate.com
  */
 
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Bionic)
+import Bionic
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(WASILibc)
+import WASILibc
+#elseif os(Windows)
+import ucrt
+#endif
+
 // MARK: - Floats
 
 @_disfavoredOverload // <- prefer native overloads
-@inlinable
 public func acos<T: BinaryFloatingPoint>(_ x: T) -> T {
-    #if canImport(Foundation)
     switch x {
     #if !((os(macOS) || targetEnvironment(macCatalyst)) && arch(x86_64))
     case let x as Float16:
-        return T(Foundation.acos(Float32(x)))
+        return T(_acos(Float32(x)))
     #endif
     case let x as Float32:
-        return T(Foundation.acos(x))
+        return T(_acos(x))
     case let x as Float64:
-        return T(Foundation.acos(x))
+        return T(_acos(x))
     default:
-        return T(Foundation.acos(Float64(x)))
+        return T(_acos(Float64(x)))
     }
+}
+
+// MARK: - Native
+
+internal func _acos(_ x: Float32) -> Float32 {
+    #if canImport(Darwin)
+    return Darwin.acosf(x)
+    #elseif canImport(Glibc)
+    return Glibc.acosf(x)
+    #elseif canImport(Bionic)
+    return Bionic.acosf(x)
+    #elseif canImport(Musl)
+    return Musl.acosf(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.acosf(x)
+    #elseif os(Windows)
+    return ucrt.acosf(x)
     #else
     fatalError("Unsupported platform.")
     #endif
 }
 
-// MARK: - Native
+internal func _acos(_ x: Float64) -> Float64 {
+    #if canImport(Darwin)
+    return Darwin.acos(x)
+    #elseif canImport(Glibc)
+    return Glibc.acos(x)
+    #elseif canImport(Bionic)
+    return Bionic.acos(x)
+    #elseif canImport(Musl)
+    return Musl.acos(x)
+    #elseif canImport(WASILibc)
+    return WASILibc.acos(x)
+    #elseif os(Windows)
+    return ucrt.acos(x)
+    #else
+    fatalError("Unsupported platform.")
+    #endif
+}
 
-#if canImport(Foundation)
-public import func Foundation.acos
-
-@_transparent
-@inlinable
 public func acos(_ x: Float32) -> Float32 {
-    return Foundation.acos(x)
+    return _acos(x)
 }
 
-@_transparent
-@inlinable
 public func acos(_ x: Float64) -> Float64 {
-    return Foundation.acos(x)
+    return _acos(x)
 }
-
-#endif

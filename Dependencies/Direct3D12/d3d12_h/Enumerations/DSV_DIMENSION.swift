@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies how to access a resource used in a depth-stencil view.
-public enum D3DDSVDimension {
+public enum D3DDSVDimension: Sendable {
     public typealias RawValue = WinSDK.D3D12_DSV_DIMENSION
     
     ///	D3D12_DSV_DIMENSION_UNKNOWN is not a valid value for D3D12_DEPTH_STENCIL_VIEW_DESC and is not used.

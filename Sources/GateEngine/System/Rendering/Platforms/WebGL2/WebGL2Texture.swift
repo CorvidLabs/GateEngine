@@ -8,13 +8,13 @@
 import JavaScriptKit
 import WebAPIBase
 import DOM
-import WebGL1
+@preconcurrency import WebGL1
 import WebGL2
 
 class WebGL2Texture: TextureBackend {
     let renderTarget: WebGL2RenderTarget?
     let _textureId: WebGL1.WebGLTexture?
-    var _size: Size2?
+    var _size: Size2i?
     let managed: Bool
 
     var textureId: WebGL1.WebGLTexture {
@@ -24,7 +24,7 @@ class WebGL2Texture: TextureBackend {
         return _textureId!
     }
 
-    var size: Size2 {
+    var size: Size2i {
         if let renderTarget {
             return renderTarget.size
         }
@@ -38,18 +38,18 @@ class WebGL2Texture: TextureBackend {
         self.managed = false
     }
 
-    required init(data: Data, size: Size2, mipMapping: MipMapping) {
+    required init(rawTexture: RawTexture, mipMapping: MipMapping) {
         self.renderTarget = nil
         self.managed = true
-        self._size = size
+        self._size = rawTexture.imageSize
         let gl = WebGL2Renderer.context
         // Generate and bind texture.
-        self._textureId = gl.createTexture()!
-        self.replaceData(with: data, size: size, mipMapping: mipMapping)
+        self._textureId = gl.createTexture()
+        self.replaceData(with: rawTexture, mipMapping: mipMapping)
     }
 
-    func replaceData(with data: Data, size: Size2, mipMapping: MipMapping) {
-        self._size = size
+    func replaceData(with rawTexture: RawTexture, mipMapping: MipMapping) {
+        self._size = rawTexture.imageSize
         let gl = WebGL2Renderer.context
 
         gl.bindTexture(target: GL.TEXTURE_2D, texture: textureId)
@@ -74,35 +74,19 @@ class WebGL2Texture: TextureBackend {
 
         gl.bindTexture(target: GL.TEXTURE_2D, texture: self.textureId)
 
-        let document: Document = globalThis.document
-        if data.count == 36, let tagID = String(data: data, encoding: .utf8),
-            let ele = document.getElementById(elementId: tagID),
-            let image = HTMLImageElement(from: ele)
-        {
-            _ = document.body?.removeChild(child: image)
-            let imageSource = TexImageSource.htmlImageElement(image)
-            gl.texImage2D(
-                target: GL.TEXTURE_2D,
-                level: 0,
-                internalformat: GLint(GL.RGBA),
-                format: GL.RGBA,
-                type: GL.UNSIGNED_BYTE,
-                source: imageSource
-            )
-        } else {
-            let data = JSTypedArray<UInt8>(data)
-            gl.texImage2D(
-                target: GL.TEXTURE_2D,
-                level: 0,
-                internalformat: GLint(GL.RGBA),
-                width: GLsizei(size.width),
-                height: GLsizei(size.height),
-                border: 0,
-                format: GL.RGBA,
-                type: GL.UNSIGNED_BYTE,
-                pixels: .uint8Array(data)
-            )
-        }
+        let data = JSTypedArray<UInt8>(rawTexture.imageData)
+        gl.texImage2D(
+            target: GL.TEXTURE_2D,
+            level: 0,
+            internalformat: GLint(GL.RGBA),
+            width: GLsizei(rawTexture.imageSize.width),
+            height: GLsizei(rawTexture.imageSize.height),
+            border: 0,
+            format: GL.RGBA,
+            type: GL.UNSIGNED_BYTE,
+            pixels: .uint8Array(data)
+        )
+
         if case let .auto(levels) = mipMapping, levels > 1 {
             gl.texParameteri(
                 target: GL.TEXTURE_2D,

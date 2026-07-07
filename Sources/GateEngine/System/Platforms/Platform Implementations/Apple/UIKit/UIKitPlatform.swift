@@ -57,19 +57,25 @@ public struct UIKitPlatform: PlatformProtocol, InternalPlatformProtocol {
         return nil
     }
 
-    public func loadResource(from path: String) async throws -> Data {
+    public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 return try await fileSystem.read(from: resolvedPath)
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
     
+    @MainActor
+    public func font(named name: String) -> Font {
+        Log.infoOnce("Current platform does not support system fonts. Using default font.")
+        return .default
+    }
+
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousLocateResource(from path: String) -> String? {
         if path.hasPrefix("/"), synchronousFileSystem.itemExists(at: path) {

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies how to copy a tile.
-public struct D3DTileCopyFlags: OptionSet {
+public struct D3DTileCopyFlags: OptionSet, Sendable {
     public typealias RawType = WinSDK.D3D12_TILE_COPY_FLAGS
     public typealias RawValue = WinSDK.D3D12_TILE_COPY_FLAGS.RawValue
     public let rawValue: RawValue

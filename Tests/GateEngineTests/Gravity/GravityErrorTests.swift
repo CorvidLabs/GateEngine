@@ -14,7 +14,7 @@ final class GravityErrorTests: GateEngineXCTestCase {
     var gravity: Gravity! = nil
     var randomValue: Int = 0
     
-    override func setUp() {
+    override func setUp() async throws {
         self.gravity = Gravity()
         self.randomValue = Int.random(in: -10000 ..< 10000)
     }

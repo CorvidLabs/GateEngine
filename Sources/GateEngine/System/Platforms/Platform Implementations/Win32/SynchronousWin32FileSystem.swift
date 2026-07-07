@@ -4,11 +4,11 @@
  *
  * http://stregasgate.com
  */
-#if canImport(WinSDK) && GATEENGINE_PLATFORM_HAS_FILESYSTEM && GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
+#if canImport(WinSDK) && GATEENGINE_PLATFORM_HAS_FILESYSTEM && GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
 import Foundation
 import WinSDK
 
-public struct SynchronousWin32FileSystem: AsynchronousFileSystem {
+public struct SynchronousWin32FileSystem: SynchronousFileSystem {
     func urlForFolderID(_ folderID: KNOWNFOLDERID) -> URL {
         return Win32FileSystem.urlForFolderID(folderID)
     }

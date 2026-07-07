@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Identifies the type of resource being used.
-public enum D3DResourceDimension {
+public enum D3DResourceDimension: Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_DIMENSION
 
     ///	Resource is of unknown type.

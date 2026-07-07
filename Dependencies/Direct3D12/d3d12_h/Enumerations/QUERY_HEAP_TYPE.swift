@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Specifies the type of query heap to create.
-public enum D3DQueryHeapType {
+public enum D3DQueryHeapType: Sendable {
     public typealias RawValue = WinSDK.D3D12_QUERY_HEAP_TYPE
 
     ///	This returns a binary 0/1 result: 0 indicates that no samples passed depth and stencil testing, 1 indicates that at least one sample passed depth and stencil testing. This enables occlusion queries to not interfere with any GPU performance optimization associated with depth/stencil testing.

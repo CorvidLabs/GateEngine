@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the slot of a root signature version 1.0.
-public struct D3DRootParameter {
+public struct D3DRootParameter: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_ROOT_PARAMETER
 
     /// A D3D12_ROOT_PARAMETER_TYPE-typed value that specifies the type of root signature slot. This member determines which type to use in the union below.

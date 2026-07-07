@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the format, width, height, depth, and row-pitch of the subresource into the parent resource.
-public struct D3DSubresourceFootprint {
+public struct D3DSubresourceFootprint: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_SUBRESOURCE_FOOTPRINT
     @usableFromInline
     internal var rawValue: RawValue

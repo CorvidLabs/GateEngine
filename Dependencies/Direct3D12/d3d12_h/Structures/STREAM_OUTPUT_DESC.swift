@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a streaming output buffer.
-public struct D3DStreamOutputDescription {
+public struct D3DStreamOutputDescription: @unchecked Sendable {
     public typealias RawValue =  WinSDK.D3D12_STREAM_OUTPUT_DESC
 
     /// An array of D3D12_SO_DECLARATION_ENTRY structures. Can't be NULL if NumEntries > 0.

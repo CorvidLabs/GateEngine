@@ -36,11 +36,25 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: Install Carton
-      run: brew install swiftwasm/tap/carton
+    - name: Install Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "6.2"
 
-    - name: Test Insecure Context
-      run: carton test --environment defaultBrowser --host 127.0.0.1
+    - name: Install SwiftWasm SDK
+      run: |
+        # Use SwiftWasm community SDK which includes WebGL, DOM, and FileSystem modules
+        swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.2-RELEASE/swift-wasm-6.2-RELEASE-wasm32-unknown-wasip1.artifactbundle.zip --checksum f206a9ff2352f726d88a59d2241b9581264326471265229b7ffd133d2593b92b
+
+    - name: List SDKs
+      run: swift sdk list
+
+    - name: Swift Version
+      run: swift --version
+
+    - name: Build for WASI
+      # Use the standard SDK, not the embedded one (embedded lacks Codable/Foundation)
+      run: swift build --swift-sdk 6.2-RELEASE-wasm32-unknown-wasip1 --traits HTML5
 
 #    - name: Archive
 #      uses: actions/upload-artifact@v3

@@ -8,7 +8,7 @@
 import Foundation
 import WinSDK
 
-public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
+public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol, @unchecked Sendable {
     #if GATEENGINE_PLATFORM_HAS_FILESYSTEM
     #if GATEENGINE_PLATFORM_HAS_AsynchronousFileSystem
     public static let fileSystem: some AsynchronousFileSystem = AsynchronousWin32FileSystem()
@@ -22,10 +22,36 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
     #endif
     #endif
     
-    let staticResourceLocations: [URL]
+    let staticResourceLocations: [URL] = Win32Platform.getStaticSearchPaths()
 
-    init(delegate: any GameDelegate) {
-        self.staticResourceLocations = Self.getStaticSearchPaths(delegate: delegate)
+    func setCursorStyle(_ style: Mouse.Style) {
+        // The WinSDK Swift module doesn't expose the IDC_* cursor identifiers as linkable
+        // symbols (they're C macros wrapping MAKEINTRESOURCEW), so the resource ordinals from
+        // WinUser.h are used directly here, matching the pattern already used for IDC_ARROW in
+        // Win32WindowClass's window-class registration. Windows has no distinct standard cursors
+        // for an open vs. closed hand, so both map to IDC_HAND alongside .handPointing.
+        let resourceOrdinal: UInt16
+        switch style {
+        case .arrow:
+            resourceOrdinal = 32512  // IDC_ARROW
+        case .resizeHorizontal:
+            resourceOrdinal = 32644  // IDC_SIZEWE
+        case .resizeVertical:
+            resourceOrdinal = 32645  // IDC_SIZENS
+        case .iBeam:
+            resourceOrdinal = 32513  // IDC_IBEAM
+        case .handPointing, .handOpen, .handClosed:
+            resourceOrdinal = 32649  // IDC_HAND
+        case .crosshair:
+            resourceOrdinal = 32515  // IDC_CROSS
+        }
+        guard let cursorID = UnsafePointer<WCHAR>(bitPattern: UInt(resourceOrdinal)) else {
+            return
+        }
+        guard let cursor = LoadCursorW(nil, cursorID) else {
+            return
+        }
+        SetCursor(cursor)
     }
 
     public var supportsMultipleWindows: Bool {
@@ -37,7 +63,7 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
             return path
         }
         let searchPaths =
-            await Game.shared.delegate.resolvedCustomResourceLocations() + staticResourceLocations
+            Game.unsafeShared.delegate.resolvedCustomResourceLocations() + staticResourceLocations
         for searchPath in searchPaths {
             let file = searchPath.appendingPathComponent(path)
             if await fileSystem.itemExists(at: file.path) {
@@ -48,19 +74,25 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
         return nil
     }
 
-    public func loadResource(from path: String) async throws -> Data {
+    public func loadResource(from path: String) async throws(GateEngineError) -> Data {
         if let resolvedPath = await locateResource(from: path) {
             do {
                 return try await fileSystem.read(from: resolvedPath)
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
     
+    @MainActor
+    public func font(named name: String) -> Font {
+        Log.infoOnce("Current platform does not support system fonts. Using default font.")
+        return .default
+    }
+
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousLocateResource(from path: String) -> String? {
         if path.hasPrefix("/"), synchronousFileSystem.itemExists(at: path) {
@@ -83,11 +115,11 @@ public final class Win32Platform: PlatformProtocol, InternalPlatformProtocol {
                 return try synchronousFileSystem.read(from: resolvedPath)
             } catch {
                 Log.error("Failed to load resource \"\(resolvedPath)\".", error)
-                throw GateEngineError.failedToLoad("\(error)")
+                throw GateEngineError.failedToLoad(resource: resolvedPath, "\(error)")
             }
         }
 
-        throw GateEngineError.failedToLocate
+        throw GateEngineError.failedToLocate(resource: path, nil)
     }
     #endif
 }

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes a swap chain.
-public struct DGISwapChainDescription1 {
+public struct DGISwapChainDescription1: @unchecked Sendable {
     public typealias RawValue = WinSDK.DXGI_SWAP_CHAIN_DESC1
     @usableFromInline
     internal var rawValue: RawValue

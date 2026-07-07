@@ -16,19 +16,23 @@ public final class PNGImporter: TextureImporter {
         return false
     }
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         self.data = try Platform.current.synchronousLoadResource(from: path)
     }
+    #endif
     public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         self.data = try await Platform.current.loadResource(from: path)
     }
     
+    #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
     public func synchronousLoadTexture(options: TextureImporterOptions) throws(GateEngineError) -> RawTexture {
         return try PNGDecoder().decode(data)
     }
+    #endif
 
     public func loadTexture(options: TextureImporterOptions) async throws(GateEngineError) -> RawTexture {
-        return try synchronousLoadTexture(options: options)
+        return try PNGDecoder().decode(data)
     }
 
     public static func supportedFileExtensions() -> [String] {

@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the elements in a buffer resource to use in a shader-resource view.
-public struct D3DShaderResourceViewBuffer {
+public struct D3DShaderResourceViewBuffer: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_BUFFER_SRV
     @usableFromInline
     internal var rawValue: RawValue

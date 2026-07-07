@@ -5,10 +5,10 @@
  * http://stregasgate.com
  */
 
-import WinSDK
+public import WinSDK
 
 /// Describes the transition between usages of two different resources that have mappings into the same heap.
-public struct D3DResourceAliasingBarrier {
+public struct D3DResourceAliasingBarrier: @unchecked Sendable {
     public typealias RawValue = WinSDK.D3D12_RESOURCE_ALIASING_BARRIER
     @usableFromInline
     internal var rawValue: RawValue
