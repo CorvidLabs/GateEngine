@@ -306,9 +306,12 @@ open class Button: Control {
 }
 
 nonisolated extension Button: CustomDebugStringConvertible {
+    // `debugDescription` may be invoked from any thread (debugger `po`, background logging,
+    // string interpolation inside a non-isolated `Task`), so it must not assume it's running on
+    // the main actor's executor. Only nonisolated-safe values (type identity) are used here;
+    // `label.text` is `@MainActor`-isolated and would trap under `MainActor.assumeIsolated` if
+    // accessed off the main thread.
     public var debugDescription: String {
-        return MainActor.assumeIsolated {
-            "\(type(of: self))(label: \"\(label.text)\")"
-        }
+        "\(type(of: self))(\(ObjectIdentifier(self)))"
     }
 }

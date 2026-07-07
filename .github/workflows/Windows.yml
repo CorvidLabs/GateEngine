@@ -22,6 +22,6 @@ jobs:
         run: swift --version
       
       - name: Build
-        run: swift build -Xswiftc -Xfrontend -Xswiftc -disable-access-control
+        run: swift build
       - name: Test
-        run: swift test -Xswiftc -Xfrontend -Xswiftc -disable-access-control
+        run: swift test
