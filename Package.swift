@@ -233,7 +233,8 @@ let package = Package(
                 dependencies: [
                     "GateUtilities",
                     "GameMath",
-                    .product(name: "Collections", package: "swift-collections")
+                    .product(name: "Collections", package: "swift-collections"),
+                    .product(name: "OrderedCollections", package: "swift-collections")
                 ],
                 swiftSettings: .default(withCustomization: { settings in
                     settings.append(.define("GATEENGINE_DEBUG_SHADERS", .when(configuration: .debug)))

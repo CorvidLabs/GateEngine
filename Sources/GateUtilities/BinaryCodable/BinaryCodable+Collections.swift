@@ -7,7 +7,13 @@
 
 #if canImport(Collections)
 
-import Collections
+// `Deque`, `OrderedSet`, and `OrderedDictionary` are defined in `DequeModule` and
+// `OrderedCollections` respectively; the `Collections` umbrella module only re-exports them.
+// Under Swift 6's member import visibility, the defining modules must be imported directly for
+// their members (append, reserveCapacity, etc.) to resolve, and `public import` is required
+// because these types appear in the `public` extensions below.
+public import DequeModule
+public import OrderedCollections
 
 extension Deque: BinaryCodable where Element: BinaryCodable {}
 public extension Deque where Element: BinaryCodable {

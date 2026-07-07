@@ -36,15 +36,17 @@ jobs:
     - uses: actions/checkout@v5
 
     - name: Install Android SDK
+      # The old swift-5.8-android-24-sdk destination bundle is incompatible with the Swift
+      # toolchain now preinstalled on ubuntu-latest (6.x): its sysroot doesn't resolve against
+      # the newer compiler's search paths (missing stdio.h/inttypes.h). Use the modern
+      # `swift sdk install` artifact-bundle flow with an SDK matching this package's
+      # swift-tools-version (6.1) floor instead of the legacy `--destination` JSON file.
       run: |
-        cd ..
-        wget -q https://github.com/finagolfin/swift-android-sdk/releases/download/5.8/swift-5.8-android-24-sdk.tar.xz
-        tar xf swift-5.8-android-24-sdk.tar.xz
-        cd GateEngine
+        swift sdk install https://github.com/finagolfin/swift-android-sdk/releases/download/6.1/swift-6.1-RELEASE-android-24-0.1.artifactbundle.tar.gz --checksum 971f3b1fd03c059803d625f0a412d7e8c4c6f34440f5216ceaf13e886e8e706f
     - name: Swift Version
       run: swift --version
 
     - name: Build using Swift
-      run: swift build --destination ../swift-5.8-android-24-sdk/usr/swiftpm-android-aarch64.json -Xlinker -rpath -Xlinker \$ORIGIN/lib/swift/android
+      run: swift build --swift-sdk aarch64-unknown-linux-android24
     - name: Test using Swift
-      run: swift test --destination ../swift-5.8-android-24-sdk/usr/swiftpm-android-aarch64.json -Xlinker -rpath -Xlinker \$ORIGIN/lib/swift/android
+      run: swift build --build-tests --swift-sdk aarch64-unknown-linux-android24
