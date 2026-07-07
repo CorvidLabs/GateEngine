@@ -360,7 +360,17 @@ let package = Package(
                         // disabled for this target only. This does not affect the public API surface of Direct3D12;
                         // it only relaxes the compiler's internal-visibility check when emitting inlinable bodies.
                         settings.append(.unsafeFlags(["-Xfrontend", "-disable-access-control"]))
-                    })),
+                    }),
+                    // The vendored bindings call D3D12CreateDevice/D3D12SerializeRootSignature/
+                    // D3D12GetDebugInterface (d3d12.dll), CreateDXGIFactory2 (dxgi.dll), and
+                    // D3DCompile/D3DCompileFromFile (d3dcompiler_47.dll) directly. None of these
+                    // import libraries get linked automatically by SwiftPM, so they must be
+                    // declared explicitly or the final link fails with unresolved externals.
+                    linkerSettings: [
+                        .linkedLibrary("d3d12", .when(platforms: [.windows])),
+                        .linkedLibrary("dxgi", .when(platforms: [.windows])),
+                        .linkedLibrary("d3dcompiler", .when(platforms: [.windows])),
+                    ]),
             // XAudio2
             .target(name: "XAudio2",
                     dependencies: ["XAudio2C"],
