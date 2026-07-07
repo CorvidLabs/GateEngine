@@ -7,23 +7,23 @@
 
 public import WinSDK
 import struct Foundation.Data
+
 public struct D3DMessage: Swift.Error, CustomStringConvertible, Sendable {
     public typealias RawValue = WinSDK.D3D12_MESSAGE
-    @usableFromInline
-    internal var rawValue: RawValue
 
-    public var description: String {
-        let buffer: UnsafeRawBufferPointer = UnsafeRawBufferPointer(start: rawValue.pDescription, count: Int(rawValue.DescriptionByteLength))
-        return String(bytes: buffer, encoding: .utf8) ?? String(bytes: buffer, encoding: .ascii) ?? String(cString: rawValue.pDescription)
-    }
+    /// The message text, copied out of the transient `D3D12_MESSAGE` buffer at creation time.
+    ///
+    /// `RawValue` (`D3D12_MESSAGE`) contains a raw pointer that is only valid for the duration of
+    /// the call that produced it, so it is never stored directly. Copying the description eagerly
+    /// keeps `D3DMessage` genuinely safe to conform to `Sendable`.
+    public let description: String
 
-    @inlinable
-    public var sevarity: D3DMessageSeverity {
-        return D3DMessageSeverity(rawValue: rawValue.Severity)
-    }
+    public let sevarity: D3DMessageSeverity
 
     @inlinable
     internal init(_ rawValue: RawValue) {
-        self.rawValue = rawValue
+        let buffer: UnsafeRawBufferPointer = UnsafeRawBufferPointer(start: rawValue.pDescription, count: Int(rawValue.DescriptionByteLength))
+        self.description = String(bytes: buffer, encoding: .utf8) ?? String(bytes: buffer, encoding: .ascii) ?? String(cString: rawValue.pDescription)
+        self.sevarity = D3DMessageSeverity(rawValue: rawValue.Severity)
     }
 }

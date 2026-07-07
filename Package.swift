@@ -343,7 +343,15 @@ let package = Package(
                     path: "Dependencies/Direct3D12",
                     swiftSettings: .default(withCustomization: { settings in
                         settings.append(.define("Direct3D12ExcludeOriginalStyleAPI", .when(configuration: .release)))
-                        // Disable @inlinable access control checks for WinSDK imports
+                        // The vendored Direct3D12/WinSDK bindings under Dependencies/Direct3D12 make heavy use of
+                        // `@inlinable` (800+ declarations) on `internal` members (initializers, computed properties,
+                        // etc.) so those APIs can be inlined into consumers without becoming part of the public ABI.
+                        // Swift requires every symbol referenced from an `@inlinable` body to be `@usableFromInline`
+                        // (or public), but this vendored code was not annotated that way throughout. Retroactively
+                        // adding `@usableFromInline` to every internal symbol touched by an `@inlinable` function
+                        // across ~200 files is impractical, so access-control checking for `@inlinable` bodies is
+                        // disabled for this target only. This does not affect the public API surface of Direct3D12;
+                        // it only relaxes the compiler's internal-visibility check when emitting inlinable bodies.
                         settings.append(.unsafeFlags(["-Xfrontend", "-disable-access-control"]))
                     })),
             // XAudio2

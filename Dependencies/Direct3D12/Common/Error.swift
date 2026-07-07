@@ -8,7 +8,7 @@
 public import WinSDK
 
 extension Error {
-    public enum Kind {
+    public enum Kind: Sendable {
         case unknown
         case hresult(WinSDK.HRESULT)
         case text(String)
