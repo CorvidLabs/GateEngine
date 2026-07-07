@@ -8,7 +8,6 @@
 import XCTest
 @testable import GateEngine
 
-@MainActor
 final class RawGeometryTests: GateEngineXCTestCase {
     func testInt() {
         XCTAssertTrue(RawGeometry().isEmpty)

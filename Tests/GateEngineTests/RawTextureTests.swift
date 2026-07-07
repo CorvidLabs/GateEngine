@@ -8,7 +8,6 @@
 import XCTest
 @testable import GateEngine
 
-@MainActor
 final class RawTextureTests: GateEngineXCTestCase {
     func testInt() {
         let expectedSize = Size2i(width: 16, height: 16)
