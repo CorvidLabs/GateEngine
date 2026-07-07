@@ -16,20 +16,25 @@ public struct Position3n<Scalar: Vector3n.ScalarType>: Vector3n {
     public var x: Scalar
     public var y: Scalar
     public var z: Scalar
-    private let _pad: Scalar // Foce power of 2 size
+    /**
+     This value is padding to force power of 2 memory alignment.
+     Some low level functions may manipulate this value, so it's readable.
+     - note: This value is not encoded or decoded.
+     */
+    public let w: Scalar
     
     public init(x: Scalar, y: Scalar, z: Scalar) {
         self.x = x
         self.y = y
         self.z = z
-        self._pad = 0
+        self.w = 0
     }
 }
 
 public extension Position3n {
     @inlinable
     var xy: Position2n<Scalar> {
-        get {
+        nonmutating get {
             return Position2n(x: x, y: y)
         }
         mutating set {
@@ -40,7 +45,7 @@ public extension Position3n {
     
     @inlinable
     var xz: Position2n<Scalar> {
-        get {
+        nonmutating get {
             return Position2n(x: x, y: z)
         }
         mutating set {
@@ -51,7 +56,7 @@ public extension Position3n {
     
     @inlinable
     var yz: Position2n<Scalar> {
-        get {
+        nonmutating get {
             return Position2n(x: y, y: z)
         }
         mutating set {
@@ -67,7 +72,7 @@ public extension Position3n where Scalar: FloatingPoint {
      */
     @_disfavoredOverload // <- prefer SIMD overloads
     @inlinable
-    func distance(from: Self) -> Scalar {
+    nonmutating func distance(from: Self) -> Scalar {
         let difference = self - from
         let distance = difference.dot(difference)
         return distance.squareRoot()
@@ -75,7 +80,7 @@ public extension Position3n where Scalar: FloatingPoint {
     
     @_disfavoredOverload // <- prefer SIMD overloads
     @inlinable
-    func squaredDistance(from: Self) -> Scalar {
+    nonmutating func squaredDistance(from: Self) -> Scalar {
         let difference = self - from
         return pow(difference.x, 2) + pow(difference.y, 2) + pow(difference.z, 2)
     }
@@ -85,7 +90,7 @@ public extension Position3n where Scalar: FloatingPoint {
     - parameter threshold: The maximum distance that is considered "near".
      */
     @inlinable
-    func isNear(_ rhs: Self, threshold: Scalar) -> Bool {
+    nonmutating func isNear(_ rhs: Self, threshold: Scalar) -> Bool {
         return self.distance(from: rhs) < threshold
     }
 }
@@ -96,7 +101,7 @@ public extension Position3n where Scalar: FloatingPoint {
     - parameter direction: The angle away from self to create the new position.
      */
     @inlinable
-    func moved(_ distance: Scalar, toward direction: Direction3n<Scalar>) -> Self {
+    nonmutating func moved(_ distance: Scalar, toward direction: Direction3n<Scalar>) -> Self {
         return self + (direction.normalized * distance)
     }
 
@@ -116,9 +121,8 @@ public extension Position3n where Scalar: FloatingPoint {
     - parameter rotation: The direction and angle to rotate.
      */
     @inlinable
-    func rotated(around anchor: Self = .zero, by rotation: Rotation3n<Scalar>) -> Self {
-        let d = self.distance(from: anchor)
-        return anchor.moved(d, toward: rotation.forward)
+    nonmutating func rotated(around anchor: Self = .zero, by rotation: Rotation3n<Scalar>) -> Self {
+        fatalError("Not implemented")
     }
 
     /** Rotates `self` around an anchor position.
@@ -132,8 +136,6 @@ public extension Position3n where Scalar: FloatingPoint {
 }
 
 extension Position3n: AdditiveArithmetic where Scalar: AdditiveArithmetic { }
-extension Position3n: ExpressibleByIntegerLiteral where Scalar: FixedWidthInteger & _ExpressibleByBuiltinIntegerLiteral & ExpressibleByIntegerLiteral { }
-extension Position3n: ExpressibleByFloatLiteral where Scalar: FloatingPoint & _ExpressibleByBuiltinFloatLiteral & ExpressibleByFloatLiteral { }
 extension Position3n: Equatable where Scalar: Equatable { }
 extension Position3n: Hashable where Scalar: Hashable { }
 extension Position3n: Comparable where Scalar: Comparable { }
@@ -154,9 +156,10 @@ extension Position3n: Codable where Scalar: Codable {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.x, forKey: .x)
-        try container.encode(self.x, forKey: .y)
-        try container.encode(self.x, forKey: .z)
+        try container.encode(self.y, forKey: .y)
+        try container.encode(self.z, forKey: .z)
     }
 }
+extension Position3n: RandomAccessCollection, MutableCollection { }
 extension Position3n: BitwiseCopyable where Scalar: BitwiseCopyable { }
 extension Position3n: BinaryCodable where Self: BitwiseCopyable { }

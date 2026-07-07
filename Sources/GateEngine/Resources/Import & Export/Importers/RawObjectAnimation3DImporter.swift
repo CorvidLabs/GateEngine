@@ -12,12 +12,12 @@ import Foundation
  
  The file extension of the asset to load must match `RawObjectAnimation3DImporter.fileExtension`
  */
-public final class RawObjectAnimation3DImporter: ObjectAnimation3DImporter, GateEngineNativeResourceImporter {
+public struct RawObjectAnimation3DImporter: ObjectAnimation3DImporter, GateEngineNativeResourceImporter {
     var data: Data! = nil
-    public required init() {}
+    public init() {}
 
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
-    public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
+    public mutating func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         do {
             self.data = try Platform.current.synchronousLoadResource(from: path)
         }catch{
@@ -25,7 +25,7 @@ public final class RawObjectAnimation3DImporter: ObjectAnimation3DImporter, Gate
         }
     }
     #endif
-    public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
+    public mutating func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         do {
             self.data = try await Platform.current.loadResource(from: path)
         }catch{
@@ -33,7 +33,7 @@ public final class RawObjectAnimation3DImporter: ObjectAnimation3DImporter, Gate
         }
     }
     
-    public func loadObjectAnimation(options: ObjectAnimation3DImporterOptions) async throws(GateEngineError) -> RawObjectAnimation3D {
+    public mutating func loadObjectAnimation(options: ObjectAnimation3DImporterOptions) async throws(GateEngineError) -> RawObjectAnimation3D {
         do {
             return try RawObjectAnimation3DDecoder().decode(data)
         }catch{

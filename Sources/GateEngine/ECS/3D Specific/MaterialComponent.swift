@@ -19,12 +19,19 @@ public final class MaterialComponent: ResourceConstrainedComponent {
             self.resourcesState = .pending
         }
     }
-
+    
+    // TODO: Remove abiguity
+    // The type of value is used when building a shader. If an int literal is used and a float is needed the shader will not behave properly
+    // Remove generic overloads and replace them with verbose named functions such as the "asFloat" below
     public func setCustomUniformValue(_ value: some CustomUniformType, forUniform name: String) {
         material.setCustomUniformValue(value, forUniform: name)
     }
-    @_disfavoredOverload
-    public func setCustomUniformValue(_ value: Float, forUniform name: String) {
+    
+    public func removeCustomUniformValue(named name: String) {
+        material.removeCustomUniformValue(named: name)
+    }
+    
+    public func setCustomUniformValue(asFloat value: Float, forUniform name: String) {
         material.setCustomUniformValue(value, forUniform: name)
     }
 
@@ -52,7 +59,10 @@ public final class MaterialComponent: ResourceConstrainedComponent {
         self.material = Material()
         config(&self.material)
     }
-    public init(_ material: Material) {
+    public init(vertexShader vsh: VertexShader? = nil, fragmentShader fsh: FragmentShader? = nil, blendMode: DrawCommand.Flags.BlendMode = .normal, _ material: Material) {
+        self.vertexShader = vsh
+        self.fragmentShader = fsh
+        self.blendMode = blendMode
         self.material = material
     }
     

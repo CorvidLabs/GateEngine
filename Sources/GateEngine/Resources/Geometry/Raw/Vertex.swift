@@ -10,7 +10,7 @@ import GameMath
 //TODO: Subscripts index by 0..<2 for all sub types would be nice
 
 /// A 3D point and associated values. This is used to construct `Triangle`s.
-public struct Vertex: Codable, Equatable, Hashable {
+public struct Vertex: Codable, Equatable, Hashable, Sendable {
     /// The x component of the position
     public var position: Position3
     
@@ -91,9 +91,8 @@ public struct Vertex: Codable, Equatable, Hashable {
     public static func * (lhs: Self, rhs: Matrix4x4) -> Self {
         var copy = lhs
         copy.position = copy.position * rhs
-        let m3 = Matrix3x3(rhs)
-        copy.normal = copy.normal * m3
-        copy.tangent = copy.tangent * m3
+        copy.normal = copy.normal.rotated(by: rhs.rotation.conjugate)
+        copy.tangent = copy.tangent.rotated(by: rhs.rotation.conjugate)
         return copy
     }
 }

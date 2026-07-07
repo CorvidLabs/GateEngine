@@ -160,7 +160,7 @@ public final class TileSetBackend {
 // MARK: - Resource Manager
 
 public protocol TileSetImporter: ResourceImporter {
-    func loadTileSet(options: TileSetImporterOptions) async throws(GateEngineError) -> TileSetBackend
+    mutating func loadTileSet(options: TileSetImporterOptions) async throws(GateEngineError) -> TileSetBackend
 }
 
 public struct TileSetImporterOptions: Equatable, Hashable, Sendable {
@@ -177,7 +177,7 @@ extension ResourceManager {
 
     func tileSetImporterForPath(_ path: String) async throws(GateEngineError) -> any TileSetImporter {
         for type in self.importers.tileSetImporters {
-            if type.canProcessFile(path) {
+            if type.canProcessFile(at: path) {
                 return try await self.importers.getImporter(path: path, type: type)
             }
         }
@@ -296,11 +296,11 @@ extension ResourceManager {
     @MainActor func _reloadTileSet(for key: Cache.TileSetKey, isFirstLoad: Bool) {
         Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
         let cache = self.cache
-        Task.detached {
+        Task {
             let path = key.requestedPath
             
             do {
-                let importer: any TileSetImporter = try await Game.unsafeShared.resourceManager.tileSetImporterForPath(path)
+                var importer: any TileSetImporter = try await Game.unsafeShared.resourceManager.tileSetImporterForPath(path)
                 let backend = try await importer.loadTileSet(options: key.tileSetOptions)
 
                 Task { @MainActor in

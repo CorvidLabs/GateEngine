@@ -50,7 +50,7 @@ public struct Skin: Hashable {
 // MARK: - Resource Manager
 
 public protocol SkinImporter: ResourceImporter {
-    func loadSkin(options: SkinImporterOptions) async throws(GateEngineError) -> RawSkin
+    mutating func loadSkin(options: SkinImporterOptions) async throws(GateEngineError) -> RawSkin
 }
 
 public struct SkinImporterOptions: Equatable, Hashable, Sendable {
@@ -73,7 +73,7 @@ extension ResourceManager {
 
     func skinImporterForPath(_ path: String) async throws(GateEngineError) -> any SkinImporter {
         for type in self.importers.skinImporters {
-            if type.canProcessFile(path) {
+            if type.canProcessFile(at: path) {
                 return try await self.importers.getImporter(path: path, type: type)
             }
         }
@@ -83,7 +83,7 @@ extension ResourceManager {
 
 extension RawSkin {
     public init(path: String, options: SkinImporterOptions = .none) async throws(GateEngineError) {
-        let importer: any SkinImporter = try await Game.unsafeShared.resourceManager.skinImporterForPath(path)
+        var importer: any SkinImporter = try await Game.unsafeShared.resourceManager.skinImporterForPath(path)
         self = try await importer.loadSkin(options: options)
     }
 }

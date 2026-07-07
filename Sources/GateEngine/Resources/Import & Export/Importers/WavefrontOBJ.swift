@@ -7,13 +7,13 @@
 
 import Foundation
 
-public final class WavefrontOBJImporter: GeometryImporter {
+public struct WavefrontOBJImporter: GeometryImporter {
     var lines: [String] = []
     
-    public required init() {}
+    public init() {}
     
     #if GATEENGINE_PLATFORM_HAS_SynchronousFileSystem
-    public func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
+    public mutating func synchronousPrepareToImportResourceFrom(path: String) throws(GateEngineError) {
         do {
             let data = try Platform.current.synchronousLoadResource(from: path)
             guard let obj = String(data: data, encoding: .utf8) else {
@@ -27,7 +27,7 @@ public final class WavefrontOBJImporter: GeometryImporter {
         }
     }
     #endif
-    public func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
+    public mutating func prepareToImportResourceFrom(path: String) async throws(GateEngineError) {
         do {
             let data = try await Platform.current.loadResource(from: path)
             guard let obj = String(data: data, encoding: .utf8) else {
@@ -45,7 +45,7 @@ public final class WavefrontOBJImporter: GeometryImporter {
         return lines.count(where: {$0.hasPrefix("o ")}) > 1
     }
     
-    public func loadGeometry(options: GeometryImporterOptions) async throws(GateEngineError) -> RawGeometry {
+    public mutating func loadGeometry(options: GeometryImporterOptions) async throws(GateEngineError) -> RawGeometry {
         do {
             var prefix = "o "
             if let name = options.subobjectName {
@@ -63,7 +63,7 @@ public final class WavefrontOBJImporter: GeometryImporter {
             var uvs: [TextureCoordinate] = []
             var normals: [Direction3] = []
             
-            var triangles: [Triangle] = []
+            var rawGeometry: RawGeometry = []
             
             for line in lines[index...] {
                 // If we reach the next object, exit loop
@@ -151,14 +151,14 @@ public final class WavefrontOBJImporter: GeometryImporter {
                             throw GateEngineError.failedToDecode("File malformed at face: \(string)")
                         }
                     }
-                    triangles.append(contentsOf: try rawTriangleConvert(line))
+                    rawGeometry.append(contentsOf: try rawTriangleConvert(line))
                 }
             }
-            guard triangles.isEmpty == false else {
+            guard rawGeometry.isEmpty == false else {
                 throw GateEngineError.failedToDecode("No triangles to create the geometry with.")
             }
             
-            return RawGeometry(triangles: triangles)
+            return rawGeometry
         }catch{
             throw GateEngineError(error)
         }

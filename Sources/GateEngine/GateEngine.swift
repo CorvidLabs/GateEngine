@@ -66,6 +66,7 @@ public enum GateEngineError: Error, Equatable, Hashable, CustomStringConvertible
     case failedToEncode(_ reason: String)
     
     case scriptCompileError(_ reason: String)
+    case scriptCompileOutputError(_ gravityError: Gravity.Error)
     case scriptExecutionError(_ reason: String)
 
     case uiLayoutFailed(_ description: String)
@@ -95,6 +96,8 @@ public enum GateEngineError: Error, Equatable, Hashable, CustomStringConvertible
             return "FailedToEncode:\n\t" + reason.replacingOccurrences(of: "\n", with: "\n\t")
         case .scriptCompileError(let reason):
             return "ScriptCompileError:\n\t" + reason.replacingOccurrences(of: "\n", with: "\n\t")
+        case .scriptCompileOutputError(let gravityError):
+            return "ScriptCompileError:\n\t" + gravityError.stderrOutput()
         case .scriptExecutionError(let reason):
             return "ScriptExecutionError:\n\t" + reason.replacingOccurrences(of: "\n", with: "\n\t")
         case .uiLayoutFailed(let reason):
@@ -210,7 +213,7 @@ internal enum Log {
 
     @usableFromInline
     static func info(_ items: Any..., separator: String = " ", terminator: String = "\n") {
-        #if DEBUG || !DISTRIBUTE
+        #if !DISTRIBUTE
         let message = _message(prefix: "[GateEngine]", items, separator: separator)
 
         #if HTML5
@@ -226,7 +229,7 @@ internal enum Log {
 
     @usableFromInline
     static func infoOnce(_ items: Any..., separator: String = " ", terminator: String = "\n") {
-        #if DEBUG || !DISTRIBUTE
+        #if !DISTRIBUTE
         let hash = items.compactMap({ $0 as? AnyHashable }).hashValue
         if onceHashes.contains(hash) == false {
             onceHashes.insert(hash)

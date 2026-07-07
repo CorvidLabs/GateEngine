@@ -27,15 +27,62 @@ public struct Position2n<Scalar: Vector2n.ScalarType>: Vector2n {
         self.y = y
     }
 }
+public extension Position2n where Scalar: FloatingPoint {
+    /** Creates a position a specified distance from self in a particular direction
+    - parameter distance: The units away from `self` to create the new position.
+    - parameter direction: The angle away from self to create the new position.
+     */
+    @inlinable
+    nonmutating func moved(_ distance: Scalar, toward direction: Direction2n<Scalar>) -> Self {
+        return self + (direction.normalized * distance)
+    }
+
+    /** Moves `self` by a specified distance from in a particular direction
+    - parameter distance: The units away to move.
+    - parameter direction: The angle to move.
+     */
+    @inlinable
+    mutating func move(_ distance: Scalar, toward direction: Direction2n<Scalar>) {
+        self = moved(distance, toward: direction)
+    }
+}
 extension Position2n: AdditiveArithmetic where Scalar: AdditiveArithmetic { }
-extension Position2n: ExpressibleByIntegerLiteral where Scalar: FixedWidthInteger & _ExpressibleByBuiltinIntegerLiteral & ExpressibleByIntegerLiteral { }
-extension Position2n: ExpressibleByFloatLiteral where Scalar: FloatingPoint & _ExpressibleByBuiltinFloatLiteral & ExpressibleByFloatLiteral { }
 extension Position2n: Equatable where Scalar: Equatable { }
 extension Position2n: Hashable where Scalar: Hashable { }
 extension Position2n: Comparable where Scalar: Comparable { }
 extension Position2n: Sendable where Scalar: Sendable { }
 extension Position2n: Codable where Scalar: Codable { }
-extension Position2n: BinaryCodable where Scalar: BinaryCodable { }
+extension Position2n: BitwiseCopyable where Scalar: BitwiseCopyable { }
+extension Position2n: BinaryCodable where Self: BitwiseCopyable { }
+
+public typealias Direction2i = Direction2n<Int>
+public typealias Direction2f = Direction2n<Float>
+public struct Direction2n<Scalar: Vector2n.ScalarType>: Vector2n {
+    public typealias Vector2Counterpart = Size2
+    public var x: Scalar
+    public var y: Scalar
+    
+    public init(x: Scalar, y: Scalar) {
+        self.x = x
+        self.y = y
+    }
+    
+    public static var one: Self { .init(x: 1, y: 1) }
+}
+public extension Direction2n where Scalar: FloatingPoint {
+    @inlinable
+    init(from position1: Position2n<Scalar>, to position2: Position2n<Scalar>) {
+        self = Self(position2 - position1).normalized
+    }
+}
+extension Direction2n: AdditiveArithmetic where Scalar: AdditiveArithmetic { }
+extension Direction2n: Equatable where Scalar: Equatable { }
+extension Direction2n: Hashable where Scalar: Hashable { }
+extension Direction2n: Comparable where Scalar: Comparable { }
+extension Direction2n: Sendable where Scalar: Sendable { }
+extension Direction2n: Codable where Scalar: Codable { }
+extension Direction2n: BitwiseCopyable where Scalar: BitwiseCopyable { }
+extension Direction2n: BinaryCodable where Self: BitwiseCopyable { }
 
 public typealias Size2i = Size2n<Int>
 public typealias Size2f = Size2n<Float>
@@ -52,20 +99,50 @@ public struct Size2n<Scalar: Vector2n.ScalarType>: Vector2n {
     public static var one: Self { .init(x: 1, y: 1) }
 }
 extension Size2n: AdditiveArithmetic where Scalar: AdditiveArithmetic { }
-extension Size2n: ExpressibleByIntegerLiteral where Scalar: FixedWidthInteger & _ExpressibleByBuiltinIntegerLiteral & ExpressibleByIntegerLiteral { }
-extension Size2n: ExpressibleByFloatLiteral where Scalar: FloatingPoint & _ExpressibleByBuiltinFloatLiteral & ExpressibleByFloatLiteral { }
 extension Size2n: Equatable where Scalar: Equatable { }
 extension Size2n: Hashable where Scalar: Hashable { }
 extension Size2n: Comparable where Scalar: Comparable { }
 extension Size2n: Sendable where Scalar: Sendable { }
 extension Size2n: Codable where Scalar: Codable { }
-extension Size2n: BinaryCodable where Scalar: BinaryCodable { }
+extension Size2n: BitwiseCopyable where Scalar: BitwiseCopyable { }
+extension Size2n: BinaryCodable where Self: BitwiseCopyable { }
 public extension Size2n {
     @inlinable var width: Scalar { get{self.x} set{self.x = newValue} }
     @inlinable var height: Scalar { get{self.y} set{self.y = newValue} }
     
     @inlinable init(width: Scalar, height: Scalar) {
         self.init(x: width, y: height)
+    }
+}
+
+public extension Vector2n {
+    @safe // <- bitcast is checked with a precondition
+    @inlinable
+    @_transparent
+    init<T: Vector2n>(_ vector: T) where T.Scalar == Scalar {
+        #if !DISTRIBUTE
+        // Strip in DISTRIBUTE builds, as this check would have been proven safe during
+        // development and we don't want any lingering code for performance reasons.
+        precondition(
+            MemoryLayout<Self>.size == MemoryLayout<T.Scalar>.size * 2,
+            "Type mismatch. Types conforming to Vector3n must have 4 scalars (x: Scalar, y: Scalar, z: Scalar, w: Scalar) and a fixed layout (@frozen)."
+        )
+        #endif
+        
+        // All Vector3n types have the same memory layout, so bitcast is safe
+        self = unsafeBitCast(vector, to: Self.self)
+    }
+    
+    @inlinable
+    @_transparent
+    init(_ x: Scalar, _ y: Scalar) {
+        self.init(x: x, y: y)
+    }
+    
+    @inlinable
+    @_transparent
+    init(_ value: Scalar) {
+        self.init(x: value, y: value)
     }
 }
 
@@ -159,20 +236,6 @@ extension Vector2n where Scalar: BinaryFloatingPoint {
     }
 }
 
-public extension Vector2n where Scalar: FixedWidthInteger & _ExpressibleByBuiltinIntegerLiteral & ExpressibleByIntegerLiteral {
-    typealias IntegerLiteralType = Scalar
-    init(integerLiteral value: IntegerLiteralType) {
-        self.init(x: value, y: value)
-    }
-}
-
-public extension Vector2n where Scalar: FloatingPoint & _ExpressibleByBuiltinFloatLiteral & ExpressibleByFloatLiteral {
-    typealias FloatLiteralType = Scalar
-    init(floatLiteral value: FloatLiteralType) {
-        self.init(x: value, y: value)
-    }
-}
-
 public extension Vector2n where Scalar: AdditiveArithmetic {
     @inlinable
     static func + (lhs: Self, rhs: some Vector2n<Scalar>) -> Self {
@@ -194,9 +257,8 @@ public extension Vector2n where Scalar: AdditiveArithmetic {
         return Self(x: lhs.x - rhs, y: lhs.y - rhs)
     }
     
-    @_disfavoredOverload // <- Tell the compiler to prefer using integer literals to avoid ambiguilty
     @inlinable
-    static var zero: Self {Self(x: Scalar.zero, y: Scalar.zero)}
+    static var zero: Self {Self(x: .zero, y: .zero)}
 }
 
 public extension Vector2n where Scalar: Numeric {
@@ -258,6 +320,26 @@ public extension Vector2n where Scalar: FloatingPoint {
     @inlinable
     static func /= (lhs: inout Self, rhs: Scalar) {
         lhs = lhs / rhs
+    }
+    
+    @inlinable
+    nonmutating func truncatingRemainder(dividingBy other: Scalar) -> Self {
+        self.truncatingRemainder(dividingBy: Self(other))
+    }
+    
+    @inlinable
+    nonmutating func truncatingRemainder(dividingBy divisors: some Vector2n<Scalar>) -> Self {
+        return Self(
+            x: self.x.truncatingRemainder(dividingBy: divisors.x),
+            y: self.y.truncatingRemainder(dividingBy: divisors.y)
+        )
+    }
+    
+    @inlinable
+    var isFinite: Bool {
+        nonmutating get {
+            return x.isFinite && y.isFinite
+        }
     }
     
     @inlinable
@@ -332,6 +414,85 @@ extension Vector2n where Scalar: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(x)
         hasher.combine(y)
+    }
+}
+
+public extension Vector2n where Scalar: Comparable {
+    @inlinable
+    nonmutating func clamped(from lowerBound: Self, to upperBound: Self) -> Self {
+        var x = self.x
+        if x < lowerBound.x { x = lowerBound.x }
+        if x > upperBound.x { x = upperBound.x }
+        
+        var y = self.y
+        if y < lowerBound.y { y = lowerBound.y }
+        if y > upperBound.y { y = upperBound.y }
+
+        return Self(x: x, y: y)
+    }
+    
+    @inlinable
+    mutating func clamp(from lowerBound: Self, to upperBound: Self) {
+        self = self.clamped(from: lowerBound, to: upperBound)
+    }
+}
+
+public extension Vector2n {
+    @inlinable
+    nonmutating func dot<V: Vector2n>(_ vector: V) -> Scalar where V.Scalar == Scalar {
+        return (x * vector.x) + (y * vector.y)
+    }
+    
+    @inlinable
+    nonmutating func cross<V: Vector2n>(_ vector: V) -> Scalar where V.Scalar == Scalar {
+        return (x * vector.y) - (y * vector.x)
+    }
+}
+
+public extension Vector2n {
+    @inlinable
+    var length: Scalar {
+        nonmutating get {
+            return x + y
+        }
+    }
+
+    @inlinable
+    var squaredLength: Scalar {
+        nonmutating get {
+            return x * x + y * y
+        }
+    }
+}
+
+public extension Vector2n where Scalar: FloatingPoint, Self: Equatable {
+    @inlinable
+    var magnitude: Scalar {
+        nonmutating get {
+            return squaredLength.squareRoot()
+        }
+    }
+    
+    @inlinable
+    nonmutating func squareRoot() -> Self {
+        return Self(x: x.squareRoot(), y: y.squareRoot())
+    }
+
+    @inlinable
+    mutating func normalize() {
+        guard self != Self.zero else { return }
+        let magnitude = self.magnitude
+        let factor = 1 / magnitude
+        self *= factor
+    }
+    
+    @inlinable
+    var normalized: Self {
+        nonmutating get {
+            var value = self
+            value.normalize()
+            return value
+        }
     }
 }
 

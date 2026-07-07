@@ -94,7 +94,7 @@ public final class CollisionMeshBackend {
 // MARK: - Resource Manager
 
 public protocol CollisionMeshImporter: ResourceImporter {
-    func loadCollisionMesh(options: CollisionMeshImporterOptions) async throws(GateEngineError) -> RawCollisionMesh
+    mutating func loadCollisionMesh(options: CollisionMeshImporterOptions) async throws(GateEngineError) -> RawCollisionMesh
 }
 
 public struct CollisionMeshImporterOptions: Equatable, Hashable, Sendable {
@@ -167,7 +167,7 @@ extension ResourceManager {
 
     func collisionMeshImporterForPath(_ path: String) async throws(GateEngineError) -> any CollisionMeshImporter {
         for type in self.importers.collisionMeshImporters {
-            if type.canProcessFile(path) {
+            if type.canProcessFile(at: path) {
                 return try await self.importers.getImporter(path: path, type: type)
             }
         }
@@ -177,7 +177,7 @@ extension ResourceManager {
 
 public extension RawCollisionMesh {
     init(path: String, options: CollisionMeshImporterOptions = .none) async throws {
-        let importer: any CollisionMeshImporter = try await Game.unsafeShared.resourceManager.collisionMeshImporterForPath(path)
+        var importer: any CollisionMeshImporter = try await Game.unsafeShared.resourceManager.collisionMeshImporterForPath(path)
         self = try await importer.loadCollisionMesh(options: options)
     }
 }
@@ -290,7 +290,7 @@ extension ResourceManager {
     @MainActor func _reloadCollisionMesh(for key: Cache.CollisionMeshKey, isFirstLoad: Bool) {
         Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
         let cache = self.cache
-        Task.detached {
+        Task {
             let path = key.requestedPath
             
             do {

@@ -59,17 +59,60 @@ extension Rotation3n where Scalar: BinaryFloatingPoint {
 public extension Rotation3n where Scalar: BinaryFloatingPoint {
     @inlinable
     var pitch: Radians {
-        return direction.angleAroundX
+        get {
+            let lhs: Scalar = 2.0 * (w * x + y * z)
+            let rhs: Scalar = 1.0 - 2.0 * (x * x + y * y)
+            return Radians(rawValue: .init(atan2(lhs, rhs)))
+        }
+        mutating set {
+            self = .init(pitch: newValue, yaw: self.yaw, roll: self.roll)
+        }
     }
     
     @inlinable
     var yaw: Radians {
-        return direction.angleAroundY
+        get {
+            let lhs: Scalar = 2.0 * (w * y - x * z)
+            return Radians(rawValue: .init(asin(lhs)))
+        }
+        mutating set {
+            self = .init(pitch: self.pitch, yaw: newValue, roll: self.roll)
+        }
     }
     
     @inlinable
     var roll: Radians {
-        return direction.angleAroundZ
+        get {
+            let lhs: Scalar = 2.0 * (w * z + x * y)
+            let rhs: Scalar = 1.0 - 2.0 * (y * y + z * z)
+            return Radians(rawValue: .init(atan2(lhs, rhs)))
+        }
+        mutating set {
+            self = .init(pitch: self.pitch, yaw: self.yaw, roll: newValue)
+        }
+    }
+    
+    @inlinable
+    init(pitch: Degrees, yaw: Degrees, roll: Degrees) {
+        self.init(pitch: pitch.asRadians, yaw: yaw.asRadians, roll: roll.asRadians)
+    }
+    
+    @inlinable
+    init(pitch: Radians, yaw: Radians, roll: Radians) {
+        let halfYaw = Scalar(yaw.rawValueAsRadians) * 0.5
+        let halfPitch = Scalar(pitch.rawValueAsRadians) * 0.5
+        let halfRoll = Scalar(roll.rawValueAsRadians) * 0.5
+        let cy: Scalar = cos(halfRoll)
+        let sy: Scalar = sin(halfRoll)
+        let cp: Scalar = cos(halfYaw)
+        let sp: Scalar = sin(halfYaw)
+        let cr: Scalar = cos(halfPitch)
+        let sr: Scalar = sin(halfPitch)
+
+        self.x = sr * cp * cy - cr * sp * sy
+        self.y = cr * sp * cy + sr * cp * sy
+        self.z = cr * cp * sy - sr * sp * cy
+        self.w = cr * cp * cy + sr * sp * sy
     }
 }
 
@@ -152,6 +195,11 @@ extension Rotation3n {
     @inlinable
     var conjugate: Self {
         return Self(x: -x, y: -y, z: -z, w: w)
+    }
+    
+    @inlinable
+    var isFinite: Bool {
+        return self.x.isFinite && self.y.isFinite && self.z.isFinite && self.w.isFinite
     }
 }
 

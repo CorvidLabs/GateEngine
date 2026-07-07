@@ -12,12 +12,14 @@ public struct OrientedBoundingBox3D: Collider3D, Sendable {
     public private(set) var radius: Size3 // Positive halfwidth extents of OBB along each axis
     internal var _radius: Size3
     internal var _offset: Position3
+    internal var _rotation: Quaternion
     
     public var size: Size3 {return radius * 2}
     
     public init(center: Position3 = .zero, offset: Position3 = .zero, radius: Size3, rotation: Quaternion) {
         self.center = center
         self.rotation = rotation
+        self._rotation = rotation
         self.offset = offset
         self._offset = offset
         self._radius = radius
@@ -37,18 +39,19 @@ public struct OrientedBoundingBox3D: Collider3D, Sendable {
     
     public private(set) var boundingBox: AxisAlignedBoundingBox3D
 
-    mutating public func update(transform: Transform3) {
-        rotation = transform.rotation
+    mutating public func update(withWorldTransform transform: Transform3) {
         center = transform.position
         offset = _offset * transform.scale
         radius = _radius * transform.scale
-        self.boundingBox.update(transform: transform)
+        rotation = _rotation * transform.rotation.conjugate
+        self.boundingBox.update(withWorldTransform: transform)
     }
     
-    public mutating func update(sizeAndOffsetUsingTransform transform: Transform3) {
+    public mutating func update(withLocalTransform transform: Transform3) {
         _offset = transform.position
         _radius = transform.scale / 2
-        self.boundingBox.update(sizeAndOffsetUsingTransform: transform)
+        _rotation = transform.rotation
+        self.boundingBox.update(withLocalTransform: transform)
     }
 }
 
@@ -75,6 +78,7 @@ public extension OrientedBoundingBox3D {
         self._radius = Size3(width: (x.y - x.x) / 2.0, height: (y.y - y.x) / 2.0, depth: (z.y - z.x) / 2.0)
         self.radius = _radius
         self.rotation = .zero
+        self._rotation = .zero
         self.boundingBox = AxisAlignedBoundingBox3D(center: center, offset: offset, radius: radius)
     }
 }
@@ -255,11 +259,14 @@ extension OrientedBoundingBox3D {
         for i in 0..<3 {
             ra = lhs.radius[0] * absR[0][i] + lhs.radius[1] * absR[1][i] + lhs.radius[2] * absR[2][i]
             rb = rhs.radius[i]
-            let projection0: Float = t[0] * r[0][i]
-            let projection1: Float = t[1] * r[1][i]
-            let projection2: Float = t[2] * r[2][i]
-            let projection: Float = projection0 + projection1 + projection2
-            if abs(projection) > ra + rb {
+            let x0: Float = t[0]
+            let x1: Float = r[0][i]
+            let x2: Float = t[1]
+            let x3: Float = r[1][i]
+            let x4: Float = t[2]
+            let x5: Float = r[2][i]
+            let x: Float = x0 * x1 + x2 * x3 + x4 * x5
+            if abs(x) > ra + rb {
                 return false
             }
         }

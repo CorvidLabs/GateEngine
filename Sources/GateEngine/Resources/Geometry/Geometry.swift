@@ -35,7 +35,7 @@ public extension Geometry {
             tangents: nil,
             colors: nil,
             indexes: indices
-        ).optimized()
+        ).cleaned()
         return Geometry(raw)
     }()
 
@@ -64,7 +64,7 @@ public extension Geometry {
             tangents: nil,
             colors: nil,
             indexes: indices
-        ).optimized()
+        ).cleaned()
         return Geometry(raw)
     }()
 }
@@ -86,7 +86,7 @@ public extension Geometry {
     }
 
     @inlinable @_disfavoredOverload
-    public convenience init(as path: GeoemetryPath, options: GeometryImporterOptions = .none) {
+    public convenience init(as path: GeometryPath, options: GeometryImporterOptions = .none) {
         self.init(path: path.value, options: options)
     }
 
@@ -132,7 +132,7 @@ extension Geometry: Equatable, Hashable {
 // MARK: - Resource Manager
 
 public protocol GeometryImporter: ResourceImporter {
-    func loadGeometry(options: GeometryImporterOptions) async throws(GateEngineError) -> RawGeometry
+    mutating func loadGeometry(options: GeometryImporterOptions) async throws(GateEngineError) -> RawGeometry
 }
 
 public struct GeometryImporterOptions: Equatable, Hashable, Sendable {
@@ -166,6 +166,11 @@ public struct GeometryImporterOptions: Equatable, Hashable, Sendable {
     public static var option1: GeometryImporterOptions {
         return GeometryImporterOptions(subobjectName: nil, applyRootTransform: false, option1: true)
     }
+    
+    /// This option applies to Lines only
+    public static var boundingBoxWireframe: GeometryImporterOptions {
+        return .init(option1: true)
+    }
 }
 
 extension ResourceManager {
@@ -180,7 +185,7 @@ extension ResourceManager {
     
     func geometryImporterForPath(_ path: String) async throws(GateEngineError) -> any GeometryImporter {
         for type in self.importers.geometryImporters {
-            if type.canProcessFile(path) {
+            if type.canProcessFile(at: path) {
                 return try await self.importers.getImporter(path: path, type: type)
             }
         }
@@ -190,11 +195,11 @@ extension ResourceManager {
 
 extension RawGeometry {
     @inlinable @_disfavoredOverload
-    public init(as path: GeoemetryPath, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
+    public init(as path: GeometryPath, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
         try await self.init(path: path.value, options: options)
     }
     public init(path: String, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
-        let importer = try await Game.unsafeShared.resourceManager.geometryImporterForPath(path)
+        var importer = try await Game.unsafeShared.resourceManager.geometryImporterForPath(path)
         self = try await importer.loadGeometry(options: options)
     }
 }
@@ -270,7 +275,7 @@ extension ResourceManager {
         if cache.geometries[key] == nil {
             cache.geometries[key] = Cache.GeometryCache()
             Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
-            Task.detached {
+            Task {
                 do {
                     let geometry = try await RawGeometry(path: path, options: options)
                     Task { @MainActor in
@@ -341,7 +346,7 @@ extension ResourceManager {
         guard key.requestedPath.first != "$" && key.requestedPath.first != "@" else { return }
         guard self.geometryNeedsReload(key: key) else { return }
         let cache = self.cache
-        Task.detached {
+        Task {
             let geometry = try await RawGeometry(
                 path: key.requestedPath,
                 options: key.geometryOptions

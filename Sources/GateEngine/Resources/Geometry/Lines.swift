@@ -22,7 +22,7 @@
     }
 
     @inlinable @_disfavoredOverload
-    public convenience init(as path: GeoemetryPath, options: GeometryImporterOptions = .none) {
+    public convenience init(as path: GeometryPath, options: GeometryImporterOptions = .none) {
         self.init(path: path.value, options: options)
     }
 
@@ -64,11 +64,11 @@ extension Lines: Equatable, Hashable {
 
 extension RawLines {
     @inlinable @_disfavoredOverload
-    public init(_ path: GeoemetryPath, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
+    public init(_ path: GeometryPath, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
         try await self.init(path: path.value, options: options)
     }
     public init(path: String, options: GeometryImporterOptions = .none) async throws(GateEngineError) {
-        let importer = try await Game.unsafeShared.resourceManager.geometryImporterForPath(path)
+        var importer = try await Game.unsafeShared.resourceManager.geometryImporterForPath(path)
         let rawGeometry = try await importer.loadGeometry(options: options)
         self.init(wireframeFrom: rawGeometry)
     }
@@ -84,10 +84,10 @@ extension ResourceManager {
         if cache.geometries[key] == nil {
             cache.geometries[key] = Cache.GeometryCache()
             Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
-            Task.detached {
+            Task {
                 do {
                     let geometry = try await RawGeometry(path: path, options: options)
-                    let lines = RawLines(wireframeFrom: geometry)
+                    let lines = if options.option1 { RawLines(boundingBoxFrom: geometry) }else{ RawLines(wireframeFrom: geometry)}
                     Task { @MainActor in
                         if let cache = cache.geometries[key] {
                             cache.geometryBackend = ResourceManager.geometryBackend(from: lines)
@@ -118,7 +118,7 @@ extension ResourceManager {
         let key = Cache.GeometryKey(requestedPath: path, kind: .lines, geometryOptions: .none)
         if cache.geometries[key] == nil {
             cache.geometries[key] = Cache.GeometryCache()
-            if let lines = lines {
+            if let lines = lines, lines.isEmpty == false {
                 Game.unsafeShared.resourceManager.incrementLoading(path: key.requestedPath)
                 
                 if let cache = self.cache.geometries[key] {
