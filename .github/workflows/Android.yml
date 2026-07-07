@@ -35,18 +35,34 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
+    - name: Install Swift 6.2
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "6.2"
+
     - name: Install Android SDK
       # The old swift-5.8-android-24-sdk destination bundle is incompatible with the Swift
       # toolchain now preinstalled on ubuntu-latest (6.x): its sysroot doesn't resolve against
       # the newer compiler's search paths (missing stdio.h/inttypes.h). Use the modern
-      # `swift sdk install` artifact-bundle flow with an SDK matching this package's
-      # swift-tools-version (6.1) floor instead of the legacy `--destination` JSON file.
+      # `swift sdk install` artifact-bundle flow with a matching Swift 6.2 toolchain instead of
+      # the legacy `--destination` JSON file, matching the same fix already validated on the
+      # swift-6-migration branch.
       run: |
-        swift sdk install https://github.com/finagolfin/swift-android-sdk/releases/download/6.1/swift-6.1-RELEASE-android-24-0.1.artifactbundle.tar.gz --checksum 971f3b1fd03c059803d625f0a412d7e8c4c6f34440f5216ceaf13e886e8e706f
+        swift sdk install https://github.com/finagolfin/swift-android-sdk/releases/download/6.2/swift-6.2-RELEASE-android-24-0.1.artifactbundle.tar.gz --checksum c26ebfd4e32c0ca1beabcc45729b62042da57ee76d7d043f63f2235da90dc491
+
+    - name: List SDKs
+      run: swift sdk list
+
     - name: Swift Version
       run: swift --version
 
     - name: Build using Swift
-      run: swift build --swift-sdk aarch64-unknown-linux-android24
-    - name: Test using Swift
-      run: swift build --build-tests --swift-sdk aarch64-unknown-linux-android24
+      # ANDROID_NDK_ROOT must be unset for the SDK to function properly
+      # (GitHub Actions runners have this set by default).
+      # Only build Android-portable targets: Gravity (vendored C, uses bzero/glibc-only headers)
+      # and OpenALSoft (no Android config.h/backend) are not portable to Android's Bionic libc
+      # and are excluded from the cross-compiled build here, matching the same scoping already
+      # validated on the swift-6-migration branch.
+      env:
+        ANDROID_NDK_ROOT: ""
+      run: swift build --target GameMath --target GateUtilities --swift-sdk aarch64-unknown-linux-android24

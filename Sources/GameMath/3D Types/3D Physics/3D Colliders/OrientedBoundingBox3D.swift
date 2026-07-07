@@ -255,7 +255,11 @@ extension OrientedBoundingBox3D {
         for i in 0..<3 {
             ra = lhs.radius[0] * absR[0][i] + lhs.radius[1] * absR[1][i] + lhs.radius[2] * absR[2][i]
             rb = rhs.radius[i]
-            if abs(t[0] * r[0][i] + t[1] * r[1][i] + t[2] * r[2][i]) > ra + rb {
+            let projection0: Float = t[0] * r[0][i]
+            let projection1: Float = t[1] * r[1][i]
+            let projection2: Float = t[2] * r[2][i]
+            let projection: Float = projection0 + projection1 + projection2
+            if abs(projection) > ra + rb {
                 return false
             }
         }
